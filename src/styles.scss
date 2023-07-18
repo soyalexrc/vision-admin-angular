@@ -1,0 +1,63 @@
+/* You can add global styles to this file, and also import other style files */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-overflow-scrolling: touch
+}
+
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body::-webkit-scrollbar, *::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+  background-color: #91b2ab3d
+}
+
+body::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb {
+  border: none;
+  border-radius: 8px;
+  background-color: #6373817a
+}
+
+input [type=number] {
+  -moz-appearance: textfield;
+}
+
+input [type=number]::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+input [type=number]::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+textarea::-webkit-input-placeholder {
+  color: lightgray
+}
+textarea::-moz-placeholder {
+  color: lightgray;
+  opacity: 1;
+}
+textarea::-ms-input-placeholder {
+  color: lightgray;
+}
+textarea::placeholder {
+  color: lightgray;
+}
