@@ -1,3 +1,184 @@
-<p>header</p>
-<router-outlet></router-outlet>
-<p>footer</p>
+<!--<nz-layout class="app-layout" style="display: none">-->
+<!--  <nz-sider class="menu-sidebar"-->
+<!--            nzCollapsible-->
+<!--            nzWidth="256px"-->
+<!--            nzBreakpoint="md"-->
+<!--            [(nzCollapsed)]="isCollapsed"-->
+<!--            [nzTrigger]="null">-->
+<!--    <div class="sidebar-logo">-->
+<!--      <a href="https://ng.ant.design/" target="_blank">-->
+<!--        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">-->
+<!--        <h1>Smart Report</h1>-->
+<!--      </a>-->
+<!--    </div>-->
+<!--    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">-->
+<!--      <li nz-menu-item nzMatchRouter routerLink="/inicio">-->
+<!--        <span nz-icon nzType="container" nzTheme="outline" style="margin-right: .5rem"></span>-->
+<!--        <span>Inicio</span>-->
+<!--      </li>-->
+<!--      <li nz-menu-item nzMatchRouter routerLink="/reportes">-->
+<!--        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>-->
+<!--        <span>reportes</span>-->
+<!--      </li>-->
+<!--      <li nz-menu-item nzMatchRouter style="position: absolute; bottom: 10px" (click)="logout()">-->
+<!--        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>-->
+<!--        <span>Cerrar sesion</span>-->
+<!--      </li>-->
+
+<!--      &lt;!&ndash;      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">&ndash;&gt;-->
+<!--      &lt;!&ndash;        <ul>&ndash;&gt;-->
+<!--      &lt;!&ndash;          <li nz-menu-item nzMatchRouter>&ndash;&gt;-->
+<!--      &lt;!&ndash;            <a>Basic Form</a>&ndash;&gt;-->
+<!--      &lt;!&ndash;          </li>&ndash;&gt;-->
+<!--      &lt;!&ndash;        </ul>&ndash;&gt;-->
+<!--      &lt;!&ndash;      </li>&ndash;&gt;-->
+<!--    </ul>-->
+<!--  </nz-sider>-->
+<!--  <nz-layout style="width: 100%" [ngStyle]="{'margin-left': !isCollapsed ? '256px' : '80px'}" >-->
+<!--    <nz-header class="header">-->
+<!--      <div class="app-header">-->
+<!--        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">-->
+<!--            <span class="trigger"-->
+<!--                  nz-icon-->
+<!--                  [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"-->
+<!--            ></span>-->
+<!--        </span>-->
+<!--      </div>-->
+<!--    </nz-header>-->
+<!--    <nz-content>-->
+<!--      <div class="inner-content" style="max-width: 100%;">-->
+<!--        <router-outlet></router-outlet>-->
+<!--      </div>-->
+<!--    </nz-content>-->
+<!--    <nz-footer>Smart Report ©2023 powered by Smart Tech</nz-footer>-->
+<!--  </nz-layout >-->
+<!--</nz-layout>-->
+
+<div>
+  <nz-sider class="menu-sidebar hidden"
+            nzCollapsible
+            nzWidth="215px"
+            nzBreakpoint="md"
+            [(nzCollapsed)]="isCollapsed"
+            [nzTrigger]="null">
+    <div class="sidebar-logo">
+      <a href="https://ng.ant.design/" target="_blank">
+        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
+        <h1 *ngIf="!isCollapsed">Smart Report</h1>
+      </a>
+    </div>
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+
+      <li nz-menu-item nzMatchRouter routerLink="/inicio" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Inicio</span>
+      </li>
+      <li nz-menu-item nzMatchRouter routerLink="/propietarios" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Propietarios</span>
+      </li>
+      <li nz-menu-item nzMatchRouter routerLink="/usuarios" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Usuarios</span>
+      </li>
+      <li nz-menu-item nzMatchRouter routerLink="/propiedades" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Propiedades</span>
+      </li>
+      <li nz-menu-item nzMatchRouter routerLink="/asesores-externos" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Asesores externos</span>
+      </li>
+      <li nz-menu-item nzMatchRouter routerLink="/administracion" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Administracion</span>
+      </li>
+      <li nz-menu-item nzMatchRouter routerLink="/flujo-de-caja" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Flujo de caja</span>
+      </li>
+      <li nz-menu-item nzMatchRouter routerLink="/calculo-de-comisiones" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Calculo de comisiones</span>
+      </li>
+      <li nz-menu-item nzMatchRouter routerLink="/aliados" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Aliados</span>
+      </li>
+      <li nz-menu-item nzMatchRouter style="position: absolute; bottom: 10px" (click)="logout()">
+        <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span>Cerrar sesion</span>
+      </li>
+
+      <!--      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">-->
+      <!--        <ul>-->
+      <!--          <li nz-menu-item nzMatchRouter>-->
+      <!--            <a>Basic Form</a>-->
+      <!--          </li>-->
+      <!--        </ul>-->
+      <!--      </li>-->
+    </ul>
+  </nz-sider>
+
+
+  <div [ngClass]="{'right-side-full': !isCollapsed, 'right-side-collapsed': isCollapsed, 'small-right-side': isSmallScreen}">
+    <div class="navbar">
+         <span class="header-trigger hidden" (click)="isCollapsed = !isCollapsed">
+            <span class="trigger"
+                  nz-icon
+                  [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            ></span>
+        </span>
+      <button class="visible" nz-button nzType="text" nzSize="large" (click)="open()"><span nz-icon nzType="menu"></span></button>
+      <div style="display: flex; align-items: center">
+        <div style="margin-right: .5rem;">
+          <p class="user-name">{{user.username}}</p>
+          <p class="user-role">
+            <span *ngFor="let role of user.user_type">{{role}}</span>
+          </p>
+        </div>
+        <nz-avatar [nzText]="shortener(user.username)" nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomLeft" nzSize="large" style="color:#f56a00; background-color:#fde3cf;"></nz-avatar>
+      </div>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="logout()">Cerrar cesion</li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+    <main class="main-container">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <nz-drawer
+    [nzVisible]="visible"
+    [nzWidth]="300"
+    [nzBodyStyle]="{'background-color': '#001529'}"
+
+    nzPlacement="left"
+    nzTitle="Menu"
+    (nzOnClose)="close()"
+  >
+    <ng-container *nzDrawerContent>
+      <ul nz-menu nzTheme="dark" nzMode="inline" >
+
+        <li nz-menu-item nzMatchRouter (click)="handleRouting()" routerLink="/reportes" >
+          <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+          <span>{{'Reportes'}}</span>
+        </li>
+        <li nz-menu-item nzMatchRouter style="position: absolute; bottom: 10px" (click)="logout()">
+          <span nz-icon nzType="dashboard" nzTheme="outline" style="margin-right: .5rem"></span>
+          <span>Cerrar sesion</span>
+        </li>
+
+        <!--      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">-->
+        <!--        <ul>-->
+        <!--          <li nz-menu-item nzMatchRouter>-->
+        <!--            <a>Basic Form</a>-->
+        <!--          </li>-->
+        <!--        </ul>-->
+        <!--      </li>-->
+      </ul>
+    </ng-container>
+  </nz-drawer>
+</div>

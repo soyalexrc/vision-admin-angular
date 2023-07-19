@@ -1,1 +1,58 @@
-<p>login works!</p>
+<div class="container">
+  <div>
+    <h1 >Iniciar sesion</h1>
+
+    <div>
+      <nz-input-group nzSize="large">
+        <input type="text" (keydown.enter)="login()" nz-input placeholder="Nombre de usuario" [(ngModel)]="username"/>
+      </nz-input-group>
+
+      <nz-input-group nzSize="large" style="margin: 1rem 0" [nzSuffix]="suffixTemplate">
+        <input
+          [type]="passwordVisible ? 'text' : 'password'"
+          (keydown.enter)="login()"
+          nz-input
+          placeholder="Contrasena"
+          [(ngModel)]="password"
+        />
+      </nz-input-group>
+
+      <label style="margin-bottom: 1rem" nz-checkbox (nzCheckedChange)="handleRememberChange($event)" [(ngModel)]="remember">Recuerdame</label>
+      <br>
+
+      <div class="login-button-container">
+        <button class="login-button" nz-button nzType="primary" nzSize="large" (click)="login()">
+          Ingresar
+        </button>
+      </div>
+
+      <ng-template #suffixTemplate>
+      <span
+        nz-icon
+        [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+        (click)="passwordVisible = !passwordVisible"
+      ></span>
+      </ng-template>
+
+      <ng-template #suffixTemplateInfo>
+        <span nz-icon nz-tooltip nzTooltipTitle="Extra information" nzType="info-circle"></span>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #template>
+  <div class="ant-notification-notice-content">
+    <div class="ant-notification-notice-with-icon">
+          <span class="ant-notification-notice-icon">
+            <span nz-icon nzType="smile" style="color: rgb(16, 142, 233);"></span>
+          </span>
+      <div class="ant-notification-notice-message">Notification Title</div>
+      <div class="ant-notification-notice-description">
+        This is the content of the notification. This is the content of the notification. This is the content of the
+        notification.
+      </div>
+    </div>
+  </div>
+</ng-template>

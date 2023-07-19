@@ -4,15 +4,13 @@ import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {Login} from "../interfaces/login";
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
-  private readonly basePath = 'http://dny15158.macincloud.com:8080/api'
-
 
   constructor(
     public jwtHelper: JwtHelperService,
@@ -44,8 +42,8 @@ export class AuthService {
     return this.decodeToken(this.getToken() ?? '')
   }
 
-  login(username: string, password: string, remember: boolean): Observable<any> {
-    return this.http.post(`${this.basePath}/authenticate`, {username, password, remember})
+  login(username: string, password: string, remember: boolean): Observable<Login> {
+    return this.http.get<Login>(`user/login?email=${username}`)
   }
   logout(){
     this.router.navigate(['/']);

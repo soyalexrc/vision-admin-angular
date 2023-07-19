@@ -63,6 +63,12 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         loadChildren: () => import('./features/properties/properties.module').then(m => m.PropertiesModule)
       },
+      {
+        path: 'propietarios',
+        component: MainLayoutComponent,
+        canActivate: [AuthGuard],
+        loadChildren: () => import('./features/owners/owners.module').then(m => m.OwnersModule)
+      },
     ]
   },
   {
