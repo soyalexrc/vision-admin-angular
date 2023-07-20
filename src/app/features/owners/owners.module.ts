@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MainComponent } from './main/main.component';
 import {OwnersRoutingModule} from "./owners-routing.module";
+import {SharedModule} from "../../shared/shared.module";
+import {NzBreadCrumbModule} from "ng-zorro-antd/breadcrumb";
 
 
 
@@ -11,7 +13,9 @@ import {OwnersRoutingModule} from "./owners-routing.module";
   ],
   imports: [
     CommonModule,
-    OwnersRoutingModule
+    OwnersRoutingModule,
+    SharedModule,
+    NzBreadCrumbModule
   ]
 })
 export class OwnersModule { }

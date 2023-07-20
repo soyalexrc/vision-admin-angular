@@ -18,8 +18,6 @@ export class UiService {
     this.isLayoutDrawerVisible.next(false);
   }
 
-  toggleLayoutDrawer() {
-    this.isLayoutDrawerVisible.next(!this.isLayoutDrawerVisible);
-  }
+
 
 }

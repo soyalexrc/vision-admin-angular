@@ -1,1 +1,16 @@
-<p>main works!</p>
+
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Propietarios</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<app-section-title
+  [title]="'Propietarios'"
+  [buttonText]="'Nuevo propietario'"
+  (onNewElement)="handleNewOwner()"
+></app-section-title>
+<app-regular-table #dataTable
+  [loading]="loading"
+  (onEdit)="handleEdit($event)"
+  (onDelete)="handleDelete($event)"
+></app-regular-table>
