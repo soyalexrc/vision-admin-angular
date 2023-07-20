@@ -14,6 +14,7 @@ import {NzDropDownModule} from "ng-zorro-antd/dropdown";
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzButtonModule} from "ng-zorro-antd/button";
+import {ErrorHandlerInterceptor} from "./interceptor/error-handler.interceptor";
 
 
 
@@ -40,6 +41,11 @@ import {NzButtonModule} from "ng-zorro-antd/button";
     {
       provide : HTTP_INTERCEPTORS,
       useClass : ApiInterceptor,
+      multi : true
+    },
+    {
+      provide : HTTP_INTERCEPTORS,
+      useClass : ErrorHandlerInterceptor,
       multi : true
     }
   ]

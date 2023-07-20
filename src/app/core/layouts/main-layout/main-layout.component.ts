@@ -73,7 +73,6 @@ export class MainLayoutComponent {
   }
 
   shortener(st: string) {
-    console.log(st);
     return st.slice(0, 2);
   }
 }

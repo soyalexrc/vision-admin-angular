@@ -10,6 +10,7 @@ export class SectionTitleComponent {
   @Input() title!: string;
   @Input() buttonText!: string;
   @Output() onNewElement: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onRefresh: EventEmitter<any> = new EventEmitter<any>()
 
 
 }

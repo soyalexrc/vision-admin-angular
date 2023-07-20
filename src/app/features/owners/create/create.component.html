@@ -1,0 +1,88 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
+  <nz-breadcrumb-item>
+    <a routerLink="/propietarios">Propietarios</a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>Crear</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+
+<!--form-->
+
+<form class="form" nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="submitForm()">
+  <h2>Datos de propietario</h2>
+  <div class="content">
+    <div nz-row class="row" [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="firstName">Nombre</nz-form-label>
+          <nz-form-control [nzErrorTip]="firsNameErrTemp">
+            <input type="text" style="width: 100%" nz-input formControlName="firstName"
+                   placeholder="Nombre"/>
+            <ng-template #firsNameErrTemp let-control>
+              <ng-container *ngIf="control.hasError('required')">Debes ingresar un nombre!</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="lastName">Apellido</nz-form-label>
+          <nz-form-control [nzErrorTip]="lastNameErrTemp">
+            <input type="text" style="width: 100%" nz-input formControlName="lastName"
+                   placeholder="Apellido"/>
+            <ng-template #lastNameErrTemp let-control>
+              <ng-container *ngIf="control.hasError('required')">Debes ingresar un apellido!</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+
+    </div>
+    <div nz-row class="row" [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="email">Correo electronico</nz-form-label>
+          <nz-form-control [nzErrorTip]="emailErrTemp">
+            <input type="text" style="width: 100%" nz-input formControlName="email"
+                   placeholder="Correo electronico"/>
+            <ng-template #emailErrTemp let-control>
+              <ng-container *ngIf="control.hasError('required')">Debes ingresar un email!</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Ingresa un email valido!</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="phone">Numero de telefono</nz-form-label>
+          <nz-form-control [nzErrorTip]="phoneErrTemp">
+            <input type="text" style="width: 100%" nz-input formControlName="phone"
+                   placeholder="Numero de telefono"/>
+            <ng-template #phoneErrTemp let-control>
+              <ng-container *ngIf="control.hasError('required')">Debes ingresar un numero de telefono!</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div nz-row class="row" [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="birthday">Fecha de nacimiento</nz-form-label>
+          <nz-form-control [nzErrorTip]="birthdayErrTemp">
+            <nz-date-picker style="width: 100%" formControlName="birthday"></nz-date-picker>
+            <ng-template #birthdayErrTemp let-control>
+              <ng-container *ngIf="control.hasError('required')">Debes ingresar una fecha de nacimiento!</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <label class="checkbox" nz-checkbox formControlName="isInvestor">Es inversionista?</label>
+    <div>
+      <button nz-button nzType="primary" nzBlock type="submit" [disabled]="form.invalid">Guardar cambios</button>
+    </div>
+  </div>
+</form>

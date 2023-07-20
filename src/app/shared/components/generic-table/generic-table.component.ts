@@ -2,11 +2,11 @@ import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from 
 import {IDynamicTable, ITableHeader} from "../../../core/interfaces/table";
 
 @Component({
-  selector: 'app-regular-table',
-  templateUrl: './regular-table.component.html',
-  styleUrls: ['./regular-table.component.scss']
+  selector: 'app-generic-table',
+  templateUrl: './generic-table.component.html',
+  styleUrls: ['./generic-table.component.scss']
 })
-export class RegularTableComponent implements OnInit {
+export class GenericTableComponent implements OnInit {
 
   tableData!: IDynamicTable;
   allHeaders: ITableHeader[] = [];
@@ -37,6 +37,5 @@ export class RegularTableComponent implements OnInit {
   private resetDragTracer() {
     this.dragTrace = {src: -1, dest: -1}
   }
-
 
 }

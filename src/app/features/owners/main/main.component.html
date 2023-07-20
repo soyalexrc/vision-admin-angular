@@ -7,10 +7,11 @@
 <app-section-title
   [title]="'Propietarios'"
   [buttonText]="'Nuevo propietario'"
+  (onRefresh)="getOwners()"
   (onNewElement)="handleNewOwner()"
 ></app-section-title>
-<app-regular-table #dataTable
+<app-generic-table #dataTable
   [loading]="loading"
   (onEdit)="handleEdit($event)"
   (onDelete)="handleDelete($event)"
-></app-regular-table>
+></app-generic-table>

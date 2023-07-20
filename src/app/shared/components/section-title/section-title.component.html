@@ -1,6 +1,19 @@
 <div class="header-section">
   <div class="info">
     <h1>{{title}}</h1>
+    <button
+      (click)="onRefresh.emit()"
+      nz-tooltip="true"
+      nzTooltipTitle="Refrescar"
+      nz-button
+      nzType="default"
+      nzShape="circle"
+    >
+      <span nz-icon nzType="redo"></span>
+    </button>
   </div>
-  <button (click)="onNewElement.emit()">{{buttonText}}</button>
+  <button nz-button nzType="primary"(click)="onNewElement.emit()">
+    <span nz-icon nzType="plus"></span>
+    {{buttonText}}
+  </button>
 </div>
