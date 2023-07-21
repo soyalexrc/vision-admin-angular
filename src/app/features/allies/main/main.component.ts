@@ -45,7 +45,7 @@ export class MainComponent implements OnInit, AfterViewInit {
       nzOkText: 'Aceptar',
       nzOnOk: () => new Promise((resolve, reject) => {
         this.alliesService.deleteOne(id).subscribe(result => {
-          this.uiService.createMessage('success', 'Se elimino el propietario con exito!')
+          this.uiService.createMessage('success', 'Se elimino el aliado con exito!')
           this.getAllies()
           setTimeout(() => resolve(), 500);
         })

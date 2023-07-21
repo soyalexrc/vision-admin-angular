@@ -14,11 +14,11 @@ export interface Recordset {
   last_name:        string;
   username:         string;
   phone_number1:    string;
-  phone_number2:    string;
+  phone_number2?:    string;
   email:            string;
   fiscal_address:   string;
   birthday:         Date;
-  profession:       string;
+  profession?:       string;
   city:             string;
   state:            string;
   user_type:        string;
@@ -26,7 +26,7 @@ export interface Recordset {
   social_twitter:   string;
   social_instagram: string;
   social_youtube:   string;
-  image:            null;
+  image?:            any;
   password:         string;
-  sequence:         null;
+  sequence?:         number;
 }

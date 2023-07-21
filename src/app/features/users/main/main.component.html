@@ -1,1 +1,17 @@
-<p>main works!</p>
+
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Usuarios</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<app-section-title
+  [title]="'Usuarios'"
+  [buttonText]="'Nuevo usuario'"
+  (onRefresh)="getUsers()"
+  (onNewElement)="handleNewUser()"
+></app-section-title>
+<app-generic-table #dataTable
+                   [loading]="loading"
+                   (onEdit)="handleEdit($event)"
+                   (onDelete)="handleDelete($event)"
+></app-generic-table>

@@ -5,7 +5,7 @@ import {Router} from "@angular/router";
 import {UiService} from "../../services/ui.service";
 import {UserService} from "../../services/user.service";
 import {Subscription} from "rxjs";
-import {Recordset} from "../../interfaces/login";
+import {User} from "../../interfaces/user";
 
 @Component({
   selector: 'app-main-layout',
@@ -13,7 +13,7 @@ import {Recordset} from "../../interfaces/login";
   styleUrls: ['./main-layout.component.scss']
 })
 export class MainLayoutComponent {
-  user!: Recordset;
+  user!: User;
   isCollapsed = false;
   confirmModal?: NzModalRef; // For testing by now
   visible = false;
