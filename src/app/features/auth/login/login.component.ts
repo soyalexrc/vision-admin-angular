@@ -22,9 +22,8 @@ export class LoginComponent implements OnInit {
     private userService: UserService,
   ) {}
   ngOnInit() {
-    if (localStorage.getItem('sr-remember')) {
+    if (localStorage.getItem('vi-remember')) {
       this.username = localStorage.getItem('vi-username')
-      this.password = localStorage.getItem('vi-password')
       this.remember = true;
     }
   }

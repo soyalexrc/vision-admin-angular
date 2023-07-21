@@ -1,18 +1,26 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {OwnerService} from "../../../core/services/owner.service";
-
+import {UiService} from "../../../core/services/ui.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit{
+export class CreateComponent implements OnInit, AfterViewInit{
   form!: FormGroup;
+  loading = false;
+  isEditing = false;
+  id: any;
   constructor(
     private fb: FormBuilder,
-    private ownerService: OwnerService
+    private ownerService: OwnerService,
+    private uiService: UiService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -28,12 +36,39 @@ export class CreateComponent implements OnInit{
     })
   }
 
+  ngAfterViewInit() {
+    if (!this.router.url.includes('crear')) {
+     this.isEditing = true;
+     this.id = this.route.snapshot.paramMap.get('id')!;
+     this.getOwnerById(this.id)
+    }
+  }
+
   submitForm(): void {
-    console.log(this.form);
     if (this.form.valid) {
-      this.ownerService.createOne(this.form.value).subscribe(result => {
-        console.log(result)
-      })
+      this.loading = true;
+      const data = this.form.value;
+      data.birthday = moment(data.birthday).format('YYYY-MM-DD');
+      data.isInvestor = data.isInvestor ? 'Si' : 'No';
+      if (this.isEditing) {
+        this.ownerService.updateOwnerById(data).subscribe(result => {
+          this.uiService.createMessage('success', 'Se edito el propietario con exito!')
+          this.router.navigate(['/propietarios'])
+        }, () => {
+          this.loading = false
+        }, () => {
+          this.loading = false
+        })
+      } else {
+        this.ownerService.createOne(data).subscribe(result => {
+          this.uiService.createMessage('success', 'Se creo el propietario con exito!')
+          this.router.navigate(['/propietarios'])
+        }, () => {
+          this.loading = false
+        }, () => {
+          this.loading = false
+        })
+      }
     } else {
       Object.values(this.form.controls).forEach(control => {
         if (control.invalid) {
@@ -42,6 +77,21 @@ export class CreateComponent implements OnInit{
         }
       });
     }
+  }
+
+
+  getOwnerById(id: string) {
+    this.ownerService.getOwnerById(id).subscribe(result => {
+      const owner = result.recordset[0];
+
+      this.form.get('firstName')?.patchValue(owner.first_name);
+      this.form.get('lastName')?.patchValue(owner.last_name);
+      this.form.get('isInvestor')?.patchValue(owner.isInvestor);
+      this.form.get('birthday')?.patchValue(owner.birthday);
+      this.form.get('email')?.patchValue(owner.email);
+      this.form.get('phone')?.patchValue(owner.phone);
+      this.form.get('id')?.patchValue(owner.id);
+    })
   }
 
 }

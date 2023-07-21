@@ -10,10 +10,10 @@
     <td *ngFor="let td of tableData.headers">{{ row[td.key] }}</td>
     <td>
       <div class="actions">
-        <a (click)="onEdit.emit()">
+        <a (click)="onEdit.emit(row.id)">
           <span nz-icon nzType="edit" style="font-size: 18px" [nzTheme]="'twotone'"></span>
         </a>
-        <a (click)="onDelete.emit()">
+        <a (click)="onDelete.emit(row.id)">
           <span nz-icon nzType="delete" style="font-size: 18px" [nzTheme]="'twotone'" [nzTwotoneColor]="'#ff4d4f'"></span>
         </a>
       </div>

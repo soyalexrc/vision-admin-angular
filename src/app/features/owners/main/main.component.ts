@@ -5,6 +5,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
 import {GenericTableComponent} from "../../../shared/components/generic-table/generic-table.component";
 import {Owner} from "../../../core/interfaces/owner";
 import {OwnerService} from "../../../core/services/owner.service";
+import {UiService} from "../../../core/services/ui.service";
 
 @Component({
   selector: 'app-main',
@@ -19,7 +20,8 @@ export class MainComponent implements OnInit, AfterViewInit {
   constructor(
     private router: Router,
     private modal: NzModalService,
-    private ownerService: OwnerService
+    private ownerService: OwnerService,
+    private uiService: UiService
   ) {}
 
 
@@ -31,17 +33,23 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.getOwners();
   }
 
-  handleEdit(id: string | number) {
-
+  handleEdit(id: number) {
+    this.router.navigate([`/propietarios/${id}`])
   }
 
-  handleDelete(id: string | number) {
+  handleDelete(id: number) {
     this.modal.confirm({
       nzTitle: 'Atencion',
       nzContent: 'Eliminar el elemento ?',
       nzCancelText: 'Cancelar',
       nzOkText: 'Aceptar',
-      nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000))
+      nzOnOk: () => new Promise((resolve, reject) => {
+        this.ownerService.deleteOne(id).subscribe(result => {
+          this.uiService.createMessage('success', 'Se elimino el propietario con exito!')
+          this.getOwners()
+          setTimeout(() => resolve(), 500);
+        })
+      })
     });
   }
 

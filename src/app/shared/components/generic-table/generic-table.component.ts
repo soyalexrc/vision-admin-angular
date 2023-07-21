@@ -13,7 +13,7 @@ export class GenericTableComponent implements OnInit {
   dragTrace: {src: number, dest: number} = {src: -1, dest: -1};
   @Input() loading!: boolean;
   @Output() onDelete: EventEmitter<any> = new EventEmitter<any>()
-  @Output() onEdit: EventEmitter<string | number> = new EventEmitter<string | number>()
+  @Output() onEdit: EventEmitter<number> = new EventEmitter<number>()
 
   listOfData: any[] = [];
 

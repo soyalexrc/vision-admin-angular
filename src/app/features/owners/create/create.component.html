@@ -3,7 +3,7 @@
   <nz-breadcrumb-item>
     <a routerLink="/propietarios">Propietarios</a>
   </nz-breadcrumb-item>
-  <nz-breadcrumb-item>Crear</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{isEditing ? 'Editar' : 'Crear'}}</nz-breadcrumb-item>
 </nz-breadcrumb>
 
 
@@ -82,7 +82,7 @@
     </div>
     <label class="checkbox" nz-checkbox formControlName="isInvestor">Es inversionista?</label>
     <div>
-      <button nz-button nzType="primary" nzBlock type="submit" [disabled]="form.invalid">Guardar cambios</button>
+      <button nz-button nzType="primary" nzBlock type="submit" [disabled]="form.invalid" [nzLoading]="loading">Guardar cambios</button>
     </div>
   </div>
 </form>

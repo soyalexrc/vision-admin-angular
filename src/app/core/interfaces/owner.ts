@@ -20,6 +20,18 @@ export interface OwnerToCreate {
   type:       string;
 }
 
+export interface DeleteOneResponse {
+  recordsets:   any[];
+  output:       Output;
+  rowsAffected: number[];
+}
+
+export interface GetOneOwnerResponse {
+  recordsets:   Array<Owner[]>;
+  recordset:    Owner[];
+  output:       Output;
+  rowsAffected: any[];
+}
 
 export interface CreationOwnerResponse {
   recordsets:   Array<Recordset[]>;

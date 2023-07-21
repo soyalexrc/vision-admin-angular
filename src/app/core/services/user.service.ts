@@ -20,6 +20,7 @@ export class UserService {
   }
 
   updateCurrentUser(data: Recordset) {
+    console.log(data);
     localStorage.setItem('vi-currentUser', JSON.stringify(data));
     this.currentUser.next(data);
   }
