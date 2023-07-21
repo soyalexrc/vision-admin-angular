@@ -184,16 +184,6 @@ export class CreateComponent implements OnInit {
 
     return steps
   }
-  // getFormValidation(form: FormGroup<any>) {
-  //   Object.keys(form.controls).forEach(key => {
-  //     const controlErrors: ValidationErrors = form.get(key)?.errors!;
-  //     if (controlErrors != null) {
-  //       Object.keys(controlErrors).forEach(keyError => {
-  //         console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
-  //       });
-  //     }
-  //   });
-  // }
 
   getFormValidation(form: FormGroup<any>) {
     Object.values(form.controls).forEach(control => {

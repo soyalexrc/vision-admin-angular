@@ -1,0 +1,403 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
+  <nz-breadcrumb-item>
+    <a routerLink="/propiedades">Propiedades</a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{isEditing ? 'Editar' : 'Crear'}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+
+<!--form-->
+
+<h2>Datos {{
+  index === 0 ? 'generales' :
+    index === 1 ? 'de ubicacion' :
+      index === 2 ? 'visuales' :
+        index === 3 ? 'de atributos' :
+          index === 4 ? 'de negociacion' :
+            index === 5 ? 'de documentos' :
+              'de fuente de publicacion'
+  }} de propiedad
+</h2>
+
+<nz-steps [nzCurrent]="index" (nzIndexChange)="onIndexChange($event)">
+  <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
+  <nz-step nzTitle="Ubicacion" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
+  <nz-step nzTitle="Fotografias" [nzStatus]="getStatusBasedOnIndex(index).third"></nz-step>
+  <nz-step nzTitle="Atributos" [nzStatus]="getStatusBasedOnIndex(index).fourth"></nz-step>
+  <nz-step nzTitle="Negociacion" [nzStatus]="getStatusBasedOnIndex(index).fifth"></nz-step>
+  <nz-step nzTitle="Documentos" [nzStatus]="getStatusBasedOnIndex(index).sixth"></nz-step>
+  <nz-step nzTitle="Publicacion" [nzStatus]="getStatusBasedOnIndex(index).last"></nz-step>
+</nz-steps>
+
+<ng-container *ngIf="index === 0">
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="generalForm">
+    <div class="content">
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="7">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="code">codigo</nz-form-label>
+            <nz-form-control [nzErrorTip]="codeErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="code"
+                     placeholder="codigo"/>
+              <ng-template #codeErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un codigo!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="7">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="nomenclature">Nomenclatura</nz-form-label>
+            <nz-form-control [nzErrorTip]="nomenclatureErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="nomenclature"
+                     placeholder="Nomenclatura"/>
+              <ng-template #nomenclatureErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar una nomenclatura!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="5">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="footageGround">Metraje de terreno</nz-form-label>
+            <nz-form-control [nzErrorTip]="footageGroundErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="footageGround"
+                     placeholder="Metraje de terreno"/>
+              <ng-template #footageGroundErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor de m2!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="5">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="footageBuilding">Metraje de construccion</nz-form-label>
+            <nz-form-control [nzErrorTip]="footageBuildingErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="footageBuilding"
+                     placeholder="Metraje de terreno"/>
+              <ng-template #footageBuildingErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor de m2!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="operationType">Tipo de operacion</nz-form-label>
+            <nz-form-control [nzErrorTip]="operationTypeErrTemp">
+              <nz-select formControlName="operationType">
+                <nz-option nzValue="Venta" nzLabel="Venta"></nz-option>
+                <nz-option nzValue="Alquiler" nzLabel="Alquiler"></nz-option>
+              </nz-select>
+              <ng-template #operationTypeErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de operacion!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="propertyType">Tipo de propiedad</nz-form-label>
+            <nz-form-control [nzErrorTip]="propertyTypeErrTemp">
+              <nz-select formControlName="propertyType">
+                <nz-option nzValue="Apartamento" nzLabel="Apartamento"></nz-option>
+                <nz-option nzValue="Locales Comerciales" nzLabel="Locales Comerciales"></nz-option>
+                <nz-option nzValue="Galpones" nzLabel="Galpones"></nz-option>
+                <nz-option nzValue="Terrenos" nzLabel="Terrenos"></nz-option>
+                <nz-option nzValue="Oficinas" nzLabel="Oficinas"></nz-option>
+                <nz-option nzValue="Casa / Townhouse" nzLabel="Casa / Townhouse"></nz-option>
+                <nz-option nzValue="Fondos de Comercio" nzLabel="Fondos de Comercio"></nz-option>
+              </nz-select>
+              <ng-template #propertyTypeErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de propiedad!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="propertyCondition">Tipo de mercado</nz-form-label>
+            <nz-form-control [nzErrorTip]="propertyConditionErrTemp">
+              <nz-select formControlName="propertyCondition">
+                <nz-option nzValue="Mercado Primario" nzLabel="Mercado Primario"></nz-option>
+                <nz-option nzValue="Mercado Secundario" nzLabel="Mercado Secundario"></nz-option>
+              </nz-select>
+              <ng-template #propertyConditionErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de mercado!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+      </div>
+
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="distributionComments">Comentarios de distribucion</nz-form-label>
+            <nz-form-control>
+              <textarea rows="4" type="text" style="width: 100%" nz-input formControlName="distributionComments"
+                        placeholder="Comentarios de distribucion"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="description">Descripcion</nz-form-label>
+            <nz-form-control [nzErrorTip]="descriptionErrTemp">
+              <textarea rows="4" type="text" style="width: 100%" nz-input formControlName="description"
+                        placeholder="Descripcion"></textarea>
+              <ng-template #descriptionErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de mercado!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+
+      </div>
+
+    </div>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="index === 1">
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="locationForm">
+    <div class="content">
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="country">Pais</nz-form-label>
+            <nz-form-control [nzErrorTip]="countryErrTemp">
+              <nz-select formControlName="country">
+                <nz-option nzValue="Venezuela" nzLabel="Venezuela"></nz-option>
+              </nz-select>
+              <ng-template #countryErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un pais!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="state">Estado</nz-form-label>
+            <nz-form-control [nzErrorTip]="stateErrTemp">
+              <nz-select formControlName="state">
+                <nz-option nzValue="Amazonas        " nzLabel="Amazonas        "></nz-option>
+                <nz-option nzValue="Anzoategui      " nzLabel="Anzoategui      "></nz-option>
+                <nz-option nzValue="Apure           " nzLabel="Apure           "></nz-option>
+                <nz-option nzValue="Aragua          " nzLabel="Aragua          "></nz-option>
+                <nz-option nzValue="Barinas         " nzLabel="Barinas         "></nz-option>
+                <nz-option nzValue="Bolivar         " nzLabel="Bolivar         "></nz-option>
+                <nz-option nzValue="Carabobo        " nzLabel="Carabobo        "></nz-option>
+                <nz-option nzValue="Cojedes         " nzLabel="Cojedes         "></nz-option>
+                <nz-option nzValue="Delta Amacuro   " nzLabel="Delta Amacuro   "></nz-option>
+                <nz-option nzValue="Distrito Capital" nzLabel="Distrito Capital"></nz-option>
+                <nz-option nzValue="Falcon          " nzLabel="Falcon          "></nz-option>
+                <nz-option nzValue="Guarico         " nzLabel="Guarico         "></nz-option>
+                <nz-option nzValue="Lara            " nzLabel="Lara            "></nz-option>
+                <nz-option nzValue="Miranda         " nzLabel="Miranda         "></nz-option>
+                <nz-option nzValue="Monagas         " nzLabel="Monagas         "></nz-option>
+                <nz-option nzValue="Merida          " nzLabel="Merida          "></nz-option>
+                <nz-option nzValue="Nueva Esparta   " nzLabel="Nueva Esparta   "></nz-option>
+                <nz-option nzValue="Portuguesa      " nzLabel="Portuguesa      "></nz-option>
+                <nz-option nzValue="Sucre           " nzLabel="Sucre           "></nz-option>
+                <nz-option nzValue="Trujillo        " nzLabel="Trujillo        "></nz-option>
+                <nz-option nzValue="Tachira         " nzLabel="Tachira         "></nz-option>
+                <nz-option nzValue="Vargas          " nzLabel="Vargas          "></nz-option>
+                <nz-option nzValue="Yaracuy         " nzLabel="Yaracuy         "></nz-option>
+                <nz-option nzValue="Zulia           " nzLabel="Zulia           "></nz-option>
+              </nz-select>
+              <ng-template #stateErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un estado!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="city">Ciudad</nz-form-label>
+            <nz-form-control [nzErrorTip]="cityErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="city"
+                     placeholder="Ciudad"/>
+              <ng-template #cityErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar una ciudad!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="municipality">Urbanizacion</nz-form-label>
+            <nz-form-control [nzErrorTip]="municipalityErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="municipality"
+                     placeholder="Urbanizacion"/>
+              <ng-template #municipalityErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar una urbanizacion!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="avenue">Avenida</nz-form-label>
+            <nz-form-control [nzErrorTip]="avenueErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="avenue"
+                     placeholder="Avenida"/>
+              <ng-template #avenueErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar una avenida!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="street">Calle</nz-form-label>
+            <nz-form-control [nzErrorTip]="streetErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="street"
+                     placeholder="Calle"/>
+              <ng-template #streetErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar una calle!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="isClosedStreet">Es calle cerrada ?</nz-form-label>
+            <nz-form-control [nzErrorTip]="isClosedStreetErrTemp">
+              <nz-select formControlName="isClosedStreet">
+                <nz-option nzValue="Si" nzLabel="Si"></nz-option>
+                <nz-option nzValue="No" nzLabel="No"></nz-option>
+              </nz-select>
+              <ng-template #isClosedStreetErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar una opcion!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="location">Ubicacion</nz-form-label>
+            <nz-form-control [nzErrorTip]="locationErrTemp">
+              <nz-select formControlName="location">
+                <nz-option nzValue="A pie de calle" nzLabel="A pie de calle"></nz-option>
+                <nz-option nzValue="Centro comercial" nzLabel="Centro comercial"></nz-option>
+                <nz-option nzValue="Conjunto residencial" nzLabel="Conjunto residencial"></nz-option>
+                <nz-option nzValue="Torre de oficinas" nzLabel="Torre de oficinas"></nz-option>
+              </nz-select>
+              <ng-template #locationErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar una opcion!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label  nzFor="buildingNumber">Numero</nz-form-label>
+            <nz-form-control >
+              <input type="text" style="width: 100%" nz-input formControlName="buildingNumber"
+                     placeholder="Ciudad"/>
+
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzFor="floor">Piso</nz-form-label>
+            <nz-form-control >
+              <input type="text" style="width: 100%" nz-input formControlName="floor"
+                     placeholder="Piso"/>
+
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="referencePoint">Punto de referencia</nz-form-label>
+            <nz-form-control>
+              <textarea rows="4" type="text" style="width: 100%" nz-input formControlName="referencePoint"
+                        placeholder="Punto de referencia"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="howToGet">Como llegar?</nz-form-label>
+            <nz-form-control>
+              <textarea rows="4" type="text" style="width: 100%" nz-input formControlName="howToGet"
+                        placeholder="Como llegar?"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+
+
+      </div>
+
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzFor="parkingNumber">Numero de estacionamiento</nz-form-label>
+            <nz-form-control>
+              <input type="text" style="width: 100%" nz-input formControlName="parkingNumber"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzFor="trunkNumber">Numero de maletero</nz-form-label>
+            <nz-form-control>
+              <input type="text" style="width: 100%" nz-input formControlName="trunkNumber"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzFor="parkingLevel">Nivel de estacionamiento</nz-form-label>
+            <nz-form-control>
+              <input type="text" style="width: 100%" nz-input formControlName="parkingLevel"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzFor="trunkLevel">Nivel de maletero</nz-form-label>
+            <nz-form-control>
+              <input type="text" style="width: 100%" nz-input formControlName="trunkLevel"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+
+
+      </div>
+
+    </div>
+  </form>
+</ng-container>
+

@@ -1,1 +1,25 @@
-<p>main works!</p>
+
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Propiedades</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<app-section-title
+  [title]="'Propiedades'"
+  [buttonText]="'Nueva propiedad'"
+  (onRefresh)="getPropertiesPreview()"
+  (onNewElement)="handleNewProperty()"
+></app-section-title>
+<app-generic-table #dataTable
+                   xScroll="4000px"
+                   [actionsFixed]="true"
+                   [changeAction]="true"
+                   [linkAction]="true"
+                   changeActionTitle="Cambiar estatus"
+                   linkActionTitle="Ver vista previa"
+                   [loading]="loading"
+                   (onEdit)="handleEdit($event)"
+                   (onDelete)="handleDelete($event)"
+                   (onChange)="handleChangeStatus($event)"
+                   (onLink)="handlePreview($event)"
+></app-generic-table>

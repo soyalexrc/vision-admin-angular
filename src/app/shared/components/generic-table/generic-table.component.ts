@@ -12,7 +12,15 @@ export class GenericTableComponent implements OnInit {
   allHeaders: ITableHeader[] = [];
   dragTrace: {src: number, dest: number} = {src: -1, dest: -1};
   @Input() loading!: boolean;
+  @Input() xScroll: string = '1150px';
+  @Input() changeActionTitle: string = '';
+  @Input() linkActionTitle: string = '';
+  @Input() actionsFixed: boolean = false;
+  @Input() changeAction: boolean = false;
+  @Input() linkAction: boolean = false;
   @Output() onDelete: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onChange: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onLink: EventEmitter<any> = new EventEmitter<any>()
   @Output() onEdit: EventEmitter<number> = new EventEmitter<number>()
 
   listOfData: any[] = [];

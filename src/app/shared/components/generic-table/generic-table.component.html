@@ -1,4 +1,4 @@
-<nz-table #fixedTable [nzLoading]="loading" [nzLoadingIndicator]="loadingIndicator" [nzData]="tableData.data" [nzScroll]="{ x: '1150px', y: '440px' }">
+<nz-table #fixedTable [nzLoading]="loading" [nzLoadingIndicator]="loadingIndicator" [nzData]="tableData.data" [nzScroll]="{ x: xScroll, y: '100%'  }">
   <thead>
   <tr>
     <th *ngFor="let h of tableData.headers">{{h.displayName}}</th>
@@ -8,14 +8,21 @@
   <tbody>
   <tr *ngFor="let row of fixedTable.data">
     <td *ngFor="let td of tableData.headers">{{ row[td.key] }}</td>
-    <td>
+    <td [nzRight]="actionsFixed">
       <div class="actions">
         <a (click)="onEdit.emit(row.id)" nz-tooltip="true" nzTooltipTitle="Editar">
           <span nz-icon nzType="edit" style="font-size: 18px" [nzTheme]="'twotone'"></span>
         </a>
+        <a *ngIf="changeAction" (click)="onChange.emit(row)" nz-tooltip="true" [nzTooltipTitle]="changeActionTitle">
+          <span nz-icon nzType="swap" style="font-size: 18px" ></span>
+        </a>
+        <a *ngIf="linkAction" (click)="onLink.emit(row)" nz-tooltip="true" [nzTooltipTitle]="linkActionTitle">
+          <span nz-icon nzType="link" style="font-size: 18px" ></span>
+        </a>
         <a (click)="onDelete.emit(row.id)" nz-tooltip="true" nzTooltipTitle="Eliminar">
           <span nz-icon nzType="delete" style="font-size: 18px" [nzTheme]="'twotone'" [nzTwotoneColor]="'#ff4d4f'"></span>
         </a>
+
       </div>
     </td>
   </tr>

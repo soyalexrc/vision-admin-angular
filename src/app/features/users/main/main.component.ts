@@ -64,20 +64,20 @@ export class MainComponent implements OnInit, AfterViewInit{
     this.userService.getAll().subscribe(data => {
         this.data = data.map(element => ({
           username: element.username,
-          first_name: element.first_name,
-          last_name: element.last_name,
+          name: element.first_name + ' ' + element.last_name,
+          user_type: element.user_type,
           phone_number1: element.phone_number1,
           email: element.email,
         }));
         const headers = setHeaders([
           {key: 'username', displayName: 'Nombre de usuario'},
-          {key: 'first_name', displayName: 'Nombre '},
-          {key: 'last_name', displayName: 'Apellido '},
+          {key: 'name', displayName: 'Nombre '},
+          {key: 'user_type', displayName: 'Tipo de usuario '},
           {key: 'phone_number1', displayName: 'Telefono principal'},
           {key: 'email', displayName: 'Correo'},
         ]);
 
-        this.dataTable.render(headers, data);
+        this.dataTable.render(headers, this.data);
       },
       () => {
         this.loading = false
