@@ -6,9 +6,9 @@
             [(nzCollapsed)]="isCollapsed"
             [nzTrigger]="null">
     <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
-        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
-        <h1 *ngIf="!isCollapsed">Smart Report</h1>
+      <a routerLink="/inicio">
+        <img src="/assets/icons/vision-icon.png" alt="logo">
+        <h1 *ngIf="!isCollapsed">Vision inmobiliaria</h1>
       </a>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
@@ -16,6 +16,10 @@
       <li nz-menu-item nzMatchRouter routerLink="/inicio" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="appstore" nzTheme="outline"  style="margin-right: .5rem"> </span>
         <span style="width: 135px">Inicio</span>
+      </li>
+      <li nz-menu-item nzMatchRouter routerLink="/clientes" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="user" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Clientes</span>
       </li>
       <li nz-menu-item nzMatchRouter routerLink="/propietarios" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="solution" nzTheme="outline" style="margin-right: .5rem"></span>
@@ -25,14 +29,6 @@
         <span nz-icon nzType="idcard" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Usuarios</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/clientes" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
-        <span nz-icon nzType="user" nzTheme="outline" style="margin-right: .5rem"></span>
-        <span style="width: 135px">Clientes</span>
-      </li>
-      <li nz-menu-item nzMatchRouter routerLink="/propiedades" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
-        <span nz-icon nzType="shop" nzTheme="outline" style="margin-right: .5rem"></span>
-        <span style="width: 135px">Propiedades</span>
-      </li>
       <li nz-menu-item nzMatchRouter routerLink="/asesores-externos" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="team" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Asesores externos</span>
@@ -41,6 +37,11 @@
         <span nz-icon nzType="crown" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Aliados</span>
       </li>
+      <li nz-menu-item nzMatchRouter routerLink="/propiedades" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="shop" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Propiedades</span>
+      </li>
+
       <li nz-menu-item nzMatchRouter routerLink="/administracion" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="folder" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Administracion</span>
@@ -115,6 +116,10 @@
           <span nz-icon nzType="appstore" nzTheme="outline"  style="margin-right: .5rem"> </span>
           <span style="width: 135px">Inicio</span>
         </li>
+        <li nz-menu-item nzMatchRouter routerLink="/clientes">
+          <span nz-icon nzType="user" nzTheme="outline" style="margin-right: .5rem"></span>
+          <span style="width: 135px">Clientes</span>
+        </li>
         <li nz-menu-item nzMatchRouter routerLink="/propietarios">
           <span nz-icon nzType="solution" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Propietarios</span>
@@ -122,14 +127,6 @@
         <li nz-menu-item nzMatchRouter routerLink="/usuarios">
           <span nz-icon nzType="idcard" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Usuarios</span>
-        </li>
-        <li nz-menu-item nzMatchRouter routerLink="/clientes">
-          <span nz-icon nzType="user" nzTheme="outline" style="margin-right: .5rem"></span>
-          <span style="width: 135px">Clientes</span>
-        </li>
-        <li nz-menu-item nzMatchRouter routerLink="/propiedades">
-          <span nz-icon nzType="shop" nzTheme="outline" style="margin-right: .5rem"></span>
-          <span style="width: 135px">Propiedades</span>
         </li>
         <li nz-menu-item nzMatchRouter routerLink="/asesores-externos">
           <span nz-icon nzType="team" nzTheme="outline" style="margin-right: .5rem"></span>
@@ -139,6 +136,11 @@
           <span nz-icon nzType="crown" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Aliados</span>
         </li>
+        <li nz-menu-item nzMatchRouter routerLink="/propiedades">
+          <span nz-icon nzType="shop" nzTheme="outline" style="margin-right: .5rem"></span>
+          <span style="width: 135px">Propiedades</span>
+        </li>
+
         <li nz-menu-item nzMatchRouter routerLink="/administracion">
           <span nz-icon nzType="folder" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Administracion</span>

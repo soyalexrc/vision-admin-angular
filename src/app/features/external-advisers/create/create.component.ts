@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -10,7 +10,7 @@ import {AdviserService} from "../../../core/services/adviser.service";
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit, AfterViewInit {
+export class CreateComponent implements OnInit {
   form!: FormGroup;
   loading = false;
   isEditing = false;
@@ -34,9 +34,7 @@ export class CreateComponent implements OnInit, AfterViewInit {
       type: ['Asesores Externos'],
       id: [null]
     })
-  }
 
-  ngAfterViewInit() {
     if (!this.router.url.includes('crear')) {
       this.isEditing = true;
       this.id = this.route.snapshot.paramMap.get('id')!;

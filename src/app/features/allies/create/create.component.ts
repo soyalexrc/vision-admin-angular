@@ -34,9 +34,7 @@ export class CreateComponent {
       type: ['Aliados'],
       id: [null]
     })
-  }
 
-  ngAfterViewInit() {
     if (!this.router.url.includes('crear')) {
       this.isEditing = true;
       this.id = this.route.snapshot.paramMap.get('id')!;

@@ -1,15 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
-import {Recordset} from "../interfaces/login";
-import {
-  Adviser,
-  AdviserToCreate,
-  CreationAdviserResponse,
-  DeleteOneResponse,
-  GetOneAdviserResponse
-} from "../interfaces/adviser";
 import {HttpClient} from "@angular/common/http";
-import {GetOneUserResponse, User} from "../interfaces/user";
+import {CreationUserResponse, GetOneUserResponse, User, UserToCreate, DeleteOneResponse} from "../interfaces/user";
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +21,6 @@ export class UserService {
   }
 
   updateCurrentUser(data: User) {
-    console.log(data);
     localStorage.setItem('vi-currentUser', JSON.stringify(data));
     this.currentUser.next(data);
   }
@@ -38,19 +29,19 @@ export class UserService {
     return this.http.get<User[]>('user/getAllData')
   }
 
-  createOne(owner: AdviserToCreate): Observable<CreationAdviserResponse> {
-    return this.http.post<CreationAdviserResponse>('owner/addNewData', owner)
+  createOne(owner: UserToCreate): Observable<CreationUserResponse> {
+    return this.http.post<CreationUserResponse>('user/addNewData', owner)
   }
 
   deleteOne(id: number): Observable<DeleteOneResponse> {
-    return this.http.delete<DeleteOneResponse>(`owner/deleteData?id=${id}`);
+    return this.http.delete<DeleteOneResponse>(`user/deleteData?id=${id}`);
   }
 
   getById(id: string): Observable<GetOneUserResponse> {
-    return this.http.get<GetOneUserResponse>(`owner/getById?id=${id}`)
+    return this.http.get<GetOneUserResponse>(`user/getById?id=${id}`)
   }
 
-  update(data: Adviser): Observable<AdviserToCreate> {
-    return this.http.put<AdviserToCreate>(`owner/updateData`, data);
+  update(data: User): Observable<UserToCreate> {
+    return this.http.put<UserToCreate>(`user/updateData`, data);
   }
 }

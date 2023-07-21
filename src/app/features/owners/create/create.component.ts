@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {OwnerService} from "../../../core/services/owner.service";
 import {UiService} from "../../../core/services/ui.service";
@@ -10,7 +10,7 @@ import * as moment from 'moment';
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit, AfterViewInit{
+export class CreateComponent implements OnInit{
   form!: FormGroup;
   loading = false;
   isEditing = false;
@@ -34,15 +34,14 @@ export class CreateComponent implements OnInit, AfterViewInit{
       type: ['Propietarios'],
       id: [null]
     })
-  }
 
-  ngAfterViewInit() {
     if (!this.router.url.includes('crear')) {
-     this.isEditing = true;
-     this.id = this.route.snapshot.paramMap.get('id')!;
-     this.getOwnerById(this.id)
+      this.isEditing = true;
+      this.id = this.route.snapshot.paramMap.get('id')!;
+      this.getOwnerById(this.id)
     }
   }
+
 
   submitForm(): void {
     if (this.form.valid) {

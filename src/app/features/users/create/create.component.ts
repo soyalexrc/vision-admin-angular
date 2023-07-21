@@ -1,17 +1,18 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {AllyService} from "../../../core/services/ally.service";
 import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import * as moment from "moment";
 import {UserService} from "../../../core/services/user.service";
+
+interface Steps  {first: string, second: string, last: string}
 
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit, AfterViewInit {
+export class CreateComponent implements OnInit {
   generalForm!: FormGroup;
   personalForm!: FormGroup;
   socialForm!: FormGroup;
@@ -56,9 +57,7 @@ export class CreateComponent implements OnInit, AfterViewInit {
       state: ['', Validators.required],
       fiscalAddress: ['', Validators.required],
     })
-  }
 
-  ngAfterViewInit() {
     if (!this.router.url.includes('crear')) {
       this.isEditing = true;
       this.id = this.route.snapshot.paramMap.get('id')!;
@@ -91,24 +90,9 @@ export class CreateComponent implements OnInit, AfterViewInit {
         })
       }
     } else {
-      Object.values(this.generalForm.controls).forEach(control => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
-      Object.values(this.personalForm.controls).forEach(control => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
-      Object.values(this.socialForm.controls).forEach(control => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
+      this.getFormValidation(this.generalForm)
+      this.getFormValidation(this.personalForm)
+      this.getFormValidation(this.socialForm)
     }
   }
 
@@ -116,7 +100,6 @@ export class CreateComponent implements OnInit, AfterViewInit {
   getUserById(id: string) {
     this.userService.getById(id).subscribe(result => {
       const user = result.recordset[0];
-      this.generalForm.get('company')?.patchValue(user.company)
       this.generalForm.get('username')?.patchValue(user.username)
       this.generalForm.get('firstName')?.patchValue(user.first_name)
       this.generalForm.get('lastName')?.patchValue(user.last_name)
@@ -140,5 +123,84 @@ export class CreateComponent implements OnInit, AfterViewInit {
 
   onIndexChange(index: number): void {
     this.index = index;
+  }
+
+
+  getStatusBasedOnIndex(index: number): Steps {
+    let steps: Steps = {
+      first: '',
+      second: '',
+      last: ''
+    }
+
+    // initial state
+
+    if (index === 0) {
+        steps = {
+          first: 'process',
+          second: 'wait',
+          last: 'wait'
+        }
+      }
+    if (index === 1) {
+      steps = {
+        first: 'finish',
+        second: 'process',
+        last: 'wait'
+      }
+    }
+    if (index === 2) {
+      steps = {
+        first: 'finish',
+        second: 'finish',
+        last: 'wait'
+      }
+    }
+
+
+    // There are errors
+
+    if (this.generalForm.dirty && this.generalForm.invalid) {
+      steps.first = 'error'
+    }
+    if (this.personalForm.dirty && this.personalForm.invalid) {
+      steps.second = 'error'
+    }
+    if (this.socialForm.dirty && this.socialForm.invalid) {
+      steps.last = 'error'
+    }
+
+    //  Form finished and valid
+
+    if (this.generalForm.dirty && this.generalForm.valid) {
+      steps.first = 'finish'
+    }
+    if (this.personalForm.dirty && this.personalForm.valid) {
+      steps.second = 'finish'
+    }
+    if (this.socialForm.dirty && this.socialForm.valid) {
+      steps.last = 'finish'
+    }
+
+    return steps
+  }
+  // getFormValidation(form: FormGroup<any>) {
+  //   Object.keys(form.controls).forEach(key => {
+  //     const controlErrors: ValidationErrors = form.get(key)?.errors!;
+  //     if (controlErrors != null) {
+  //       Object.keys(controlErrors).forEach(keyError => {
+  //         console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
+  //       });
+  //     }
+  //   });
+  // }
+
+  getFormValidation(form: FormGroup<any>) {
+    Object.values(form.controls).forEach(control => {
+      if (control.invalid) {
+        control.markAsDirty();
+        control.updateValueAndValidity({ onlySelf: true });
+      }
+    });
   }
 }

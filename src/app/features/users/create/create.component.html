@@ -16,15 +16,9 @@
 <div class="form mt-3">
   <div class="content">
     <nz-steps [nzCurrent]="index"  (nzIndexChange)="onIndexChange($event)">
-      <nz-step
-        nzTitle="General"
-        [nzStatus]="
-        generalForm.valid && index !== 0
-         ? 'finish' : generalForm.valid && index === 0
-         ? 'process' : generalForm.invalid && generalForm.dirty
-          ? 'error' : 'waiting'"></nz-step>
-      <nz-step nzTitle="Personal" [nzStatus]="generalForm.valid && index !== 1 ? 'finish' : generalForm.invalid && generalForm.dirty ? 'error' : 'process'"></nz-step>
-      <nz-step nzTitle="Social"></nz-step>
+      <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
+      <nz-step nzTitle="Personal" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
+      <nz-step nzTitle="Social" [nzStatus]="getStatusBasedOnIndex(index).last"></nz-step>
     </nz-steps>
   </div>
 </div>
@@ -236,7 +230,7 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="socialInstagram">Instagram</nz-form-label>
+            <nz-form-label nzFor="socialInstagram">Instagram</nz-form-label>
             <nz-form-control >
               <input type="text" style="width: 100%" nz-input formControlName="socialInstagram" placeholder="Instagram"/>
             </nz-form-control>
@@ -245,7 +239,7 @@
 
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="socialFacebook">Facebook</nz-form-label>
+            <nz-form-label nzFor="socialFacebook">Facebook</nz-form-label>
             <nz-form-control >
               <input type="text" style="width: 100%" nz-input formControlName="socialFacebook" placeholder="Facebook"/>
             </nz-form-control>
@@ -256,7 +250,7 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="socialTwitter">Twitter</nz-form-label>
+            <nz-form-label nzFor="socialTwitter">Twitter</nz-form-label>
             <nz-form-control >
               <input type="text" style="width: 100%" nz-input formControlName="socialTwitter" placeholder="Twitter"/>
             </nz-form-control>
@@ -265,7 +259,7 @@
 
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="socialYoutube">Youtube</nz-form-label>
+            <nz-form-label nzFor="socialYoutube">Youtube</nz-form-label>
             <nz-form-control >
               <input type="text" style="width: 100%" nz-input formControlName="socialYoutube" placeholder="Youtube"/>
             </nz-form-control>
@@ -279,6 +273,6 @@
 
 <div class="form">
   <div class="content">
-    <button nz-button nzType="primary" nzBlock type="submit" [disabled]="generalForm.invalid || personalForm.invalid || socialForm.invalid" [nzLoading]="loading">Guardar cambios</button>
+    <button nz-button nzType="primary" nzBlock (click)="submitForm()" [disabled]="generalForm.invalid || personalForm.invalid || socialForm.invalid" [nzLoading]="loading">Guardar cambios</button>
   </div>
 </div>
