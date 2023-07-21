@@ -15,7 +15,7 @@ import {UiService} from "../../../core/services/ui.service";
 export class MainComponent implements OnInit, AfterViewInit {
   loading = true;
   @ViewChild('dataTable') dataTable!: GenericTableComponent;
-  data: Owner[]  = [];
+  data: Partial<Owner>[]  = [];
   headers: any[] = [];
   constructor(
     private router: Router,
@@ -59,8 +59,16 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getOwners() {
     this.loading = true;
-    this.ownerService.getOwners().subscribe(data => {
-        this.data = data;
+    this.ownerService.getAll().subscribe(data => {
+        this.data = data.map(element => ({
+          id: element.id,
+          first_name: element.first_name,
+          last_name: element.last_name,
+          phone: element.phone,
+          email: element.email,
+          birthday: element.birthday,
+          isInvestor: element.isInvestor
+        }));
         const headers = setHeaders([
           {key: 'id', displayName: 'id'},
           {key: 'first_name', displayName: 'Nombre'},
@@ -69,7 +77,6 @@ export class MainComponent implements OnInit, AfterViewInit {
           {key: 'email', displayName: 'Correo'},
           {key: 'birthday', displayName: 'Fecha de cumpleanos'},
           {key: 'isInvestor', displayName: 'Es inversor?'},
-          {key: 'type', displayName: 'Tipo de usuario'},
         ]);
 
         this.dataTable.render(headers, data);

@@ -12,7 +12,7 @@ export class OwnerService {
     private  http: HttpClient
   ) { }
 
-  getOwners(): Observable<Owner[]> {
+  getAll(): Observable<Owner[]> {
     return this.http.get<Owner[]>('owner/getAllData?type=Propietarios')
   }
 
@@ -24,11 +24,11 @@ export class OwnerService {
     return this.http.delete<DeleteOneResponse>(`owner/deleteData?id=${id}`);
   }
 
-  getOwnerById(id: string): Observable<GetOneOwnerResponse> {
+  getById(id: string): Observable<GetOneOwnerResponse> {
     return this.http.get<GetOneOwnerResponse>(`owner/getById?id=${id}`)
   }
 
-  updateOwnerById(data: Owner): Observable<OwnerToCreate> {
+  update(data: Owner): Observable<OwnerToCreate> {
     return this.http.put<OwnerToCreate>(`owner/updateData`, data);
   }
 }
