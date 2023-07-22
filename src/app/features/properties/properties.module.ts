@@ -18,6 +18,7 @@ import {NzUploadModule} from "ng-zorro-antd/upload";
 import {NzToolTipModule} from "ng-zorro-antd/tooltip";
 import {NzEmptyModule} from "ng-zorro-antd/empty";
 import {NzDividerModule} from "ng-zorro-antd/divider";
+import {CdkDrag, CdkDropList} from "@angular/cdk/drag-drop";
 
 
 
@@ -44,7 +45,9 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
     NgOptimizedImage,
     NzToolTipModule,
     NzEmptyModule,
-    NzDividerModule
+    NzDividerModule,
+    CdkDropList,
+    CdkDrag
   ]
 })
 export class PropertiesModule { }

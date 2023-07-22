@@ -422,12 +422,12 @@
              accept="image/*">
 
 
-      <div class="images-grid">
+      <div class="images-grid" cdkDropList (cdkDropListDropped)="handleDropElement($event)">
         <ng-container *ngFor="let image of images; index as i">
-          <div class="img-container">
-            <img width="200px" height="200px" [src]="setImageUrl(image.imageData)" [alt]="image.imageData">
+          <div class="img-container" cdkDrag>
+            <img width="200px" class="img-item" height="200px" [src]="setImageUrl(image.imageData)" [alt]="image.imageData">
             <div class="img-overlay">
-              <button nz-tooltip="true" (click)="showPreview(image)" nzTooltipTitle="Ver en pantalla completa" nz-button
+              <button nz-tooltip="true" (click)="showPreview(image, 'image')" nzTooltipTitle="Ver en pantalla completa" nz-button
                       nzShape="circle" type="button" nzType="primary">
                 <span nz-icon nzType="fullscreen"></span>
               </button>
@@ -446,7 +446,7 @@
 <ng-container *ngIf="index === 3">
   <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="attributesForm">
     <div class="content">
-      <div *ngIf="generalForm.value['propertyType'] === '' ">
+      <div *ngIf="generalForm.value['propertyType'] === '' " style="margin-top: 5rem">
         <nz-empty
           nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
           [nzNotFoundContent]="contentTpl"
@@ -771,10 +771,11 @@
         <ng-container *ngFor="let document of documents; index as i">
           <div class="img-container">
             <img *ngIf="!document.imageData.includes('pdf')" width="200px" height="200px" [src]="setImageUrl(document.imageData)" [alt]="document.imageData">
-            <div *ngIf="document.imageData.includes('pdf')" style="width: 200px; height: 200px"></div>
-            <span nz-icon nzType="file-pdf" [nzTheme]="'twotone'" nzTheme="outline" style="position: absolute; top: 50%; left: 50%; font-size: 20px"></span>
+            <div *ngIf="document.imageData.includes('pdf')" style="width: 200px; height: 200px">
+              <span nz-icon nzType="file-pdf" [nzTheme]="'twotone'" nzTheme="outline" style="position: absolute; top: 50%; left: 50%; font-size: 30px"></span>
+            </div>
             <div class="img-overlay doc-overlay">
-              <button nz-tooltip="true" (click)="showPreview(document)" nzTooltipTitle="Ver en pantalla completa" nz-button
+              <button nz-tooltip="true" (click)="showPreview(document, 'document')" nzTooltipTitle="Ver en pantalla completa" nz-button
                       nzShape="circle" type="button" nzType="primary">
                 <span nz-icon nzType="fullscreen"></span>
               </button>
@@ -790,13 +791,4 @@
   </form>
 </ng-container>
 
-
-<!--<ng-container *ngIf="index === 5">-->
-<!--  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="generalForm">-->
-<!--    <div class="content">-->
-<!--      <embed  src="https://www.africau.edu/images/default/sample.pdf" width="500" height="375"-->
-<!--              type="application/pdf">-->
-<!--    </div>-->
-<!--  </form>-->
-<!--</ng-container>-->
 

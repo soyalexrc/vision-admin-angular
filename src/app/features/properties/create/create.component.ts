@@ -10,6 +10,7 @@ import {FileService} from "../../../core/services/file.service";
 import {Category, FormType, Image, PropertyType} from "../../../core/interfaces/property";
 import {Subscription} from "rxjs";
 import {NzImageService} from "ng-zorro-antd/image";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 interface Steps {
   first: string,
@@ -20,7 +21,6 @@ interface Steps {
   sixth: string,
   last: string
 }
-
 
 @Component({
   selector: 'app-create',
@@ -389,20 +389,19 @@ export class CreateComponent implements OnInit, OnDestroy {
     return `http://100.42.69.119:3000/images/${imageData}`
   }
 
-  showPreview(image: Image) {
-    // const imgs = this.images.map(img => ({
-    //   src: this.setImageUrl(img.imageData),
-    //   width: '600px',
-    //   height: '600px',
-    //   alt: 'sample'
-    // }))
+  showPreview(image: Image, type: string) {
     const img = [{
       src: this.setImageUrl(image.imageData),
       width: '600px',
       height: '600px',
       alt: 'sample'
     }]
-    this.nzImageService.preview(img, {nzZoom: 1, nzRotate: 0});
+    if (type === 'document') {
+      window.open(img[0].src, '_blank')
+    } else {
+      this.nzImageService.preview(img, {nzZoom: 1, nzRotate: 0});
+    }
+
   }
 
   handleSelectPropertyType(propertyType: PropertyType) {
@@ -436,5 +435,13 @@ export class CreateComponent implements OnInit, OnDestroy {
   handleGoToSelectPropertyType() {
     this.index = 0;
     this.generalForm.get('propertyType')?.markAsDirty();
+  }
+
+  handleDropElement(event: CdkDragDrop<string[]>) {
+    const cachedImages = [...this.fileService.currentImages.value];
+
+    moveItemInArray(cachedImages, event.previousIndex, event.currentIndex);
+
+    this.fileService.setReorderImages(cachedImages)
   }
 }

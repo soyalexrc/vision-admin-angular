@@ -24,6 +24,14 @@ export class FileService {
     this.currentImages.next([...this.currentImages.value, image])
   }
 
+  setReorderImages(images: Image[]) {
+    this.currentImages.next(images);
+  }
+
+  setReorderDocuments(documents: Image[]) {
+    this.currentDocuments.next(documents);
+  }
+
   storeDocument(document: Image) {
     this.currentDocuments.next([...this.currentDocuments.value, document])
   }
