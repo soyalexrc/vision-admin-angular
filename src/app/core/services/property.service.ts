@@ -2,7 +2,13 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {CreationOwnerResponse, DeleteOneResponse, GetOneOwnerResponse, Owner, OwnerToCreate} from "../interfaces/owner";
-import {CreationPropertyResponse, GetPropertyPreviewResponse, PropertyToCreate} from "../interfaces/property";
+import {
+  Attribute,
+  CreationPropertyResponse,
+  GetPropertyPreviewResponse,
+  PropertyToCreate,
+  PropertyType
+} from "../interfaces/property";
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +39,9 @@ export class PropertyService {
 
   update(data: Owner): Observable<OwnerToCreate> {
     return this.http.put<OwnerToCreate>(`owner/updateData`, data);
+  }
+
+  getAttributesByPropertyType(propertyType: PropertyType) : Observable<Attribute[]> {
+    return this.http.get<Attribute[]>(`attribute/getAllDataByPropertyType?propertyType=${propertyType}`)
   }
 }

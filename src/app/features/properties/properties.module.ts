@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { MainComponent } from './main/main.component';
 import {PropertiesRoutingModule} from "./properties-routing.module";
 import {NzBreadCrumbModule} from "ng-zorro-antd/breadcrumb";
@@ -12,6 +12,12 @@ import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {ReactiveFormsModule} from "@angular/forms";
+import {NzButtonModule} from "ng-zorro-antd/button";
+import {NzIconModule} from "ng-zorro-antd/icon";
+import {NzUploadModule} from "ng-zorro-antd/upload";
+import {NzToolTipModule} from "ng-zorro-antd/tooltip";
+import {NzEmptyModule} from "ng-zorro-antd/empty";
+import {NzDividerModule} from "ng-zorro-antd/divider";
 
 
 
@@ -31,7 +37,14 @@ import {ReactiveFormsModule} from "@angular/forms";
     NzGridModule,
     NzInputModule,
     NzSelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NzButtonModule,
+    NzIconModule,
+    NzUploadModule,
+    NgOptimizedImage,
+    NzToolTipModule,
+    NzEmptyModule,
+    NzDividerModule
   ]
 })
 export class PropertiesModule { }

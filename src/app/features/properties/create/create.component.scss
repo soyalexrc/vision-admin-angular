@@ -22,3 +22,36 @@ h2 {
 .mt-3 {
   margin-top: 3rem;
 }
+
+
+.images-grid {
+  margin: 1rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .img-container {
+    position: relative;
+    cursor: grab;
+
+    .img-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      gap: .5rem;
+      padding: 1rem;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background-color: rgba(black, 0.3);
+    }
+
+    .doc-overlay {
+      background-color: rgba(black, 0.1);
+    }
+  }
+}
