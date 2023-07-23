@@ -146,6 +146,12 @@ export interface CreationPropertyResponse {
   rowsAffected: any[];
 }
 
+export interface DeleteOneResponse {
+  recordsets:   any[];
+  output:       Output;
+  rowsAffected: number[];
+}
+
 export interface Output {
 }
 

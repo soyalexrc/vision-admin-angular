@@ -1,1 +1,57 @@
-<p>main works!</p>
+
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Flujo de caja</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<app-section-title
+  [title]="'Flujo de caja'"
+  [buttonText]="'Nuevo registro'"
+  [additionalButton]="true"
+  (onAdditionalAction)="handleNewMoneyTransfer()"
+  (onNewElement)="handleNewRegister()"
+  additionalButtonText="Nuevo traslado de dinero"
+></app-section-title>
+
+
+<div class="stats" nz-row [nzGutter]="16">
+  <div nz-col class="main" [nzSpan]="10">
+    <div class="stat">
+      <h2 class="big-title">Utilidad estimada</h2>
+      <p class="big-main-amount">{{500 | currency: '$ ' }}</p>
+      <p class="big-amount">{{250403223 | currency: 'Bs '}}</p>
+      <p class="big-amount">{{420 | currency: 'EUR '}}</p>
+    </div>
+  </div>
+  <div  nz-col [nzSpan]="14">
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12" class="stat">
+        <h2 class="title">Total de ingresos</h2>
+        <p class="main-amount">{{500 | currency: '$ ' }}</p>
+        <p class="amount">{{250403223 | currency: 'Bs '}}</p>
+        <p class="amount">{{420 | currency: 'EUR '}}</p>
+      </div>
+      <div nz-col [nzSpan]="12" class="stat">
+        <h2 class="title">Total de egresos</h2>
+        <p class="main-amount">{{500 | currency: '$ ' }}</p>
+        <p class="amount">{{250403223 | currency: 'Bs '}}</p>
+        <p class="amount">{{420 | currency: 'EUR '}}</p>
+      </div>
+    </div>
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12" class="stat">
+        <h2 class="title">Total por pagar</h2>
+        <p class="main-amount">{{500 | currency: '$ ' }}</p>
+        <p class="amount">{{250403223 | currency: 'Bs '}}</p>
+        <p class="amount">{{420 | currency: 'EUR '}}</p>
+      </div>
+      <div nz-col [nzSpan]="12" class="stat">
+        <h2 class="title">Total por cobrar</h2>
+        <p class="main-amount">{{500 | currency: '$ ' }}</p>
+        <p class="amount">{{250403223 | currency: 'Bs '}}</p>
+        <p class="amount">{{420 | currency: 'EUR '}}</p>
+      </div>
+    </div>
+
+  </div>
+</div>

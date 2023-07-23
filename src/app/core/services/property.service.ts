@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {CreationOwnerResponse, DeleteOneResponse, GetOneOwnerResponse, Owner, OwnerToCreate} from "../interfaces/owner";
+import {CreationOwnerResponse, GetOneOwnerResponse, Owner, OwnerToCreate} from "../interfaces/owner";
 import {
   Attribute,
   CreationPropertyResponse,
   GetPropertyPreviewResponse,
   PropertyToCreate,
-  PropertyType
+  PropertyType,
+  DeleteOneResponse
 } from "../interfaces/property";
 
 @Injectable({
@@ -30,15 +31,15 @@ export class PropertyService {
   }
 
   deleteOne(id: number): Observable<DeleteOneResponse> {
-    return this.http.delete<DeleteOneResponse>(`owner/deleteData?id=${id}`);
+    return this.http.delete<DeleteOneResponse>(`property/deleteData?id=${id}`);
   }
 
   getById(id: string): Observable<GetOneOwnerResponse> {
-    return this.http.get<GetOneOwnerResponse>(`owner/getById?id=${id}`)
+    return this.http.get<GetOneOwnerResponse>(`property/getById?id=${id}`)
   }
 
-  update(data: Owner): Observable<OwnerToCreate> {
-    return this.http.put<OwnerToCreate>(`owner/updateData`, data);
+  update(data: PropertyToCreate): Observable<CreationPropertyResponse> {
+    return this.http.put<CreationPropertyResponse>(`property/updateData`, data);
   }
 
   getAttributesByPropertyType(propertyType: PropertyType) : Observable<Attribute[]> {

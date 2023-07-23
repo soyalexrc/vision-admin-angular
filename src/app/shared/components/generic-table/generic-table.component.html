@@ -19,6 +19,9 @@
         <a *ngIf="linkAction" (click)="onLink.emit(row)" nz-tooltip="true" [nzTooltipTitle]="linkActionTitle">
           <span nz-icon nzType="link" style="font-size: 18px" ></span>
         </a>
+        <a *ngIf="historyAction" (click)="onHistory.emit(row)" nz-tooltip="true" [nzTooltipTitle]="historyActionTitle">
+          <span nz-icon nzType="history" style="font-size: 18px" ></span>
+        </a>
         <a (click)="onDelete.emit(row.id)" nz-tooltip="true" nzTooltipTitle="Eliminar">
           <span nz-icon nzType="delete" style="font-size: 18px" [nzTheme]="'twotone'" [nzTwotoneColor]="'#ff4d4f'"></span>
         </a>

@@ -6,7 +6,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
 import {UserService} from "../../../core/services/user.service";
 import {UiService} from "../../../core/services/ui.service";
 import {setHeaders} from "../../../shared/utils/generic-table";
-import {PropertyReview} from "../../../core/interfaces/property";
+import {Property, PropertyReview} from "../../../core/interfaces/property";
 import {PropertyService} from "../../../core/services/property.service";
 import * as moment from 'moment';
 import 'moment/locale/es-us.js';
@@ -75,6 +75,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.loading = true;
     this.propertyService.getAllPreview({filters: [], pageNumber: 1, pageSize: 10}).subscribe(data => {
         this.data = data.data.map(element => ({
+          id: element.id,
           code: element.code,
           created_date: moment(element.created_date).calendar(),
           propertyType: element.propertyType,
@@ -125,5 +126,9 @@ export class MainComponent implements OnInit, AfterViewInit {
         this.loading = false
       }
     )
+  }
+
+  handleHistory(property: Partial<Property>) {
+    console.log(property)
   }
 }

@@ -421,24 +421,12 @@
       <input style="display: none" (change)="handleUploadImage($event, 'image')" multiple type="file" #imageInputFile
              accept="image/*">
 
-
-      <div class="images-grid" cdkDropList (cdkDropListDropped)="handleDropElement($event)">
-        <ng-container *ngFor="let image of images; index as i">
-          <div class="img-container" cdkDrag>
-            <img width="200px" class="img-item" height="200px" [src]="setImageUrl(image.imageData)" [alt]="image.imageData">
-            <div class="img-overlay">
-              <button nz-tooltip="true" (click)="showPreview(image, 'image')" nzTooltipTitle="Ver en pantalla completa" nz-button
-                      nzShape="circle" type="button" nzType="primary">
-                <span nz-icon nzType="fullscreen"></span>
-              </button>
-              <button nz-tooltip="true" (click)="handleDeleteImage(image, 'image')" nzTooltipTitle="Eliminar imagen" nz-button
-                      nzShape="circle" type="button" nzType="primary" nzDanger>
-                <span nz-icon nzType="delete"></span>
-              </button>
-            </div>
-          </div>
-        </ng-container>
-      </div>
+      <app-draggable-grid
+        [elements]="images"
+        (onDeleteElement)="handleDeleteImage($event, 'image')"
+        (onSortElements)="handleSortElements($event, 'image')"
+      >
+      </app-draggable-grid>
     </div>
   </form>
 </ng-container>
@@ -591,6 +579,7 @@
             <nz-form-label  nzFor="ally">Aliado</nz-form-label>
             <nz-form-control >
               <nz-select formControlName="ally">
+                <nz-option *ngFor="let ally of allies" [nzValue]="ally.id" [nzLabel]="ally.first_name + ' ' + ally.last_name"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -622,7 +611,8 @@
         <div nz-col [nzSpan]="10">
           <nz-form-item style="margin: 1rem 0">
             <nz-form-control >
-              <nz-select formControlName="client" nzPlaceHolder="Seleccionar un cliente">
+              <nz-select formControlName="client" >
+                <nz-option *ngFor="let client of clients" [nzValue]="client.id" [nzLabel]="client.first_name + ' ' + client.last_name"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -767,28 +757,39 @@
              accept="/*">
 
 
-      <div class="images-grid">
-        <ng-container *ngFor="let document of documents; index as i">
-          <div class="img-container">
-            <img *ngIf="!document.imageData.includes('pdf')" width="200px" height="200px" [src]="setImageUrl(document.imageData)" [alt]="document.imageData">
-            <div *ngIf="document.imageData.includes('pdf')" style="width: 200px; height: 200px">
-              <span nz-icon nzType="file-pdf" [nzTheme]="'twotone'" nzTheme="outline" style="position: absolute; top: 50%; left: 50%; font-size: 30px"></span>
-            </div>
-            <div class="img-overlay doc-overlay">
-              <button nz-tooltip="true" (click)="showPreview(document, 'document')" nzTooltipTitle="Ver en pantalla completa" nz-button
-                      nzShape="circle" type="button" nzType="primary">
-                <span nz-icon nzType="fullscreen"></span>
-              </button>
-              <button nz-tooltip="true" (click)="handleDeleteImage(document, 'document')" nzTooltipTitle="Eliminar documento" nz-button
-                      nzShape="circle" type="button" nzType="primary" nzDanger>
-                <span nz-icon nzType="delete"></span>
-              </button>
-            </div>
-          </div>
-        </ng-container>
-      </div>
+      <app-draggable-grid
+        [elements]="documents"
+        (onDeleteElement)="handleDeleteImage($event, 'document')"
+        (onSortElements)="handleSortElements($event, 'document')"
+      >
+      </app-draggable-grid>
     </div>
   </form>
 </ng-container>
+
+<ng-container *ngIf="index === 6">
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="publicationSourceForm">
+    <div class="content" style="display: flex; justify-content: center">
+      <label nz-checkbox formControlName="facebook">Facebook</label>
+      <label nz-checkbox formControlName="conlallave">Conlallave</label>
+      <label nz-checkbox formControlName="instagram">Instagram</label>
+      <label nz-checkbox formControlName="mercadolibre">Mercadolibre</label>
+      <label nz-checkbox formControlName="whatsapp">Whatsapp</label>
+      <label nz-checkbox formControlName="tiktok">TikTok</label>
+    </div>
+  </form>
+</ng-container>
+
+<div style="display: flex; justify-content: center">
+  <div style="width: 900px;">
+    <button
+      nz-button
+      nzType="primary"
+      nzBlock
+      (click)="submitForm()"
+      [disabled]="generalForm.invalid || locationForm.invalid || negotiationForm.invalid"
+      [nzLoading]="loading">Guardar cambios</button>
+  </div>
+</div>
 
 

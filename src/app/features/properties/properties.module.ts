@@ -18,7 +18,9 @@ import {NzUploadModule} from "ng-zorro-antd/upload";
 import {NzToolTipModule} from "ng-zorro-antd/tooltip";
 import {NzEmptyModule} from "ng-zorro-antd/empty";
 import {NzDividerModule} from "ng-zorro-antd/divider";
-import {CdkDrag, CdkDropList} from "@angular/cdk/drag-drop";
+import {CdkDrag, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
+import { DraggableGridComponent } from './draggable-grid/draggable-grid.component';
+import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
 
 
 
@@ -26,7 +28,8 @@ import {CdkDrag, CdkDropList} from "@angular/cdk/drag-drop";
   declarations: [
     MainComponent,
     CreateComponent,
-    PreviewComponent
+    PreviewComponent,
+    DraggableGridComponent
   ],
   imports: [
     CommonModule,
@@ -47,7 +50,9 @@ import {CdkDrag, CdkDropList} from "@angular/cdk/drag-drop";
     NzEmptyModule,
     NzDividerModule,
     CdkDropList,
-    CdkDrag
+    CdkDrag,
+    CdkDropListGroup,
+    NzCheckboxModule
   ]
 })
 export class PropertiesModule { }

@@ -11,6 +11,10 @@ import {Category, FormType, Image, PropertyType} from "../../../core/interfaces/
 import {Subscription} from "rxjs";
 import {NzImageService} from "ng-zorro-antd/image";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {Ally} from "../../../core/interfaces/ally";
+import {AllyService} from "../../../core/services/ally.service";
+import {Owner} from "../../../core/interfaces/owner";
+import {OwnerService} from "../../../core/services/owner.service";
 
 interface Steps {
   first: string,
@@ -47,6 +51,9 @@ export class CreateComponent implements OnInit, OnDestroy {
   images: Image[] = [];
   documents: Image[] = [];
 
+  allies: Ally[] = [];
+  clients: Owner[] = [];
+
   @ViewChild('imageInputFile') imageInputFile!: ElementRef<HTMLInputElement>
   @ViewChild('documentInputFile') documentInputFile!: ElementRef<HTMLInputElement>
   visitedImages = false;
@@ -58,7 +65,8 @@ export class CreateComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private fileService: FileService,
-    private nzImageService: NzImageService
+    private allyService: AllyService,
+    private clientService: OwnerService
   ) {
   }
 
@@ -69,13 +77,40 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.imagesSubscription = this.fileService.currentImages.subscribe(images => {
       this.images = images;
     })
+
+    this.buildForms();
+
+
+    this.allyService.getAll().subscribe(result => {
+      this.allies = result;
+    })
+
+    this.clientService.getAll().subscribe(result => {
+      this.clients = result;
+    })
+
+
+    if (!this.router.url.includes('crear')) {
+      this.isEditing = true;
+      this.id = this.route.snapshot.paramMap.get('id')!;
+      this.getUserById(this.id)
+    }
+  }
+
+  ngOnDestroy() {
+    this.fileService.cleanFiles();
+    this.imagesSubscription.unsubscribe();
+    this.documentsSubscription.unsubscribe();
+  }
+
+  private buildForms() {
     this.publicationSourceForm = this.fb.group({
-      conlallave: [''],
-      facebook: [''],
-      instagram: [''],
-      mercadolibre: [''],
-      whatsapp: [''],
-      tiktok: [''],
+      conlallave: [false],
+      facebook: [false],
+      instagram: [false],
+      mercadolibre: [false],
+      whatsapp: [false],
+      tiktok: [false],
     })
 
     this.generalForm = this.fb.group({
@@ -84,7 +119,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       distributionComments: [''],
       footageBuilding: [''],
       footageGround: [''],
-      nomenclarure: [''],
+      nomenclature: [''],
       propertyCondition: [''],
       operationType: ['' ,Validators.required],
       property_status: [''],
@@ -125,11 +160,11 @@ export class CreateComponent implements OnInit, OnDestroy {
       contactEmail: ['', Validators.required],
       contactFirstName: ['', Validators.required],
       contactLastName: ['', Validators.required],
-      birthday: ['', Validators.required],
-      phone: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', Validators.required],
+      birthday: [''],
+      phone: [''],
+      firstName: [''],
+      lastName: [''],
+      email: [''],
       comission: ['', Validators.required],
       minimunNegotiation: [''],
       reasonToSellOrRent: [''],
@@ -142,29 +177,33 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.documentsForm = this.fb.group({
       files: this.fb.array([])
     })
-
-    if (!this.router.url.includes('crear')) {
-      this.isEditing = true;
-      this.id = this.route.snapshot.paramMap.get('id')!;
-      this.getUserById(this.id)
-    }
-  }
-
-  ngOnDestroy() {
-    this.fileService.cleanFiles();
-    this.imagesSubscription.unsubscribe();
-    this.documentsSubscription.unsubscribe();
   }
 
   submitForm(): void {
-    if (this.generalForm.valid && this.personalForm.valid && this.socialForm.valid) {
+    console.log({
+      property: this.generalForm.value,
+      location: this.locationForm.value,
+      clientData: this.negotiationForm.value,
+      images: this.images,
+      files: this.documents,
+      publicationSource: this.publicationSourceForm.value,
+      attributes: this.attributes.value
+    })
+    if (this.generalForm.valid && this.locationForm.valid && this.negotiationForm.valid) {
       this.loading = true;
-      const data = {...this.generalForm.value, ...this.socialForm.value, ...this.personalForm.value};
-      data.birthday = moment(data.birthday).format('YYYY-MM-DD');
+      const data = {
+        property: this.generalForm.value,
+        location: this.locationForm.value,
+        clientData: this.negotiationForm.value,
+        images: this.images,
+        files: this.documents,
+        publicationSource: this.publicationSourceForm.value,
+        attributes: this.attributes.value
+      };
       if (this.isEditing) {
         this.propertyService.update(data).subscribe(result => {
-          this.uiService.createMessage('success', 'Se edito el usuario con exito!')
-          this.router.navigate(['/usuarios'])
+          this.uiService.createMessage('success', 'Se edito la propiedad con exito!')
+          this.router.navigate(['/propiedades'])
         }, () => {
           this.loading = false
         }, () => {
@@ -172,8 +211,8 @@ export class CreateComponent implements OnInit, OnDestroy {
         })
       } else {
         this.propertyService.createOne(data).subscribe(result => {
-          this.uiService.createMessage('success', 'Se creo el usuario con exito!')
-          this.router.navigate(['/usuarios'])
+          this.uiService.createMessage('success', 'Se creo la propiedad con exito!')
+          this.router.navigate(['/propiedades'])
         }, () => {
           this.loading = false
         }, () => {
@@ -182,16 +221,16 @@ export class CreateComponent implements OnInit, OnDestroy {
       }
     } else {
       this.getFormValidation(this.generalForm)
-      this.getFormValidation(this.personalForm)
-      this.getFormValidation(this.socialForm)
+      this.getFormValidation(this.locationForm)
+      this.getFormValidation(this.negotiationForm)
     }
   }
 
 
   getUserById(id: string) {
     this.propertyService.getById(id).subscribe(result => {
-      const user = result.recordset[0];
-      this.generalForm.get('id')?.patchValue(user.id)
+      const property = result.recordset[0];
+      this.generalForm.get('id')?.patchValue(property.id)
     })
   }
 
@@ -389,21 +428,6 @@ export class CreateComponent implements OnInit, OnDestroy {
     return `http://100.42.69.119:3000/images/${imageData}`
   }
 
-  showPreview(image: Image, type: string) {
-    const img = [{
-      src: this.setImageUrl(image.imageData),
-      width: '600px',
-      height: '600px',
-      alt: 'sample'
-    }]
-    if (type === 'document') {
-      window.open(img[0].src, '_blank')
-    } else {
-      this.nzImageService.preview(img, {nzZoom: 1, nzRotate: 0});
-    }
-
-  }
-
   handleSelectPropertyType(propertyType: PropertyType) {
     this.clearFormArray(this.attributes);
     this.propertyService.getAttributesByPropertyType(propertyType).subscribe(result => {
@@ -437,11 +461,24 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.generalForm.get('propertyType')?.markAsDirty();
   }
 
-  handleDropElement(event: CdkDragDrop<string[]>) {
-    const cachedImages = [...this.fileService.currentImages.value];
+  handleSortElements(images: Image[], type: string) {
+    if (type === 'image') {
+      this.fileService.setReorderImages(images)
+    } else {
+      this.fileService.setReorderDocuments(images)
+    }
+  }
 
-    moveItemInArray(cachedImages, event.previousIndex, event.currentIndex);
-
-    this.fileService.setReorderImages(cachedImages)
+  getAllyValue(ally: Ally) {
+    return {
+      id: ally.id,
+      name: `${ally.first_name} ${ally.last_name}`
+    }
+  }
+  getClientValue(client: Owner) {
+    return {
+      id: client.id,
+      name: `${client.first_name} ${client.last_name}`
+    }
   }
 }

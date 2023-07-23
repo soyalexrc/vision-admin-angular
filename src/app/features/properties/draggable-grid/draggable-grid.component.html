@@ -1,0 +1,44 @@
+<!--<div class="images-grid" cdkDropListGroup>-->
+<!--  <div-->
+<!--    class="img-container"-->
+<!--    cdkDropList-->
+<!--    [cdkDropListEnterPredicate]="dropListEnterPredicate"-->
+<!--    (cdkDropListDropped)="dropListDropped($event)"-->
+<!--    *ngFor="let image of elements; index as i"-->
+<!--  >-->
+<!--    <div  cdkDrag (cdkDragMoved)="dragMoved($event)">-->
+<!--      <img width="200px" class="img-item" height="200px" [src]="setImageUrl(image.imageData)" [alt]="image.imageData">-->
+<!--      <div class="img-overlay">-->
+<!--        <button nz-tooltip="true" (click)="showPreview(image, 'image')" nzTooltipTitle="Ver en pantalla completa" nz-button-->
+<!--                nzShape="circle" type="button" nzType="primary">-->
+<!--          <span nz-icon nzType="fullscreen"></span>-->
+<!--        </button>-->
+<!--        <button nz-tooltip="true" (click)="onDeleteElement.emit(image)" nzTooltipTitle="Eliminar imagen" nz-button-->
+<!--                nzShape="circle" type="button" nzType="primary" nzDanger>-->
+<!--          <span nz-icon nzType="delete"></span>-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<div class="images-grid" >
+  <div class="img-container" *ngFor="let image of elements; index as i">
+    <div  class="img-item">
+      <img *ngIf="!image.imageData.includes('pdf')" width="200px" height="200px" [src]="setImageUrl(image.imageData)" [alt]="image.imageData">
+      <div *ngIf="image.imageData.includes('pdf')" style="width: 200px; height: 200px">
+        <span nz-icon nzType="file-pdf" [nzTheme]="'twotone'" nzTheme="outline" style="position: absolute; top: 50%; left: 50%; font-size: 30px"></span>
+      </div>
+      <div class="img-overlay">
+        <button nz-tooltip="true" (click)="showPreview(image)" nzTooltipTitle="Ver en pantalla completa" nz-button
+                nzShape="circle" type="button" nzType="primary">
+          <span nz-icon nzType="fullscreen"></span>
+        </button>
+        <button nz-tooltip="true" (click)="onDeleteElement.emit(image)" nzTooltipTitle="Eliminar imagen" nz-button
+                nzShape="circle" type="button" nzType="primary" nzDanger>
+          <span nz-icon nzType="delete"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
