@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import {RouterLink, RouterOutlet} from "@angular/router";
-import {AuthGuard} from "./guards/auth.guard";
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {ApiInterceptor} from "./interceptor/api.interceptor";
@@ -15,6 +14,7 @@ import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzButtonModule} from "ng-zorro-antd/button";
 import {ErrorHandlerInterceptor} from "./interceptor/error-handler.interceptor";
+import {AuthenticationGuard} from "./guards/authentication.guard";
 
 
 
@@ -37,7 +37,7 @@ import {ErrorHandlerInterceptor} from "./interceptor/error-handler.interceptor";
     NzDropDownModule
   ],
   providers: [
-    AuthGuard,
+    AuthenticationGuard,
     {
       provide : HTTP_INTERCEPTORS,
       useClass : ApiInterceptor,

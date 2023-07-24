@@ -68,12 +68,14 @@ export class UserService {
 
     if (role === 'Asesor inmobiliario Vision') {
       routes = [
+        'inicio',
         'propiedades'
       ]
     }
 
     if (role === 'Coordinador de servicios') {
       routes = [
+        'inicio',
         'propiedades',
         'flujo-de-caja',
         'clientes',
