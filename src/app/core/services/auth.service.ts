@@ -5,6 +5,7 @@ import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {Login} from "../interfaces/login";
+import {locale} from "moment/moment";
 
 
 @Injectable({
@@ -20,26 +21,14 @@ export class AuthService {
   ) {}
 
   isAuthenticated(): boolean {
-    const token = localStorage.getItem('sr-token');
+    const token = localStorage.getItem('vi-token');
     // Check whether the token is expired and return
     // true or false
-    return !this.jwtHelper.isTokenExpired(token);
+    return this.validateSession();
   }
 
   decodeToken(token: string) {
     return this.jwtHelper.decodeToken(token);
-  }
-
-  getToken() {
-    return localStorage.getItem('sr-token')
-  }
-
-  setToken(token: string) {
-    return localStorage.setItem('sr-token', token)
-  }
-
-  getTokenDecoded() {
-    return this.decodeToken(this.getToken() ?? '')
   }
 
   login(username: string, password: string, remember: boolean): Observable<Login> {
@@ -47,32 +36,36 @@ export class AuthService {
   }
   logout(){
     this.router.navigate(['/']);
-    localStorage.removeItem('sr-token');
+    localStorage.removeItem('vi-token');
     this.message.create('error', 'Su session ha vencido, inicia session de nuevo!')
     return
   }
 
-  validateSession() {
-    if (!this.getToken()) {
+  validateSession(): boolean {
+    const user = localStorage.getItem('vi-token') ? JSON.parse(localStorage.getItem('vi-token') ?? '') : null;
+
+    if (!user) {
       this.logout();
-      return;
-    }
-    const {exp} = this.getTokenDecoded();
-    const dateNow = new Date();
-    if (dateNow > new Date(exp * 1000)) {
-      this.logout();
-      return;
+      return false;
     } else {
-      return
+      const exp = user.exp;
+      const dateNow = new Date();
+      if (dateNow > new Date(exp * 1000)) {
+        this.logout();
+        return false;
+      } else {
+        return true;
+      }
     }
+
   }
 
-  isBoss() {
-    return this.getTokenDecoded()?.auth.includes('SERVICIO');
-  }
-
-  isAdmin() {
-    return this.getTokenDecoded()?.auth.includes('ADMIN');
-  }
+  // isBoss() {
+  //   return this.getTokenDecoded()?.auth.includes('SERVICIO');
+  // }
+  //
+  // isAdmin() {
+  //   return this.getTokenDecoded()?.auth.includes('ADMIN');
+  // }
 
 }

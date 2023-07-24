@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import 'moment/locale/es-us.js'
+import * as moment from 'moment';
+
+moment.locale('es-us')
 
 @Component({
   selector: 'app-root',

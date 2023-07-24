@@ -1,0 +1,24 @@
+.header-section {
+
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+
+  h1 {
+    margin: 0
+  }
+  p {
+    margin: 0;
+    span {
+      font-weight: bold;
+    }
+  }
+
+  .info {
+    display: flex;
+    align-items: center;
+    gap: 1rem
+  }
+}

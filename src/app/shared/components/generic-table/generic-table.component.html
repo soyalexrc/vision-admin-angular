@@ -1,0 +1,49 @@
+<nz-table #fixedTable [nzLoading]="loading" [nzLoadingIndicator]="loadingIndicator" [nzData]="tableData.data" [nzScroll]="{ x: xScroll, y: yScroll }">
+  <thead>
+  <tr>
+    <th *ngFor="let h of tableData.headers">{{h.displayName}}</th>
+    <th *ngIf="hasEdit || hasDelete">Acciones</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let row of fixedTable.data">
+    <td *ngFor="let td of tableData.headers">{{ row[td.key] }}</td>
+    <td [nzRight]="actionsFixed" *ngIf="hasDelete || hasEdit">
+      <div class="actions">
+        <a (click)="onEdit.emit(row.id)" nz-tooltip="true" nzTooltipTitle="Editar">
+          <span nz-icon nzType="edit" style="font-size: 18px" [nzTheme]="'twotone'"></span>
+        </a>
+        <a *ngIf="changeAction" (click)="onChange.emit(row)" nz-tooltip="true" [nzTooltipTitle]="changeActionTitle">
+          <span nz-icon nzType="swap" style="font-size: 18px" ></span>
+        </a>
+        <a *ngIf="linkAction" (click)="onLink.emit(row)" nz-tooltip="true" [nzTooltipTitle]="linkActionTitle">
+          <span nz-icon nzType="link" style="font-size: 18px" ></span>
+        </a>
+        <a *ngIf="historyAction" (click)="onHistory.emit(row)" nz-tooltip="true" [nzTooltipTitle]="historyActionTitle">
+          <span nz-icon nzType="history" style="font-size: 18px" ></span>
+        </a>
+        <a (click)="onDelete.emit(row.id)" nz-tooltip="true" nzTooltipTitle="Eliminar">
+          <span nz-icon nzType="delete" style="font-size: 18px" [nzTheme]="'twotone'" [nzTwotoneColor]="'#ff4d4f'"></span>
+        </a>
+
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
+
+
+<ng-template #loadingIndicator>
+  <div style="
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1.5rem;
+  ">
+    <nz-spin nzSize="large"></nz-spin>
+    <p>cargando data...</p>
+  </div>
+</ng-template>

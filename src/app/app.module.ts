@@ -17,6 +17,7 @@ import {JwtModule} from "@auth0/angular-jwt";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {NzImageService} from "ng-zorro-antd/image";
 
 registerLocaleData(en);
 
@@ -50,7 +51,8 @@ export function tokenGetter() {
     { provide: NZ_I18N, useValue: en_US },
     NzModalService,
     NzNotificationService,
-    NzMessageService
+    NzMessageService,
+    NzImageService
   ],
   bootstrap: [AppComponent]
 })
