@@ -19,6 +19,7 @@ export class MainLayoutComponent {
   visible = false;
   isSmallScreen = window.innerWidth < 900;
   private userSubscription = new Subscription();
+  canSeeDashboard!: boolean;
 
   constructor(
     private auth: AuthService,
@@ -74,5 +75,9 @@ export class MainLayoutComponent {
 
   shortener(st: string) {
     return st.slice(0, 2);
+  }
+
+  validateAccess(route: string) {
+    return this.userService.checkAllowedRouteByUserRole(route);
   }
 }

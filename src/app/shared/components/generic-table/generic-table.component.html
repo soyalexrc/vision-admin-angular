@@ -1,14 +1,14 @@
-<nz-table #fixedTable [nzLoading]="loading" [nzLoadingIndicator]="loadingIndicator" [nzData]="tableData.data" [nzScroll]="{ x: xScroll, y: '100%'  }">
+<nz-table #fixedTable [nzLoading]="loading" [nzLoadingIndicator]="loadingIndicator" [nzData]="tableData.data" [nzScroll]="{ x: xScroll, y: yScroll }">
   <thead>
   <tr>
     <th *ngFor="let h of tableData.headers">{{h.displayName}}</th>
-    <th>Acciones</th>
+    <th *ngIf="hasEdit || hasDelete">Acciones</th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let row of fixedTable.data">
     <td *ngFor="let td of tableData.headers">{{ row[td.key] }}</td>
-    <td [nzRight]="actionsFixed">
+    <td [nzRight]="actionsFixed" *ngIf="hasDelete || hasEdit">
       <div class="actions">
         <a (click)="onEdit.emit(row.id)" nz-tooltip="true" nzTooltipTitle="Editar">
           <span nz-icon nzType="edit" style="font-size: 18px" [nzTheme]="'twotone'"></span>

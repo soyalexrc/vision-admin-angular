@@ -9,8 +9,8 @@ import {CreationUserResponse, GetOneUserResponse, User, UserToCreate, DeleteOneR
 export class UserService {
 
   currentUser = new BehaviorSubject<User>(
-    localStorage.getItem('vi-currentUser')
-      ? JSON.parse(localStorage.getItem('vi-currentUser') ?? '')
+    localStorage.getItem('vi-token')
+      ? JSON.parse(localStorage.getItem('vi-token') ?? '')
       : {}
   )
 
@@ -21,7 +21,7 @@ export class UserService {
   }
 
   updateCurrentUser(data: User) {
-    localStorage.setItem('vi-currentUser', JSON.stringify(data));
+    localStorage.setItem('vi-token', JSON.stringify(data));
     this.currentUser.next(data);
   }
 
@@ -43,5 +43,49 @@ export class UserService {
 
   update(data: User): Observable<UserToCreate> {
     return this.http.put<UserToCreate>(`user/updateData`, data);
+  }
+
+
+  setAllowedRoutes(user: User): User {
+    let userToReturn = user;
+    const role = user.user_type;
+    let routes: string[] = [];
+
+    if (role === 'Administrador') {
+      routes = [
+        'inicio',
+        'clientes',
+        'propietarios',
+        'usuarios',
+        'asesores-externos',
+        'aliados',
+        'propiedades',
+        'administracion',
+        'flujo-de-caja',
+        'calculo-de-comisiones'
+      ]
+    }
+
+    if (role === 'Asesor inmobiliario Vision') {
+      routes = [
+        'propiedades'
+      ]
+    }
+
+    if (role === 'Coordinador de servicios') {
+      routes = [
+        'propiedades',
+        'flujo-de-caja',
+        'clientes',
+        'calculo-de-comisiones'
+      ]
+    }
+    userToReturn.allowedRoutes = routes;
+
+    return userToReturn;
+  }
+
+  checkAllowedRouteByUserRole(route: string) {
+    return this.currentUser.value.allowedRoutes.some(r => r === route)
   }
 }

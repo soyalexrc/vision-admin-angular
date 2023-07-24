@@ -8,50 +8,211 @@
   [title]="'Flujo de caja'"
   [buttonText]="'Nuevo registro'"
   [additionalButton]="true"
-  (onAdditionalAction)="handleNewMoneyTransfer()"
+  (onRefresh)="getCashFlowData(dataValue)"
+  (onAdditionalAction)="showModal = true"
   (onNewElement)="handleNewRegister()"
   additionalButtonText="Nuevo traslado de dinero"
 ></app-section-title>
 
+<button nz-button nzType="link" style="margin: 1rem 0" routerLink="resumen-de-operaciones">Ver resumen de operaciones</button>
 
-<div class="stats" nz-row [nzGutter]="16">
-  <div nz-col class="main" [nzSpan]="10">
-    <div class="stat">
-      <h2 class="big-title">Utilidad estimada</h2>
-      <p class="big-main-amount">{{500 | currency: '$ ' }}</p>
-      <p class="big-amount">{{250403223 | currency: 'Bs '}}</p>
-      <p class="big-amount">{{420 | currency: 'EUR '}}</p>
+
+<div class="stats">
+  <div class="main-stat">
+    <div class="icon">
+      <img src="/assets/icons/utility-2.svg" width="25px" height="25px" alt="">
+    </div>
+    <h1>Utilidad estimada</h1>
+    <div class="stat-content">
+
+      <h2> {{1200 | currency}}</h2>
+      <h4> {{25674383 | currency: 'Bs. '}}</h4>
+      <h4> {{200 | currency: '€ '}}</h4>
     </div>
   </div>
-  <div  nz-col [nzSpan]="14">
-    <div nz-row [nzGutter]="16">
-      <div nz-col [nzSpan]="12" class="stat">
-        <h2 class="title">Total de ingresos</h2>
-        <p class="main-amount">{{500 | currency: '$ ' }}</p>
-        <p class="amount">{{250403223 | currency: 'Bs '}}</p>
-        <p class="amount">{{420 | currency: 'EUR '}}</p>
+  <div class="other-stats">
+    <div class="stats-row">
+      <div class="stat">
+          <div class="icon">
+            <img src="/assets/icons/to-pay.svg" width="25px" height="25px" alt="">
+          </div>
+          <div class="stat-content">
+            <h3>Total por pagar</h3>
+            <h2> {{1200 | currency}}</h2>
+            <h4> {{25674383 | currency: 'Bs. '}}</h4>
+            <h4> {{200 | currency: '€ '}}</h4>
+          </div>
       </div>
-      <div nz-col [nzSpan]="12" class="stat">
-        <h2 class="title">Total de egresos</h2>
-        <p class="main-amount">{{500 | currency: '$ ' }}</p>
-        <p class="amount">{{250403223 | currency: 'Bs '}}</p>
-        <p class="amount">{{420 | currency: 'EUR '}}</p>
-      </div>
-    </div>
-    <div nz-row [nzGutter]="16">
-      <div nz-col [nzSpan]="12" class="stat">
-        <h2 class="title">Total por pagar</h2>
-        <p class="main-amount">{{500 | currency: '$ ' }}</p>
-        <p class="amount">{{250403223 | currency: 'Bs '}}</p>
-        <p class="amount">{{420 | currency: 'EUR '}}</p>
-      </div>
-      <div nz-col [nzSpan]="12" class="stat">
-        <h2 class="title">Total por cobrar</h2>
-        <p class="main-amount">{{500 | currency: '$ ' }}</p>
-        <p class="amount">{{250403223 | currency: 'Bs '}}</p>
-        <p class="amount">{{420 | currency: 'EUR '}}</p>
+      <div class="stat">
+        <div class="icon">
+          <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+        </div>
+        <div class="stat-content">
+          <h3>Total por cobrar</h3>
+          <h2> {{1200 | currency}}</h2>
+          <h4> {{25674383 | currency: 'Bs. '}}</h4>
+          <h4> {{200 | currency: '€ '}}</h4>
+        </div>
       </div>
     </div>
-
+    <div class="stats-row">
+      <div class="stat">
+        <div class="icon">
+          <img src="/assets/icons/income.svg" width="25px" height="25px" alt="">
+        </div>
+        <div class="stat-content">
+          <h3>Total de ingresos</h3>
+          <h2> {{1200 | currency}}</h2>
+          <h4> {{25674383 | currency: 'Bs. '}}</h4>
+          <h4> {{200 | currency: '€ '}}</h4>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="icon">
+          <img src="/assets/icons/expense.svg" width="25px" height="25px" alt="">
+        </div>
+        <div class="stat-content">
+          <h3>Total de egresos</h3>
+          <h2> {{1200 | currency}}</h2>
+          <h4> {{25674383 | currency: 'Bs. '}}</h4>
+          <h4> {{200 | currency: '€ '}}</h4>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<div class="button-group">
+  <nz-radio-group [(ngModel)]="dataValue" (ngModelChange)="handleChangeSelection($event)" nzButtonStyle="solid">
+    <label nz-radio-button nzValue="income">Ingresos</label>
+    <label nz-radio-button nzValue="outcome">Egresos</label>
+    <label nz-radio-button nzValue="toPay">Cuentas por pagar</label>
+    <label nz-radio-button nzValue="toCollect">Cuentas por cobrar</label>
+  </nz-radio-group>
+</div>
+
+<app-generic-table #dataTable
+                   [loading]="loading"
+                   (onEdit)="handleEdit($event)"
+                   (onDelete)="handleDelete($event)"
+></app-generic-table>
+
+
+<nz-modal
+  [nzStyle]="{width: '500px'}"
+  [(nzVisible)]="showModal"
+  nzTitle="Datos de traslado"
+  (nzOnCancel)="handleCancelModal()"
+  (nzOnOk)="handleOkModal()"
+  nzOkText="Registrar"
+  [nzOkLoading]="transferLoading"
+  nzCancelText="Cancelar"
+  [nzOkDisabled]="transactionForm.invalid"
+>
+  <ng-container *nzModalContent>
+    <form nz-form nzLayout="vertical" [formGroup]="transactionForm">
+      <div nz-row style="display: flex; align-items: center" [nzGutter]="16">
+        <div nz-col [nzSpan]="11">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="originEntity">Desde</nz-form-label>
+            <nz-form-control [nzErrorTip]="originEntityErrTemp">
+              <nz-select formControlName="originEntity" style="width: 200px">
+                <nz-option nzValue="Banco Nacional de Crédito (BNC)" nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>
+                <nz-option nzValue="Banesco Panamá" nzLabel="Banesco Panamá"></nz-option>
+                <nz-option nzValue="Banesco Venezuela" nzLabel="Banesco Venezuela"></nz-option>
+                <nz-option nzValue="Banco Nacional de Terceros" nzLabel="Banco Nacional de Terceros"></nz-option>
+                <nz-option nzValue="Oficina Paseo La Granja" nzLabel="Oficina Paseo La Granja"></nz-option>
+                <nz-option nzValue="Tesorería" nzLabel="Tesorería"></nz-option>
+                <nz-option nzValue="Oficina San Carlos" nzLabel="Oficina San Carlos"></nz-option>
+              </nz-select>
+              <ng-template #originEntityErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar una entidad de origen!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="2" style="display: flex; justify-content: center">
+          <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+        </div>
+        <div nz-col [nzSpan]="11">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="destinyEntity">Hasta</nz-form-label>
+            <nz-form-control [nzErrorTip]="destinyEntityErrTemp">
+              <nz-select formControlName="destinyEntity" style="width: 200px">
+                <nz-option nzValue="Banco Nacional de Crédito (BNC)" nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>
+                <nz-option nzValue="Banesco Panamá" nzLabel="Banesco Panamá"></nz-option>
+                <nz-option nzValue="Banesco Venezuela" nzLabel="Banesco Venezuela"></nz-option>
+                <nz-option nzValue="Banco Nacional de Terceros" nzLabel="Banco Nacional de Terceros"></nz-option>
+                <nz-option nzValue="Oficina Paseo La Granja" nzLabel="Oficina Paseo La Granja"></nz-option>
+                <nz-option nzValue="Tesorería" nzLabel="Tesorería"></nz-option>
+                <nz-option nzValue="Oficina San Carlos" nzLabel="Oficina San Carlos"></nz-option>
+              </nz-select>
+              <ng-template #destinyEntityErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar una entidad de destino!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="amount">Monto</nz-form-label>
+            <nz-form-control [nzErrorTip]="amountErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="amount"/>
+              <ng-template #amountErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un monto!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="way_to_pay">Tipo de pago</nz-form-label>
+            <nz-form-control [nzErrorTip]="way_to_payErrTemp">
+              <nz-select formControlName="way_to_pay">
+                <nz-option nzValue="Zelle" nzLabel="Zelle"></nz-option>
+                <nz-option nzValue="Pago Movil" nzLabel="Pago Movil"></nz-option>
+                <nz-option nzValue="Transferencia" nzLabel="Transferencia"></nz-option>
+                <nz-option nzValue="Efectivo" nzLabel="Efectivo"></nz-option>
+              </nz-select>
+              <ng-template #way_to_payErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de pago!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="currency">Moneda</nz-form-label>
+            <nz-form-control [nzErrorTip]="currencyErrTemp">
+              <nz-select formControlName="currency">
+                <nz-option nzValue="$" nzLabel="$ Dolar"></nz-option>
+                <nz-option nzValue="Bs" nzLabel="Bs Bolivar"></nz-option>
+                <nz-option nzValue="€" nzLabel="€ Euro"></nz-option>
+              </nz-select>
+              <ng-template #currencyErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar una moneda!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div class="row" nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="24">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="reason">Descripcion</nz-form-label>
+            <nz-form-control [nzErrorTip]="reasonErrTemp">
+              <textarea rows="4" type="text" style="width: 100%" nz-input formControlName="reason"
+                        placeholder="Descripcion"></textarea>
+              <ng-template #reasonErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un motivo!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</nz-modal>
+

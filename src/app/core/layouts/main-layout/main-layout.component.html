@@ -13,44 +13,44 @@
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
 
-      <li nz-menu-item nzMatchRouter routerLink="/inicio" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/inicio" *ngIf="validateAccess('inicio')" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="appstore" nzTheme="outline"  style="margin-right: .5rem"> </span>
         <span style="width: 135px">Inicio</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/clientes" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/clientes" *ngIf="validateAccess('clientes')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="user" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Clientes</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/propietarios" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/propietarios" *ngIf="validateAccess('propietarios')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="solution" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Propietarios</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/usuarios" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/usuarios" *ngIf="validateAccess('usuarios')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="idcard" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Usuarios</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/asesores-externos" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/asesores-externos" *ngIf="validateAccess('asesores-externos')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="team" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Asesores externos</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/aliados" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/aliados" *ngIf="validateAccess('aliados')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="crown" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Aliados</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/propiedades" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/propiedades" *ngIf="validateAccess('propiedades')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="shop" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Propiedades</span>
       </li>
 
-      <li nz-menu-item nzMatchRouter routerLink="/administracion" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/administracion" *ngIf="validateAccess('administracion')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="folder" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Administracion</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/flujo-de-caja" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/flujo-de-caja" *ngIf="validateAccess('flujo-de-caja')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="credit-card" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Flujo de caja</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/calculo-de-comisiones" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/calculo-de-comisiones" *ngIf="validateAccess('calculo-de-comisiones')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="table" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Calculo de comisiones</span>
       </li>
@@ -84,7 +84,7 @@
         <div style="margin-right: .5rem;">
           <p class="user-name">{{user.username}}</p>
           <p class="user-role">
-            <span *ngFor="let role of user.user_type">{{role}}</span>
+            <span>{{user.user_type}}</span>
           </p>
         </div>
         <nz-avatar [nzText]="shortener(user.username)" nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomLeft" nzSize="large" style="color:#f56a00; background-color:#fde3cf;"></nz-avatar>
@@ -112,44 +112,44 @@
     <ng-container *nzDrawerContent>
       <ul nz-menu nzTheme="dark" nzMode="inline" >
 
-        <li nz-menu-item nzMatchRouter routerLink="/inicio" >
+        <li nz-menu-item nzMatchRouter routerLink="/inicio" *ngIf="validateAccess('inicio')"  >
           <span nz-icon nzType="appstore" nzTheme="outline"  style="margin-right: .5rem"> </span>
           <span style="width: 135px">Inicio</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/clientes">
+        <li nz-menu-item nzMatchRouter routerLink="/clientes" *ngIf="validateAccess('clientes')" >
           <span nz-icon nzType="user" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Clientes</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/propietarios">
+        <li nz-menu-item nzMatchRouter routerLink="/propietarios" *ngIf="validateAccess('propietarios')" >
           <span nz-icon nzType="solution" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Propietarios</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/usuarios">
+        <li nz-menu-item nzMatchRouter routerLink="/usuarios" *ngIf="validateAccess('usuarios')" >
           <span nz-icon nzType="idcard" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Usuarios</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/asesores-externos">
+        <li nz-menu-item nzMatchRouter routerLink="/asesores-externos" *ngIf="validateAccess('asesores-externos')" >
           <span nz-icon nzType="team" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Asesores externos</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/aliados">
+        <li nz-menu-item nzMatchRouter routerLink="/aliados" *ngIf="validateAccess('aliados')" >
           <span nz-icon nzType="crown" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Aliados</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/propiedades">
+        <li nz-menu-item nzMatchRouter routerLink="/propiedades" *ngIf="validateAccess('propiedades')" >
           <span nz-icon nzType="shop" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Propiedades</span>
         </li>
 
-        <li nz-menu-item nzMatchRouter routerLink="/administracion">
+        <li nz-menu-item nzMatchRouter routerLink="/administracion" *ngIf="validateAccess('administracion')" >
           <span nz-icon nzType="folder" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Administracion</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/flujo-de-caja">
+        <li nz-menu-item nzMatchRouter routerLink="/flujo-de-caja" *ngIf="validateAccess('flujo-de-caja')" >
           <span nz-icon nzType="credit-card" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Flujo de caja</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/calculo-de-comisiones">
+        <li nz-menu-item nzMatchRouter routerLink="/calculo-de-comisiones" *ngIf="validateAccess('calculo-de-comisiones')" >
           <span nz-icon nzType="table" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Calculo de comisiones</span>
         </li>

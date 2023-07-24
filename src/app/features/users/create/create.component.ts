@@ -4,6 +4,7 @@ import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import * as moment from "moment";
 import {UserService} from "../../../core/services/user.service";
+import {decryptValue, encryptValue} from "../../../shared/utils/crypto";
 
 interface Steps  {first: string, second: string, last: string}
 
@@ -26,7 +27,7 @@ export class CreateComponent implements OnInit {
     private userService: UserService,
     private uiService: UiService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
@@ -70,6 +71,7 @@ export class CreateComponent implements OnInit {
       this.loading = true;
       const data = {...this.generalForm.value, ...this.socialForm.value, ...this.personalForm.value};
       data.birthday = moment(data.birthday).format('YYYY-MM-DD');
+      data.password = encryptValue(data.password)
       if (this.isEditing) {
         this.userService.update(data).subscribe(result => {
           this.uiService.createMessage('success', 'Se edito el usuario con exito!')
@@ -103,7 +105,7 @@ export class CreateComponent implements OnInit {
       this.generalForm.get('username')?.patchValue(user.username)
       this.generalForm.get('firstName')?.patchValue(user.first_name)
       this.generalForm.get('lastName')?.patchValue(user.last_name)
-      this.generalForm.get('password')?.patchValue(user.password)
+      this.generalForm.get('password')?.patchValue(decryptValue(user.password))
       this.generalForm.get('email')?.patchValue(user.email)
       this.generalForm.get('phonNumber1')?.patchValue(user.phone_number1)
       this.generalForm.get('phonNumber2')?.patchValue(user.phone_number2)

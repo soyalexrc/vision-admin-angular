@@ -63,6 +63,7 @@ export class MainComponent implements OnInit, AfterViewInit{
     this.loading = true;
     this.userService.getAll().subscribe(data => {
         this.data = data.map(element => ({
+          id: element.id,
           username: element.username,
           name: element.first_name + ' ' + element.last_name,
           user_type: element.user_type,

@@ -13,10 +13,13 @@ export class GenericTableComponent implements OnInit {
   dragTrace: {src: number, dest: number} = {src: -1, dest: -1};
   @Input() loading!: boolean;
   @Input() xScroll: string = '1150px';
+  @Input() yScroll: string = '100%';
   @Input() changeActionTitle: string = '';
   @Input() linkActionTitle: string = '';
   @Input() historyActionTitle: string = '';
   @Input() actionsFixed: boolean = false;
+  @Input() hasEdit: boolean = true;
+  @Input() hasDelete: boolean = true;
   @Input() changeAction: boolean = false;
   @Input() linkAction: boolean = false;
   @Input() historyAction: boolean = false;

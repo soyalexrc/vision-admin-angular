@@ -9,9 +9,6 @@ import {setHeaders} from "../../../shared/utils/generic-table";
 import {Property, PropertyReview} from "../../../core/interfaces/property";
 import {PropertyService} from "../../../core/services/property.service";
 import * as moment from 'moment';
-import 'moment/locale/es-us.js';
-
-moment.locale('es-us')
 
 @Component({
   selector: 'app-main',

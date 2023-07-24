@@ -39,8 +39,9 @@ export class LoginComponent implements OnInit {
     }
 
     this.auth.login(this.username, this.password, this.remember).subscribe(data => {
-      // this.auth.setToken(data.id_token)
-      this.userService.updateCurrentUser(data.recordset[0]);
+      let date = new Date();
+      date.setDate(date.getDate() + 10);
+      this.userService.updateCurrentUser(this.userService.setAllowedRoutes({...data.recordset[0], exp: date.getTime(), allowedRoutes: []}));
       this.router.navigate(['/'])
       this.showMessage('success', `Bienvenid@, ${this.username}`)
 

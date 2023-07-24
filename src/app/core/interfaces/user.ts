@@ -21,6 +21,8 @@ export interface User {
   image?:            any;
   password:         string;
   sequence?:         number;
+  exp:               number;
+  allowedRoutes:    string[]
 }
 
 
