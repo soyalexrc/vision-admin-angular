@@ -4,7 +4,7 @@ import {mergeMap, Observable} from "rxjs";
 import {Ally, AllyToCreate, GetOneAllyResponse} from "../interfaces/ally";
 import {
   CashFlowRegister, GenericResponse, TemporalTransactionResponse,
-  TemporalTransactionToCreate, DeleteOneResponse,
+  TemporalTransactionToCreate, DeleteOneResponse, CashFlowTotals,
 } from "../interfaces/cashFlow";
 
 @Injectable({
@@ -42,5 +42,9 @@ export class CashFlowService {
 
   getTemporalTransactions(): Observable<CashFlowRegister[]> {
     return this.http.get<CashFlowRegister[]>('format/cashFlow/getAllByTemporalTransaction')
+  }
+
+  getTotals(): Observable<CashFlowTotals> {
+    return this.http.get<CashFlowTotals>('format/cashFlow/getTotals')
   }
 }

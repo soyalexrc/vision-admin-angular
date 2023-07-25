@@ -7,7 +7,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
 import {AllyService} from "../../../core/services/ally.service";
 import {UiService} from "../../../core/services/ui.service";
 import {ITableHeader} from "../../../core/interfaces/table";
-import {CashFlowRegister, Currency, Entity, WayToPay} from "../../../core/interfaces/cashFlow";
+import {CashFlowRegister, CashFlowTotals, Currency, Entity, WayToPay} from "../../../core/interfaces/cashFlow";
 import {CashFlowService} from "../../../core/services/cash-flow.service";
 import {Form, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {User} from "../../../core/interfaces/user";
@@ -24,10 +24,12 @@ export class MainComponent implements OnInit, AfterViewInit {
   loading = true;
   @ViewChild('dataTable') dataTable!: GenericTableComponent;
   data: Partial<CashFlowRegister>[] = [];
+  statsData!: CashFlowTotals;
   headers: any[] = [];
   showModal = false;
   transactionForm!: FormGroup;
   transferLoading = false;
+  loadingStats = true;
 
   constructor(
     private router: Router,
@@ -54,6 +56,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.getCashFlowData(this.dataValue);
+    this.getTotalStats()
   }
 
   handleNewMoneyTransfer() {
@@ -204,5 +207,24 @@ export class MainComponent implements OnInit, AfterViewInit {
           this.transferLoading = false;
         })
     }
+  }
+
+  getTotalStats() {
+    this.loadingStats = true;
+    this.cashFlowService.getTotals().subscribe(result => {
+      const data = {
+        ...result,
+        utilidad: {
+          USD: (result?.ingreso?.USD ?? 0) - (result?.cuentasPorCobrar?.USD ?? 0),
+          Bs: (result?.ingreso?.Bs ?? 0) - (result?.cuentasPorCobrar?.Bs ?? 0),
+          EUR: (result?.ingreso?.EUR ?? 0) - (result?.cuentasPorCobrar?.EUR ?? 0)
+        }
+      };
+      this.statsData = data;
+    }, () => {
+      this.loadingStats = false;
+    }, () => {
+      this.loadingStats = false;
+    })
   }
 }
