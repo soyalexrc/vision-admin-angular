@@ -21,7 +21,7 @@ export class CashFlowService {
   }
 
   createOne(data: CashFlowRegister): Observable<GenericResponse> {
-    return this.http.post<GenericResponse>('owner/addNewData', data)
+    return this.http.post<GenericResponse>('format/cashFlow/addNewData', data)
   }
 
   deleteOne(id: number): Observable<DeleteOneResponse> {
