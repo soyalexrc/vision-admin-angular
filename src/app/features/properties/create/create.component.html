@@ -568,8 +568,9 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="adviser">Asesor</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="adviser"
-                     placeholder="Asesor"/>
+              <nz-select formControlName="adviser">
+                <nz-option *ngFor="let adviser of advisers" [nzValue]="adviser.id" [nzLabel]="adviser.first_name + ' ' + adviser.last_name"></nz-option>
+              </nz-select>
             </nz-form-control>
           </nz-form-item>
         </div>

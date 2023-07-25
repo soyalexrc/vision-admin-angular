@@ -15,6 +15,8 @@ import {Ally} from "../../../core/interfaces/ally";
 import {AllyService} from "../../../core/services/ally.service";
 import {Owner} from "../../../core/interfaces/owner";
 import {OwnerService} from "../../../core/services/owner.service";
+import {Adviser} from "../../../core/interfaces/adviser";
+import {AdviserService} from "../../../core/services/adviser.service";
 
 interface Steps {
   first: string,
@@ -53,6 +55,7 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   allies: Ally[] = [];
   clients: Owner[] = [];
+  advisers: Adviser[] = [];
 
   @ViewChild('imageInputFile') imageInputFile!: ElementRef<HTMLInputElement>
   @ViewChild('documentInputFile') documentInputFile!: ElementRef<HTMLInputElement>
@@ -66,7 +69,8 @@ export class CreateComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private fileService: FileService,
     private allyService: AllyService,
-    private clientService: OwnerService
+    private clientService: OwnerService,
+    private adviserService: AdviserService
   ) {
   }
 
@@ -87,6 +91,10 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     this.clientService.getAll().subscribe(result => {
       this.clients = result;
+    })
+
+    this.adviserService.getAll().subscribe(result => {
+      this.advisers = result;
     })
 
 

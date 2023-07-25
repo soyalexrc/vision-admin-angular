@@ -17,6 +17,7 @@ import {NzInputModule} from "ng-zorro-antd/input";
 import { CreateComponent } from './create/create.component';
 import {NzStepsModule} from "ng-zorro-antd/steps";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
+import {NzSkeletonModule} from "ng-zorro-antd/skeleton";
 
 
 
@@ -26,23 +27,24 @@ import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
     OperationsResumeComponent,
     CreateComponent
   ],
-  imports: [
-    CommonModule,
-    CashFlowRoutingModule,
-    NzBreadCrumbModule,
-    SharedModule,
-    NzGridModule,
-    NzButtonModule,
-    FormsModule,
-    NzRadioModule,
-    NzModalModule,
-    NzSelectModule,
-    NzIconModule,
-    NzFormModule,
-    NzInputModule,
-    ReactiveFormsModule,
-    NzStepsModule,
-    NzDatePickerModule
-  ]
+    imports: [
+        CommonModule,
+        CashFlowRoutingModule,
+        NzBreadCrumbModule,
+        SharedModule,
+        NzGridModule,
+        NzButtonModule,
+        FormsModule,
+        NzRadioModule,
+        NzModalModule,
+        NzSelectModule,
+        NzIconModule,
+        NzFormModule,
+        NzInputModule,
+        ReactiveFormsModule,
+        NzStepsModule,
+        NzDatePickerModule,
+        NzSkeletonModule
+    ]
 })
 export class CashFlowModule { }

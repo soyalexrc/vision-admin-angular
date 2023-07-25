@@ -79,6 +79,20 @@ export interface TemporalTransactionResponse {
   ingreso: GenericResponse;
 }
 
+export interface CashFlowTotals {
+  ingreso:          CashFlowTotal;
+  egreso:           CashFlowTotal;
+  cuentasPorCobrar: CashFlowTotal;
+  cuentasPorPagar:  CashFlowTotal;
+  utilidad: CashFlowTotal;
+}
+
+export interface CashFlowTotal {
+  Bs:  number;
+  USD: number;
+  EUR: number;
+}
+
 
 export type TransactionType = "Cuenta por pagar" | "Ingreso" | "Egreso" | "Cuenta por cobrar";
 

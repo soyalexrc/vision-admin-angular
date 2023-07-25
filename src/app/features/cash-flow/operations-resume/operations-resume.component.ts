@@ -11,6 +11,7 @@ import {CashFlowService} from "../../../core/services/cash-flow.service";
 import groupBy from "../../../shared/utils/groupBy";
 import * as moment from 'moment';
 import {ExportExcelService} from "../../../core/services/export-excel.service";
+import {ExportPdfService} from "../../../core/services/export-pdf.service";
 
 @Component({
   selector: 'app-operations-resume',
@@ -26,7 +27,8 @@ export class OperationsResumeComponent implements AfterViewInit{
     private router: Router,
     private modal: NzModalService,
     private cashFlowService: CashFlowService,
-    private excelService: ExportExcelService
+    private excelService: ExportExcelService,
+    private pdfService: ExportPdfService
   ) {}
 
   ngAfterViewInit() {
@@ -64,9 +66,7 @@ export class OperationsResumeComponent implements AfterViewInit{
   }
 
   exportToExcel() {
-    console.log(this.data);
     const data = this.data.map((element: any) => ({
-      "id": element.id,
       "date": element.date,
       "amount": element.amount,
       "origin": element.origin,
@@ -75,4 +75,9 @@ export class OperationsResumeComponent implements AfterViewInit{
     }));
     this.excelService.exportToExcel(data, 'Reporte-' + new Date().getTime() + '.xlsx')
   }
-}
+
+  exportPDF() {
+    this.pdfService.updatePdfTable(['sample1', 'sampple2'])
+    this.router.navigate(['/export-pdf/table'])
+  }
+ }

@@ -78,6 +78,11 @@ const routes: Routes = [
     component: AuthLayoutComponent,
     loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule),
   },
+  {
+    path: 'export-pdf',
+    canActivateChild: [AuthenticationGuard],
+    loadChildren: () => import('./features/pdf/pdf.module').then(m => m.PdfModule),
+  },
   { path: '**', redirectTo: '' }
 ];
 
