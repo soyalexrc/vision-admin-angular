@@ -20,7 +20,7 @@
   }} de propiedad
 </h2>
 
-<nz-steps nzSize="small" [nzCurrent]="index" (nzIndexChange)="onIndexChange($event)">
+<nz-steps nzSize="small" [nzCurrent]="index" >
   <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
   <nz-step nzTitle="Ubicacion" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
   <nz-step nzTitle="Fotografias" [nzStatus]="getStatusBasedOnIndex(index).third"></nz-step>
@@ -781,12 +781,31 @@
   </form>
 </ng-container>
 
-<div style="display: flex; justify-content: center">
-  <div style="width: 900px;">
+<div style="display: flex; justify-content: center; margin-top: 2rem">
+  <div style="width: 900px; display: flex; justify-content: space-between">
+    <div>
+      <button
+        nz-button
+        nzType="default"
+        *ngIf="index > 0"
+        (click)="goPrev()"
+      >
+        Anterior
+      </button>
+    </div>
     <button
       nz-button
+      *ngIf="index !== 6"
       nzType="primary"
-      nzBlock
+      [disabled]="handleGoNextButtonDisabled()"
+      (click)="goNext()"
+    >
+      Siguiente
+    </button>
+    <button
+      nz-button
+      *ngIf="index === 6"
+      nzType="primary"
       (click)="submitForm()"
       [disabled]="generalForm.invalid || locationForm.invalid || negotiationForm.invalid"
       [nzLoading]="loading">Guardar cambios</button>

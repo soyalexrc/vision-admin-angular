@@ -504,4 +504,42 @@ export class CreateComponent implements OnInit, OnDestroy {
     })
   }
 
+  goPrev() {
+    this.index -= 1;
+  }
+
+  goNext() {
+    this.index += 1;
+  }
+
+  handleGoNextButtonDisabled(): boolean {
+
+    let bool = true;
+
+    if (this.index === 0) {
+      bool = this.generalForm.invalid
+    }
+
+    if (this.index === 1 ) {
+      bool = this.locationForm.invalid
+    }
+
+    if (this.index === 2) {
+      bool = this.images.length < 1
+    }
+
+    if (this.index === 3) {
+      bool = false
+    }
+
+    if (this.index === 4) {
+      bool = this.negotiationForm.invalid;
+    }
+
+    if (this.index === 5) {
+      bool = false
+    }
+
+    return bool;
+  }
 }
