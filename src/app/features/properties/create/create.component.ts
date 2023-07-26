@@ -1,16 +1,12 @@
 import {Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UserService} from "../../../core/services/user.service";
 import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import * as moment from "moment/moment";
 import {PropertyService} from "../../../core/services/property.service";
 import {v4 as uuidv4} from 'uuid';
 import {FileService} from "../../../core/services/file.service";
-import {Category, FormType, Image, PropertyType} from "../../../core/interfaces/property";
+import {Image, PropertyType} from "../../../core/interfaces/property";
 import {Subscription} from "rxjs";
-import {NzImageService} from "ng-zorro-antd/image";
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {Ally} from "../../../core/interfaces/ally";
 import {AllyService} from "../../../core/services/ally.service";
 import {Owner} from "../../../core/interfaces/owner";
@@ -40,8 +36,6 @@ export class CreateComponent implements OnInit, OnDestroy {
   negotiationForm!: FormGroup;
   documentsForm!: FormGroup;
   publicationSourceForm!: FormGroup;
-  personalForm!: FormGroup;
-  socialForm!: FormGroup;
   loading = false;
   loadingImage = false;
   loadingDocument = false;
@@ -56,6 +50,10 @@ export class CreateComponent implements OnInit, OnDestroy {
   allies: Ally[] = [];
   clients: Owner[] = [];
   advisers: Adviser[] = [];
+
+  showRegisterClientsModal = false;
+  clientsLoading = true;
+
 
   @ViewChild('imageInputFile') imageInputFile!: ElementRef<HTMLInputElement>
   @ViewChild('documentInputFile') documentInputFile!: ElementRef<HTMLInputElement>
@@ -84,18 +82,9 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     this.buildForms();
 
-
-    this.allyService.getAll().subscribe(result => {
-      this.allies = result;
-    })
-
-    this.clientService.getAll().subscribe(result => {
-      this.clients = result;
-    })
-
-    this.adviserService.getAll().subscribe(result => {
-      this.advisers = result;
-    })
+    this.getAdvisers();
+    this.getClients();
+    this.getAllies();
 
 
     if (!this.router.url.includes('crear')) {
@@ -129,7 +118,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       footageGround: [''],
       nomenclature: [''],
       propertyCondition: [''],
-      operationType: ['' ,Validators.required],
+      operationType: ['', Validators.required],
       property_status: [''],
       propertyType: ['', Validators.required],
     })
@@ -483,10 +472,36 @@ export class CreateComponent implements OnInit, OnDestroy {
       name: `${ally.first_name} ${ally.last_name}`
     }
   }
+
   getClientValue(client: Owner) {
     return {
       id: client.id,
       name: `${client.first_name} ${client.last_name}`
     }
   }
+
+
+  getClients() {
+    this.clientsLoading = true;
+    this.clientService.getAll().subscribe(result => {
+      this.clients = result;
+    }, () => {
+      this.clientsLoading = false;
+    }, () => {
+      this.clientsLoading = false;
+    })
+  }
+
+  getAllies() {
+    this.allyService.getAll().subscribe(result => {
+      this.allies = result;
+    })
+  }
+
+  getAdvisers() {
+    this.adviserService.getAll().subscribe(result => {
+      this.advisers = result;
+    })
+  }
+
 }
