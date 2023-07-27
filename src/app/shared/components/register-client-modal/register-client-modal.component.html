@@ -1,0 +1,16 @@
+
+<nz-modal
+  [nzStyle]="{width: '500px'}"
+  [(nzVisible)]="showModal"
+  nzTitle="Datos de traslado"
+  (nzOnCancel)="onCancel.emit(false)"
+  (nzOnOk)="handleOkModal()"
+  nzOkText="Registrar"
+  [nzOkLoading]="loading"
+  nzCancelText="Cancelar"
+  [nzOkDisabled]="form.invalid"
+>
+  <ng-container *nzModalContent>
+    <p>formulario de clientes aqui!</p>
+  </ng-container>
+</nz-modal>

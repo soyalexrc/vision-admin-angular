@@ -20,7 +20,7 @@
   }} de propiedad
 </h2>
 
-<nz-steps [nzCurrent]="index" (nzIndexChange)="onIndexChange($event)">
+<nz-steps nzSize="small" [nzCurrent]="index" >
   <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
   <nz-step nzTitle="Ubicacion" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
   <nz-step nzTitle="Fotografias" [nzStatus]="getStatusBasedOnIndex(index).third"></nz-step>
@@ -601,7 +601,7 @@
 
       <div style="display: flex; align-items: center; justify-content: space-between">
         <h3>Datos de cliente</h3>
-        <button nz-button nzType="link" >
+        <button nz-button nzType="link" (click)="showRegisterClientsModal = true">
           <span nz-icon nzType="plus"></span>
           Registrar nuevo cliente
         </button>
@@ -612,7 +612,7 @@
         <div nz-col [nzSpan]="10">
           <nz-form-item style="margin: 1rem 0">
             <nz-form-control >
-              <nz-select formControlName="client" >
+              <nz-select formControlName="client" [nzLoading]="clientsLoading">
                 <nz-option *ngFor="let client of clients" [nzValue]="client.id" [nzLabel]="client.first_name + ' ' + client.last_name"></nz-option>
               </nz-select>
             </nz-form-control>
@@ -781,16 +781,38 @@
   </form>
 </ng-container>
 
-<div style="display: flex; justify-content: center">
-  <div style="width: 900px;">
+<div style="display: flex; justify-content: center; margin-top: 2rem">
+  <div style="width: 900px; display: flex; justify-content: space-between">
+    <div>
+      <button
+        nz-button
+        nzType="default"
+        *ngIf="index > 0"
+        (click)="goPrev()"
+      >
+        Anterior
+      </button>
+    </div>
     <button
       nz-button
+      *ngIf="index !== 6"
       nzType="primary"
-      nzBlock
+      [disabled]="handleGoNextButtonDisabled()"
+      (click)="goNext()"
+    >
+      Siguiente
+    </button>
+    <button
+      nz-button
+      *ngIf="index === 6"
+      nzType="primary"
       (click)="submitForm()"
       [disabled]="generalForm.invalid || locationForm.invalid || negotiationForm.invalid"
       [nzLoading]="loading">Guardar cambios</button>
   </div>
 </div>
+
+<app-register-client-modal (onFinished)="getClients()" (onCancel)="showRegisterClientsModal = $event" [showModal]="showRegisterClientsModal"></app-register-client-modal>
+
 
 
