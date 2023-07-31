@@ -25,11 +25,11 @@ export class CashFlowService {
   }
 
   deleteOne(id: number): Observable<DeleteOneResponse> {
-    return this.http.delete<DeleteOneResponse>(`owner/deleteData?id=${id}`);
+    return this.http.delete<DeleteOneResponse>(`format/cashFlow/deleteData?id=${id}`);
   }
 
   getById(id: string): Observable<GetOneAllyResponse> {
-    return this.http.get<GetOneAllyResponse>(`owner/getById?id=${id}`)
+    return this.http.get<GetOneAllyResponse>(`format/cashFlow/getById?id=${id}`)
   }
 
   update(data: Ally): Observable<AllyToCreate> {

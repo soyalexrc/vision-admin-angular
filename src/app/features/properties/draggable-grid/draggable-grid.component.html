@@ -25,8 +25,8 @@
 <div class="images-grid" >
   <div class="img-container" *ngFor="let image of elements; index as i">
     <div  class="img-item">
-      <img *ngIf="!image.imageData.includes('pdf')" width="200px" height="200px" [src]="setImageUrl(image.imageData)" [alt]="image.imageData">
-      <div *ngIf="image.imageData.includes('pdf')" style="width: 200px; height: 200px">
+      <img *ngIf="!image.id.includes('pdf')" width="200px" height="200px" [src]="setImageUrl(image.id)" [alt]="image.id">
+      <div *ngIf="image.id.includes('pdf')" style="width: 200px; height: 200px">
         <span nz-icon nzType="file-pdf" [nzTheme]="'twotone'" nzTheme="outline" style="position: absolute; top: 50%; left: 50%; font-size: 30px"></span>
       </div>
       <div class="img-overlay">

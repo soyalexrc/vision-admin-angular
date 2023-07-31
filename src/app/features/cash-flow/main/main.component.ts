@@ -79,8 +79,9 @@ export class MainComponent implements OnInit, AfterViewInit {
       nzOkText: 'Aceptar',
       nzOnOk: () => new Promise((resolve, reject) => {
         this.cashFlowService.deleteOne(id).subscribe(result => {
-          this.uiService.createMessage('success', 'Se elimino el aliado con exito!')
+          this.uiService.createMessage('success', 'Se elimino la transaccion con exito!')
           this.getCashFlowData(this.dataValue)
+          this.getTotalStats();
           setTimeout(() => resolve(), 500);
         })
       })

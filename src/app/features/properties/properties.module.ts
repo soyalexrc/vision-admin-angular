@@ -11,7 +11,7 @@ import {NzFormModule} from "ng-zorro-antd/form";
 import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzSelectModule} from "ng-zorro-antd/select";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NzButtonModule} from "ng-zorro-antd/button";
 import {NzIconModule} from "ng-zorro-antd/icon";
 import {NzUploadModule} from "ng-zorro-antd/upload";
@@ -21,6 +21,10 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
 import {CdkDrag, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
 import { DraggableGridComponent } from './draggable-grid/draggable-grid.component';
 import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
+import {NzModalModule} from "ng-zorro-antd/modal";
+import { StatusHistoryComponent } from './status-history/status-history.component';
+import { StatusBadgeComponent } from './status-badge/status-badge.component';
+import {NzTagModule} from "ng-zorro-antd/tag";
 
 
 
@@ -29,7 +33,9 @@ import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
     MainComponent,
     CreateComponent,
     PreviewComponent,
-    DraggableGridComponent
+    DraggableGridComponent,
+    StatusHistoryComponent,
+    StatusBadgeComponent
   ],
   imports: [
     CommonModule,
@@ -52,7 +58,10 @@ import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
     CdkDropList,
     CdkDrag,
     CdkDropListGroup,
-    NzCheckboxModule
+    NzCheckboxModule,
+    NzModalModule,
+    FormsModule,
+    NzTagModule
   ]
 })
 export class PropertiesModule { }

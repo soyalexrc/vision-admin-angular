@@ -1,4 +1,3 @@
-
 <nz-breadcrumb>
   <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
   <nz-breadcrumb-item>Propiedades</nz-breadcrumb-item>
@@ -26,3 +25,40 @@
                    (onLink)="handlePreview($event)"
                    (onHistory)="handleHistory($event)"
 ></app-generic-table>
+
+
+<nz-modal
+  [nzStyle]="{width: '500px'}"
+  [(nzVisible)]="showChangeStatusModal"
+  [nzTitle]="modalTitle"
+  (nzOnCancel)="handleCancelChangeStatusModal()"
+  (nzOnOk)="handleOkChangeStatusModal()"
+  nzOkText="Guardar estatus"
+  [nzOkLoading]="changeStatusLoading"
+  nzCancelText="Cancelar"
+  [nzOkDisabled]="selectedStatus === null"
+>
+  <ng-container *nzModalContent>
+    <nz-select [(ngModel)]="selectedStatus" style="width: 100%">
+      <nz-option nzLabel="Activo" nzValue="Activo"></nz-option>
+      <nz-option nzLabel="Incompleto" nzValue="Incompleto"></nz-option>
+      <nz-option nzLabel="Reservado" nzValue="Reservado"></nz-option>
+      <nz-option nzLabel="Suspendido" nzValue="Suspendido"></nz-option>
+      <nz-option nzLabel="Cerrado por Vision doble punta" nzValue="Cerrado por Vision doble punta"></nz-option>
+      <nz-option nzLabel="Cerrado por Vision (punta única)" nzValue="Cerrado por Vision (punta única)"></nz-option>
+      <nz-option nzLabel="Cerrado fuera de Vision" nzValue="Cerrado fuera de Vision"></nz-option>
+    </nz-select>
+
+
+    <textarea  placeholder="Agregar comentarios" rows="4" type="text" style="width: 100%; margin: 1rem 0" nz-input [(ngModel)]="comments"></textarea>
+
+  </ng-container>
+</nz-modal>
+
+<ng-template #modalTitle>
+  <div class="modal-title-container">
+    <p class="modal-title">Estatus de propiedad</p>
+    <nz-tag [nzColor]="getColorByStatus()">{{currentStatus}}</nz-tag>
+  </div>
+</ng-template>
+

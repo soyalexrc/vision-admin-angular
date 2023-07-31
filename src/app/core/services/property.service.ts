@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {CreationOwnerResponse, GetOneOwnerResponse, Owner, OwnerToCreate} from "../interfaces/owner";
@@ -8,7 +8,7 @@ import {
   GetPropertyPreviewResponse,
   PropertyToCreate,
   PropertyType,
-  DeleteOneResponse
+  DeleteOneResponse, PropertyStatus, UpdatePropertyHistoryPayload, PropertyStatusItem
 } from "../interfaces/property";
 
 @Injectable({
@@ -17,8 +17,9 @@ import {
 export class PropertyService {
 
   constructor(
-    private  http: HttpClient
-  ) { }
+    private http: HttpClient
+  ) {
+  }
 
   // TODO types de filtros
 
@@ -34,15 +35,27 @@ export class PropertyService {
     return this.http.delete<DeleteOneResponse>(`property/deleteData?id=${id}`);
   }
 
-  getById(id: string): Observable<GetOneOwnerResponse> {
-    return this.http.get<GetOneOwnerResponse>(`property/getById?id=${id}`)
+  getById(id: string): Observable<PropertyToCreate> {
+    return this.http.get<PropertyToCreate>(`property/getById?id=${id}`)
   }
 
   update(data: PropertyToCreate): Observable<CreationPropertyResponse> {
     return this.http.put<CreationPropertyResponse>(`property/updateData`, data);
   }
 
-  getAttributesByPropertyType(propertyType: PropertyType) : Observable<Attribute[]> {
+  getAttributesByPropertyType(propertyType: PropertyType): Observable<Attribute[]> {
     return this.http.get<Attribute[]>(`attribute/getAllDataByPropertyType?propertyType=${propertyType}`)
+  }
+
+  updateStatus(id: string | number, status: PropertyStatus): Observable<DeleteOneResponse> {
+    return this.http.put<DeleteOneResponse>(`property/updateStatus`, {id, property_status: status})
+  }
+
+  updateHistory(payload: UpdatePropertyHistoryPayload): Observable<any> {
+    return this.http.post(`property/addHistoric`, payload)
+  }
+
+  getPropertyStatusHistory(id: string | number) : Observable<PropertyStatusItem[]> {
+    return this.http.get<PropertyStatusItem[]>(`property/getHistoricByPropertyId?property_id=${id}`)
   }
 }

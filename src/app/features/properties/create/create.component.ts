@@ -119,7 +119,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       nomenclature: [''],
       propertyCondition: [''],
       operationType: ['', Validators.required],
-      property_status: [''],
+      property_status: ['Incompleto'],
       propertyType: ['', Validators.required],
     })
 
@@ -226,8 +226,77 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   getUserById(id: string) {
     this.propertyService.getById(id).subscribe(result => {
-      const property = result.recordset[0];
-      this.generalForm.get('id')?.patchValue(property.id)
+      this.generalForm.get('code')?.patchValue(result.property.code);
+      this.generalForm.get('nomenclature')?.patchValue(result.property.nomenclature);
+      this.generalForm.get('footageBuilding')?.patchValue(result.property.footageBuilding);
+      this.generalForm.get('footageGround')?.patchValue(result.property.footageGround);
+      this.generalForm.get('distributionComments')?.patchValue(result.property.distributionComments);
+      this.generalForm.get('description')?.patchValue(result.property.description);
+      this.generalForm.get('propertyType')?.patchValue(result.property.propertyType);
+      this.generalForm.get('operationType')?.patchValue(result.property.operationType);
+      this.generalForm.get('propertyCondition')?.patchValue(result.property.propertyCondition);
+
+      this.locationForm.get('city')?.patchValue(result.location.city);
+      this.locationForm.get('state')?.patchValue(result.location.state);
+      this.locationForm.get('country')?.patchValue(result.location.country);
+      this.locationForm.get('municipality')?.patchValue(result.location.municipality);
+      this.locationForm.get('avenue')?.patchValue(result.location.avenue);
+      this.locationForm.get('street')?.patchValue(result.location.street);
+      this.locationForm.get('floor')?.patchValue(result.location.floor);
+      this.locationForm.get('buildingNumber')?.patchValue(result.location.buildingNumber);
+      this.locationForm.get('hotToGet')?.patchValue(result.location.hotToGet);
+      this.locationForm.get('urbanization')?.patchValue(result.location.urbanization);
+      this.locationForm.get('trunkNumber')?.patchValue(result.location.trunkNumber);
+      this.locationForm.get('trunkLevel')?.patchValue(result.location.trunkLevel);
+      this.locationForm.get('referencePoint')?.patchValue(result.location.referencePoint);
+      this.locationForm.get('buildingShoppingcenter')?.patchValue(result.location.buildingShoppingcenter);
+
+      result.attributes.forEach(attr => {
+        this.attributes.push(this.fb.group({
+          id: [attr.id],
+          property_type: [attr.property_type],
+          form_type: [attr.form_type],
+          label: [attr.label],
+          category: [attr.category],
+          placeholder: [attr.placeholder],
+          values: [attr.values],
+          value: [null],
+        }))
+      })
+
+      result.images.forEach(image => {
+        this.fileService.storeImage(image);
+      });
+
+      this.negotiationForm.get('price')?.patchValue(result.clientData.price);
+      this.negotiationForm.get('partOfPayment')?.patchValue(result.clientData.partOfPayment);
+      this.negotiationForm.get('comission')?.patchValue(result.clientData.comission);
+      this.negotiationForm.get('minimunNegotiation')?.patchValue(result.clientData.minimunNegotiation);
+      this.negotiationForm.get('reasonToSellOrRent')?.patchValue(result.clientData.reasonToSellOrRent);
+      this.negotiationForm.get('adviser')?.patchValue(result.clientData.adviser);
+      this.negotiationForm.get('ally')?.patchValue(result.clientData.ally);
+      this.negotiationForm.get('externalCapacitor')?.patchValue(result.clientData.externalCapacitor);
+      this.negotiationForm.get('client')?.patchValue(result.clientData.client);
+      this.negotiationForm.get('attorneyEmail')?.patchValue(result.clientData.attorneyEmail);
+      this.negotiationForm.get('attorneyFirstName')?.patchValue(result.clientData.attorneyFirstName);
+      this.negotiationForm.get('attorneyLastName')?.patchValue(result.clientData.attorneyLastName);
+      this.negotiationForm.get('attorneyCellPhone')?.patchValue(result.clientData.attorneyCellPhone);
+      this.negotiationForm.get('contactEmail')?.patchValue(result.clientData.contactEmail);
+      this.negotiationForm.get('contactFirstName')?.patchValue(result.clientData.contactFirstName);
+      this.negotiationForm.get('contactLastName')?.patchValue(result.clientData.contactLastName);
+      this.negotiationForm.get('contactCellPhone')?.patchValue(result.clientData.contactCellPhone);
+
+      result.files.forEach(file => {
+        this.fileService.storeDocument(file);
+      });
+
+      this.publicationSourceForm.get('conlallave')?.patchValue(result.publicationSource.conlallave)
+      this.publicationSourceForm.get('facebook')?.patchValue(result.publicationSource.facebook)
+      this.publicationSourceForm.get('instagram')?.patchValue(result.publicationSource.instagram)
+      this.publicationSourceForm.get('tiktok')?.patchValue(result.publicationSource.tiktok)
+      this.publicationSourceForm.get('mercadolibre')?.patchValue(result.publicationSource.mercadolibre)
+      this.publicationSourceForm.get('whatsapp')?.patchValue(result.publicationSource.whatsapp)
+
     })
   }
 
@@ -359,8 +428,8 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     let obj: any = {
       id: '',
-      imageType: '',
-      imageData: ''
+      imageData: '',
+      imageType: ''
     }
     const {files} = event.target;
 
@@ -370,9 +439,9 @@ export class CreateComponent implements OnInit, OnDestroy {
           const reader = new FileReader();
           reader.readAsDataURL(files[i]);
           reader.onload = async () => {
-            obj.imageType = files[i].type;
             obj.imageData = reader.result;
             obj.id = uuidv4();
+            obj.imageType = files[i].type
             this.fileService.uploadFile(obj).subscribe(result => {
                 if (type === 'image') {
                   this.fileService.storeImage({
@@ -389,6 +458,8 @@ export class CreateComponent implements OnInit, OnDestroy {
                 }
               },
               () => {
+                this.loadingImage = false;
+                this.uiService.createMessage('error', 'No se logro subir la imagen, ocurrio un error. Intenalo de nuevo')
               },
               () => {
                 if (i === files.length - 1) {
