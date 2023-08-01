@@ -213,6 +213,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   getTotalStats() {
     this.loadingStats = true;
     this.cashFlowService.getTotals().subscribe(result => {
+      console.log(result);
       const data = {
         ...result,
         utilidad: {
