@@ -6,7 +6,12 @@ import {NzModalService} from "ng-zorro-antd/modal";
 import {UserService} from "../../../core/services/user.service";
 import {UiService} from "../../../core/services/ui.service";
 import {setHeaders} from "../../../shared/utils/generic-table";
-import {Property, PropertyReview} from "../../../core/interfaces/property";
+import {
+  Property,
+  PropertyReview,
+  PropertyStatus,
+  UpdatePropertyHistoryPayload
+} from "../../../core/interfaces/property";
 import {PropertyService} from "../../../core/services/property.service";
 import * as moment from 'moment';
 
@@ -20,11 +25,21 @@ export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('dataTable') dataTable!: GenericTableComponent;
   data: Partial<PropertyReview>[]  = [];
   headers: any[] = [];
+  showChangeStatusModal = false;
+  changeStatusLoading = false;
+  currentStatus!: PropertyStatus;
+  selectedStatus: PropertyStatus | null = null;
+  currentId: any = null;
+  comments = '';
+  showSetCommissionModal = false;
+  currentProperty!: PropertyReview;
+
   constructor(
     private router: Router,
     private modal: NzModalService,
     private propertyService: PropertyService,
-    private uiService: UiService
+    private uiService: UiService,
+    private userService: UserService
   ) {}
 
 
@@ -45,7 +60,12 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   handleChangeStatus(property: PropertyReview) {
-    console.log(property)
+    this.currentProperty = property;
+    this.propertyService.storePropertyReview(property);
+    this.showChangeStatusModal = true;
+    this.currentStatus = property.property_status as PropertyStatus;
+    this.selectedStatus = property.property_status as PropertyStatus;
+    this.currentId = property.id;
   }
 
   handleDelete(id: number) {
@@ -105,7 +125,6 @@ export class MainComponent implements OnInit, AfterViewInit {
           {key: 'adviser', displayName: 'Asesor'},
           {key: 'externalCapacitur', displayName: 'Capacitador externo'},
           {key: 'operationReason', displayName: 'Motivo de operacion'},
-          {key: 'operationReason', displayName: 'Motivo de operacion'},
           {key: 'property_status', displayName: 'Estatus'},
           {key: 'documentStatus', displayName: 'Estatus de documentos'},
           {key: 'nomenclature', displayName: 'Nomenclatura'},
@@ -125,7 +144,90 @@ export class MainComponent implements OnInit, AfterViewInit {
     )
   }
 
-  handleHistory(property: Partial<Property>) {
-    console.log(property)
+  handleHistory(property: Partial<PropertyReview>) {
+    this.router.navigate([`/propiedades/historial/${property.id}`])
+  }
+
+  handleCancelChangeStatusModal() {
+    this.showChangeStatusModal = false;
+    this.selectedStatus = null;
+  }
+
+  handleOkChangeStatusModal() {
+    this.changeStatusLoading = true;
+
+    if (this.selectedStatus === 'Cerrado por Vision (punta única)' || this.selectedStatus === 'Cerrado por Vision doble punta') {
+      this.changeStatusLoading = false;
+      this.showSetCommissionModal = true;
+      return;
+    }
+    this.changeStatusProperty();
+  }
+
+
+  getColorByStatus(): string {
+    switch (this.currentStatus) {
+      case 'Activo' :
+        return 'green';
+        break;
+
+      case 'Incompleto':
+        return 'gold';
+        break;
+
+      case "Reservado":
+        return 'orange';
+        break;
+
+      case "Suspendido":
+        return 'red';
+        break;
+
+      case "Cerrado fuera de Vision":
+        return 'magenta';
+        break;
+
+      case "Cerrado por Vision (punta única)":
+        return 'magenta';
+        break;
+
+      case "Cerrado por Vision doble punta":
+        return 'magenta';
+        break;
+
+      default:
+        return 'blue';
+    }
+  }
+
+  changeStatusProperty() {
+    this.propertyService.updateStatus(this.currentId, this.selectedStatus!).subscribe(result => {
+      this.showChangeStatusModal = false;
+      this.uiService.createMessage('success', 'Se edito el estatus de la propiedad con exito!');
+      const payload: UpdatePropertyHistoryPayload = {
+        comments: this.comments,
+        status: this.selectedStatus!,
+        property_id: this.currentId,
+        user_id: this.userService.currentUser?.value?.id,
+        username: this.userService.currentUser?.value?.username
+
+      };
+      this.propertyService.updateHistory(payload).subscribe(res => {
+        this.uiService.createMessage('success', 'Se actualizo el hostorial de la propiedad!');
+      })
+      this.getPropertiesPreview();
+    }, () => {
+      this.changeStatusLoading = false;
+    }, () => {
+      this.changeStatusLoading = false;
+    })
+  }
+
+  handleCancelSetCommission() {
+    this.showSetCommissionModal = false;
+  }
+
+  handleSetCommission() {
+    this.showSetCommissionModal = false;
   }
 }

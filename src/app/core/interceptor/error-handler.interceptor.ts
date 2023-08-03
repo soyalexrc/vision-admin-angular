@@ -19,6 +19,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
       tap(
         () => {},
         (err: any) => {
+          console.log(err);
           if (err instanceof HttpErrorResponse) {
             if (err.status === 404) {
               // alert('ocurrio un error 404')

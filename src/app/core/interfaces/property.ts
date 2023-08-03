@@ -48,7 +48,18 @@ export type FormType = "text" | "select" | "check";
 
 export type PropertyType = "Apartamento" | "Locales Comerciales";
 
+export type PropertyStatus =
+  "Activo"
+  | "Incompleto"
+  | "Reservado"
+  | "Suspendido"
+  | "Cerrado por Vision doble punta"
+  | "Cerrado por Vision (punta única)"
+  | "Cerrado fuera de Vision"
+
 export interface Location {
+  location:             string;
+  isClosedStreet:       string;
   country:                string;
   state:                  string;
   municipality:           string;
@@ -77,12 +88,20 @@ export interface PropertyToCreate {
   publicationSource: PublicationSource;
   images:            Image[];
   attributes:        Attribute[];
-  files:             any[];
+  files:             Image[];
 }
 
 
 export interface ClientData {
+  price:                string;
+  minimunNegotiation:   string;
+  adviser:              number;
+  externalCapacitor:    string;
+  ally:                 number;
+  client:                 number;
+  owner:                number;
   comission:         string;
+  reasonToSellOrRent:         string;
   firstName:         string;
   lastName:          string;
   cellPhone:         string;
@@ -102,7 +121,9 @@ export interface ClientData {
 export interface Image {
   id:        string;
   imageData: string;
-  imageType: string;
+  imageType?: string;
+  name?: string;
+  label?: string;
 }
 
 
@@ -117,15 +138,6 @@ export interface Property {
   operationType:        string;
   propertyType:         PropertyType;
   propertyCondition:    string;
-  isClosedStreet:       string;
-  location:             string;
-  price:                string;
-  minimunNegotiation:   string;
-  observations:         string;
-  adviser:              number;
-  externalCapacitor:    string;
-  ally:                 number;
-  owner:                number;
 }
 
 export interface PublicationSource {
@@ -157,6 +169,20 @@ export interface Output {
 
 export interface Recordset {
   ID: number;
+}
+
+export interface UpdatePropertyHistoryPayload {
+  comments: string;
+  property_id: string | number;
+  status: PropertyStatus;
+  user_id: string | number;
+  username: string;
+}
+
+export interface PropertyStatusItem extends UpdatePropertyHistoryPayload{
+  created_date: Date;
+  id: number;
+  user_Id: number;
 }
 
 

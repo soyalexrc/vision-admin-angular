@@ -1,0 +1,24 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
+  <nz-breadcrumb-item>
+    <a routerLink="/propiedades">Propiedades</a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>Historial de propiedad</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+
+<app-section-title
+  [title]="'Historial de propiedad'"
+  (onRefresh)="getPropertyHistory()"
+></app-section-title>
+
+<!--<div style="display: flex; justify-content: flex-end; margin: 1rem 0; gap: 1rem;">-->
+<!--  <button nz-button nzType="default" (click)="exportToExcel()">Exportar Excel</button>-->
+<!--  <button nz-button nzType="default" (click)="exportPDF()">Exportar PDF</button>-->
+<!--</div>-->
+<app-generic-table #dataTable
+                   xScroll="1000px"
+                   [hasDelete]="false"
+                   [hasEdit]="false"
+                   [loading]="loading"
+></app-generic-table>

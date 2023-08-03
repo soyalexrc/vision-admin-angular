@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import {MainComponent} from "./main/main.component";
 import {CreateComponent} from "./create/create.component";
 import {PreviewComponent} from "./preview/preview.component";
+import {StatusHistoryComponent} from "./status-history/status-history.component";
 
 const routes: Routes = [
   {
@@ -20,6 +21,10 @@ const routes: Routes = [
   {
     path: 'vista-previa/:id',
     component: PreviewComponent,
+  },
+  {
+    path: 'historial/:id',
+    component: StatusHistoryComponent,
   },
 ];
 

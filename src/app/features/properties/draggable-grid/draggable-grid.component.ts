@@ -128,7 +128,7 @@ export class DraggableGridComponent implements AfterViewInit {
 
 showPreview(image: Image) {
     const img = [{
-      src: this.setImageUrl(image.imageData),
+      src: this.setImageUrl(image.id.includes('pdf') ? image.name! : image.imageData),
       width: '600px',
       height: '600px',
       alt: 'sample'

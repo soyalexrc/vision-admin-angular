@@ -17,6 +17,7 @@
   <button nz-button nzType="default" (click)="exportPDF()">Exportar PDF</button>
 </div>
 <app-generic-table #dataTable
+                   xScroll="1000px"
                    [hasDelete]="false"
                    [hasEdit]="false"
                    [loading]="loading"
