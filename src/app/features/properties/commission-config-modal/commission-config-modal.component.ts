@@ -54,6 +54,9 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
       finalPrice: ['', Validators.required],
       commissionPercentage: [{value: '', disabled: false}, Validators.required],
       commissionAmount: [{value: '', disabled: true}, Validators.required],
+      subtotalCommissionAmount: [{value: '', disabled: true}, Validators.required],
+      operationExpense: [''],
+      operationExpenseDetail: [''],
       propertyAdviser: ['', Validators.required],
       clientAdviser: ['', Validators.required],
       propertyAdviserAttention: [{value: true, disabled: true}, Validators.required],
@@ -69,17 +72,17 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
       clientAdviserFinalCommission: [''],
     })
 
-    this.allowedEditionSubscription = this.allowedEdition.subscribe(value => {
-      if (value === 'Amount') {
-        this.getCommissionPercentage?.disable()
-        this.getCommissionAmount?.enable()
-        this.typeOFAllowedEdition = true;
-      } else {
-        this.getCommissionPercentage?.enable()
-        this.getCommissionAmount?.disable()
-        this.typeOFAllowedEdition = false;
-      }
-    })
+    // this.allowedEditionSubscription = this.allowedEdition.subscribe(value => {
+    //   if (value === 'Amount') {
+    //     this.getCommissionPercentage?.disable()
+    //     this.getSubtotalCommissionAmount?.enable()
+    //     this.typeOFAllowedEdition = true;
+    //   } else {
+    //     this.getCommissionPercentage?.enable()
+    //     this.getSubtotalCommissionAmount?.disable()
+    //     this.typeOFAllowedEdition = false;
+    //   }
+    // })
 
     this.getCommissionAmount?.valueChanges.subscribe(value => {
       this.propertyAdviserFinalCommission?.patchValue(value / 2);
@@ -119,7 +122,7 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
       this.property = property
       // this.getFinalPrice?.patchValue(this.property?.price);
       // if (property?.operationType === 'Alquiler') {
-        // this.getCommissionAmount?.patchValue(this.property?.price);
+        // this.getSubtotalCommissionAmount?.patchValue(this.property?.price);
         // this.calculateCommissionByAmount()
         //   sacar porcentaje basado en este precio
       // }
@@ -161,15 +164,18 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
   calculateCommissionByAmount() {
     if (this.allowedEdition.value === 'Percentage') return;
     const finalPrice = Number(this.getFinalPrice?.value);
-    const commissionAmount = Number(this.getCommissionAmount?.value);
+    const subtotalCommissionAmount = Number(this.getSubtotalCommissionAmount?.value);
+    const operationExpense = Number(this.form.get('operationExpense')?.value);
 
-    if (!commissionAmount) return;
+    if (!subtotalCommissionAmount) return;
 
-    let substraction = finalPrice - commissionAmount;
+    let substraction = finalPrice - subtotalCommissionAmount;
     let division = substraction / finalPrice;
 
     // TODO calcular procentaces correctamente
     this.getCommissionPercentage?.patchValue(this.roundUp(Math.abs((division * 100) - 100), 2))
+    this.getCommissionAmount?.patchValue(this.roundUp((Math.abs((division * 100) - 100) - operationExpense), 2));
+
   }
 
   calculateCommissionByPercentage() {
@@ -177,16 +183,19 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
 
     const finalPrice = Number(this.getFinalPrice?.value);
     const commissionPercentage = Number(this.getCommissionPercentage?.value)
+    const operationExpense = Number(this.form.get('operationExpense')?.value);
 
     if (!commissionPercentage) return;
 
     let multiply = commissionPercentage / 100;
 
-    this.getCommissionAmount?.patchValue(multiply * finalPrice);
+    this.getSubtotalCommissionAmount?.patchValue(multiply * finalPrice);
+    this.getCommissionAmount?.patchValue((multiply * finalPrice) - operationExpense);
 
   }
 
   get getCommissionAmount() {return this.form.get('commissionAmount');}
+  get getSubtotalCommissionAmount() {return this.form.get('subtotalCommissionAmount');}
   get getCommission() {return this.form.get('commission');}
   get getFinalPrice() {return this.form.get('finalPrice');}
   get getCommissionPercentage() {return this.form.get('commissionPercentage');}
@@ -219,17 +228,37 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
 
   handleCalculateDivisionByFeature(event: boolean, type: string) {
     const quarter= (Number(this.getCommissionAmount?.value) / 2) * 0.25;
+    const half= (Number(this.getCommissionAmount?.value) / 2);
     if (type === 'client') {
       if (event) {
+        if (Number(this.clientAdviserFinalCommission?.value) >= half)  {
+          this.clientAdviserFinalCommission?.patchValue(half);
+          return
+        }
         this.clientAdviserFinalCommission?.patchValue(this.clientAdviserFinalCommission?.value + quarter);
       } else {
         this.clientAdviserFinalCommission?.patchValue(this.clientAdviserFinalCommission?.value - quarter);
+        this.propertyAdviserFinalCommission?.patchValue(this.propertyAdviserFinalCommission?.value + quarter);
+      }
+    } else {
+      if (event) {
+        if (Number(this.propertyAdviserFinalCommission?.value) >= half)  {
+          this.propertyAdviserFinalCommission?.patchValue(half);
+          return
+        }
+        this.propertyAdviserFinalCommission?.patchValue(this.propertyAdviserFinalCommission?.value + quarter);
+      } else {
+        this.propertyAdviserFinalCommission?.patchValue(this.propertyAdviserFinalCommission?.value - quarter);
+        if (this.status === 'Cerrado por Vision doble punta') {
+          this.clientAdviserFinalCommission?.patchValue(this.clientAdviserFinalCommission?.value + quarter);
+        }
       }
     }
   }
 
   calculateCommissionByType(type: any) {
     const finalPrice = Number(this.getFinalPrice?.value);
+    const operationExpense = Number(this.form.get('operationExpense')?.value);
 
     if (this.property?.operationType === 'Venta') {
       if (type === 10 || type === 5) {
@@ -241,9 +270,11 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
       }
     } else {
       if (type === 'oneMonth') {
-        this.getCommissionAmount?.patchValue(finalPrice)
+        this.getSubtotalCommissionAmount?.patchValue(finalPrice)
+        this.getCommissionAmount?.patchValue(finalPrice - operationExpense)
       } else if (type === 'twoMonths') {
-        this.getCommissionAmount?.patchValue(finalPrice * 2)
+        this.getSubtotalCommissionAmount?.patchValue(finalPrice * 2)
+        this.getCommissionAmount?.patchValue((finalPrice * 2) - operationExpense)
       }
     }
   }

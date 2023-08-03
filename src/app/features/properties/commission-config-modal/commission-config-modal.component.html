@@ -22,7 +22,8 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="finalPrice">Precio final</nz-form-label>
             <nz-form-control [nzErrorTip]="finalPriceTempError">
-              <input nz-input type="text" (ngModelChange)="calculateCommissionByType(getCommission?.value)" style="width: 100%"
+              <input nz-input type="text" (ngModelChange)="calculateCommissionByType(getCommission?.value)"
+                     style="width: 100%"
                      formControlName="finalPrice"
                      placeholder=""/>
               <ng-template #finalPriceTempError let-control>
@@ -33,11 +34,12 @@
         </div>
         <div nz-col [nzSpan]="8">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="commission">Comision</nz-form-label>
+            <nz-form-label nzRequired nzFor="commission">Valoración de la comisión</nz-form-label>
             <nz-form-control [nzErrorTip]="commissionTempError">
               <!--                <input  nz-input (ngModelChange)="calculateCommissionByPercentage()" type="text" style="width: 100%"  formControlName="commission"-->
               <!--                        placeholder=""/>-->
-              <nz-select formControlName="commission" style="width: 100%" (ngModelChange)="calculateCommissionByType($event)">
+              <nz-select formControlName="commission" style="width: 100%"
+                         (ngModelChange)="calculateCommissionByType($event)">
                 <nz-option *ngIf="property?.operationType === 'Venta' " nzLabel="5%" [nzValue]="5"></nz-option>
                 <nz-option *ngIf="property?.operationType === 'Venta' " nzLabel="10%" [nzValue]="10"></nz-option>
                 <nz-option *ngIf="property?.operationType === 'Venta' " nzLabel="$500" [nzValue]="500"></nz-option>
@@ -53,8 +55,8 @@
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="8">
-          <h4>Monto resultante comision</h4>
-          <h3>{{getCommissionAmount?.value || 0 | currency}}</h3>
+          <h4>Subtotal de la comisión</h4>
+          <h3>{{getSubtotalCommissionAmount?.value || 0 | currency}}</h3>
           <!--          <nz-form-item>-->
           <!--            <nz-form-label nzRequired nzFor="commissionAmount">Monto de comision</nz-form-label>-->
           <!--            <nz-form-control [nzErrorTip]="commissionAmountTempError">-->
@@ -67,7 +69,36 @@
           <!--          </nz-form-item>-->
         </div>
       </div>
-      <nz-divider></nz-divider>
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="4">
+          <nz-form-item>
+            <nz-form-label nzFor="operationExpense">Gasto operativo</nz-form-label>
+            <nz-form-control>
+              <input nz-input type="text" (ngModelChange)="calculateCommissionByType(getCommission?.value)"
+                     style="width: 100%"
+                     formControlName="operationExpense"
+                     placeholder=""/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="20">
+          <nz-form-item>
+            <nz-form-label nzFor="operationExpenseDetail">Detalle de gasto operativo</nz-form-label>
+            <nz-form-control>
+              <input nz-input type="text"
+                     style="width: 100%"
+                     formControlName="operationExpenseDetail"
+                     placeholder=""/>
+
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: center; flex-direction: column; align-items: center">
+        <h3>Monto resultante de comisión</h3>
+        <h1>{{getCommissionAmount?.value || 0 | currency}}</h1>
+      </div>
+      <nz-divider style="margin-top: 0"></nz-divider>
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <div style="display: flex; align-items: center; margin-bottom: 1rem">
@@ -97,21 +128,27 @@
           </nz-form-item>
 
           <h4>Cuadrantes</h4>
-          <label nz-checkbox formControlName="propertyAdviserAttention">Atencion del cliente propietario</label>
-          <br>
-          <label nz-checkbox formControlName="propertyAdviserExhibition">Exhibicion del inmueble</label>
-          <br>
-          <label nz-checkbox formControlName="propertyAdviserBusinessClosing">Cierre de negocio con cliente
+          <label nz-checkbox formControlName="propertyAdviserAttention"
+                 (ngModelChange)="handleCalculateDivisionByFeature($event, 'property')">Atencion del cliente
             propietario</label>
           <br>
-          <label nz-checkbox formControlName="propertyAdviserAdminProcedure">Procedimiento administrativo</label>
+          <label nz-checkbox formControlName="propertyAdviserExhibition"
+                 (ngModelChange)="handleCalculateDivisionByFeature($event, 'property')">Exhibicion del inmueble</label>
+          <br>
+          <label nz-checkbox formControlName="propertyAdviserBusinessClosing"
+                 (ngModelChange)="handleCalculateDivisionByFeature($event, 'property')">Cierre de negocio con cliente
+            propietario</label>
+          <br>
+          <label nz-checkbox formControlName="propertyAdviserAdminProcedure"
+                 (ngModelChange)="handleCalculateDivisionByFeature($event, 'property')">Procedimiento
+            administrativo</label>
           <br>
           <nz-divider></nz-divider>
 
           <h4>Monto final de punta</h4>
           <h2>{{propertyAdviserFinalCommission?.value || 0 | currency}}</h2>
         </div>
-        <div nz-col [nzSpan]="12">
+        <div nz-col [nzSpan]="12" *ngIf="status === 'Cerrado por Vision doble punta' ">
           <div style="display: flex; align-items: center; margin-bottom: 1rem">
             <h3 style="margin: 0">Punta cliente</h3>
             <span
