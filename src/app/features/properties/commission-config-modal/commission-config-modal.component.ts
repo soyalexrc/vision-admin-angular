@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Form, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PropertyReview} from "../../../core/interfaces/property";
 import {PropertyService} from "../../../core/services/property.service";
-import {Subscription} from "rxjs";
+import {BehaviorSubject, Subscription} from "rxjs";
 import {formatCurrency} from "@angular/common";
 import {UserService} from "../../../core/services/user.service";
 import {User} from "../../../core/interfaces/user";
@@ -26,7 +26,7 @@ type ComponentChanges<T> = {
   templateUrl: './commission-config-modal.component.html',
   styleUrls: ['./commission-config-modal.component.scss']
 })
-export class CommissionConfigModalComponent implements OnInit, OnChanges{
+export class CommissionConfigModalComponent implements OnInit, OnDestroy {
   @Input() show!: boolean;
   @Input() status!: string;
   property: PropertyReview | null = null;
@@ -34,7 +34,9 @@ export class CommissionConfigModalComponent implements OnInit, OnChanges{
   @Output() onSubmit: EventEmitter<any> = new EventEmitter<any>();
   loading = false
   propertySubscription = new Subscription();
-  allowedEdition: AllowedSelection = 'Percentage'
+  allowedEditionSubscription = new Subscription();
+  allowedEdition: BehaviorSubject<AllowedSelection> = new BehaviorSubject<AllowedSelection>('Percentage')
+  typeOFAllowedEdition = false;
 
   form!: FormGroup;
   advisers: User[] = [];
@@ -50,37 +52,87 @@ export class CommissionConfigModalComponent implements OnInit, OnChanges{
     this.getAdvisers();
     this.form = this.fb.group({
       finalPrice: ['', Validators.required],
-      commissionPercentage: ['', Validators.required],
-      commissionAmount: ['', Validators.required],
+      commissionPercentage: [{value: '', disabled: false}, Validators.required],
+      commissionAmount: [{value: '', disabled: true}, Validators.required],
       propertyAdviser: ['', Validators.required],
       clientAdviser: ['', Validators.required],
-      propertyAdviserAttention: [true, Validators.required],
-      propertyAdviserExhibition: [true, Validators.required],
-      propertyAdviserBusinessClosing: [true, Validators.required],
-      propertyAdviserAdminProcedure: [true, Validators.required],
-      clientAdviserAttention: [true, Validators.required],
-      clientAdviserExhibition: [true, Validators.required],
-      clientAdviserBusinessClosing: [true, Validators.required],
-      clientAdviserAdminProcedure: [true, Validators.required],
-
+      propertyAdviserAttention: [{value: true, disabled: true}, Validators.required],
+      propertyAdviserExhibition: [{value: true, disabled: true}, Validators.required],
+      propertyAdviserBusinessClosing: [{value: true, disabled: true}, Validators.required],
+      propertyAdviserAdminProcedure: [{value: true, disabled: true}, Validators.required],
+      clientAdviserAttention: [{value: true, disabled: true}, Validators.required],
+      clientAdviserExhibition: [{value: true, disabled: true}, Validators.required],
+      clientAdviserBusinessClosing: [{value: true, disabled: true}, Validators.required],
+      clientAdviserAdminProcedure: [{value: true, disabled: true}, Validators.required],
+      commission: ['', Validators.required],
       propertyAdviserFinalCommission: [''],
       clientAdviserFinalCommission: [''],
     })
 
+    this.allowedEditionSubscription = this.allowedEdition.subscribe(value => {
+      if (value === 'Amount') {
+        this.getCommissionPercentage?.disable()
+        this.getCommissionAmount?.enable()
+        this.typeOFAllowedEdition = true;
+      } else {
+        this.getCommissionPercentage?.enable()
+        this.getCommissionAmount?.disable()
+        this.typeOFAllowedEdition = false;
+      }
+    })
+
+    this.getCommissionAmount?.valueChanges.subscribe(value => {
+      this.propertyAdviserFinalCommission?.patchValue(value / 2);
+      this.clientAdviserFinalCommission?.patchValue(value / 2);
+
+      if (value === 0) {
+        this.form.get('propertyAdviserAttention')?.patchValue(true)
+        this.form.get('propertyAdviserExhibition')?.patchValue(true)
+        this.form.get('propertyAdviserBusinessClosing')?.patchValue(true)
+        this.form.get('propertyAdviserAdminProcedure')?.patchValue(true)
+        this.form.get('clientAdviserAttention')?.patchValue(true)
+        this.form.get('clientAdviserExhibition')?.patchValue(true)
+        this.form.get('clientAdviserBusinessClosing')?.patchValue(true)
+        this.form.get('clientAdviserAdminProcedure')?.patchValue(true)
+
+        this.form.get('propertyAdviserAttention')?.disable()
+        this.form.get('propertyAdviserExhibition')?.disable()
+        this.form.get('propertyAdviserBusinessClosing')?.disable()
+        this.form.get('propertyAdviserAdminProcedure')?.disable()
+        this.form.get('clientAdviserAttention')?.disable()
+        this.form.get('clientAdviserExhibition')?.disable()
+        this.form.get('clientAdviserBusinessClosing')?.disable()
+        this.form.get('clientAdviserAdminProcedure')?.disable()
+      } else {
+        this.form.get('propertyAdviserAttention')?.enable()
+        this.form.get('propertyAdviserExhibition')?.enable()
+        this.form.get('propertyAdviserBusinessClosing')?.enable()
+        this.form.get('propertyAdviserAdminProcedure')?.enable()
+        this.form.get('clientAdviserAttention')?.enable()
+        this.form.get('clientAdviserExhibition')?.enable()
+        this.form.get('clientAdviserBusinessClosing')?.enable()
+        this.form.get('clientAdviserAdminProcedure')?.enable()
+      }
+    })
+
     this.propertySubscription = this.propertyService.currentPropertyReview.subscribe(property => {
-      console.log(property)
       this.property = property
       // this.getFinalPrice?.patchValue(this.property?.price);
-      if (property?.operationType === 'Alquiler') {
-        this.getCommissionAmount?.patchValue(this.property?.price);
-        this.calculateCommissionByAmount()
-          //   sacar porcentaje basado en este precio
-      }
+      // if (property?.operationType === 'Alquiler') {
+        // this.getCommissionAmount?.patchValue(this.property?.price);
+        // this.calculateCommissionByAmount()
+        //   sacar porcentaje basado en este precio
+      // }
     })
   }
 
-  ngOnChanges(changes: ComponentChanges<CommissionConfigModalComponent>) {
-    console.log(this.status);
+  // ngOnChanges(changes: ComponentChanges<CommissionConfigModalComponent>) {
+  //   console.log(this.status);
+  // }
+
+  ngOnDestroy() {
+    this.propertySubscription.unsubscribe();
+    this.allowedEditionSubscription.unsubscribe();
   }
 
   handleCancelSetCommission() {
@@ -88,13 +140,11 @@ export class CommissionConfigModalComponent implements OnInit, OnChanges{
   }
 
 
-
-
   getTooltipCommissionAmount(): string {
     if (this.property?.operationType === 'Alquiler') {
-      return `Esta propiedad se cerro en ALQUILER, por el monto de ${formatCurrency(Number(this.property?.price), 'en', '$')}`
+      return `Esta propiedad se cerro en ALQUILER, con un monto inicial de ${formatCurrency(Number(this.property?.price), 'en', '$')}`
     }
-    return `Esta propiedad se cerro en VENTA por el monto de ${formatCurrency(Number(this.property?.price), 'en', '$')}`;
+    return `Esta propiedad se cerro en VENTA con un monto inicial de ${formatCurrency(Number(this.property?.price), 'en', '$')}`;
   }
 
   getAdvisers() {
@@ -109,70 +159,92 @@ export class CommissionConfigModalComponent implements OnInit, OnChanges{
 
 
   calculateCommissionByAmount() {
-    if (this.allowedEdition === 'Percentage') return;
+    if (this.allowedEdition.value === 'Percentage') return;
     const finalPrice = Number(this.getFinalPrice?.value);
     const commissionAmount = Number(this.getCommissionAmount?.value);
 
     if (!commissionAmount) return;
 
-    console.log({
-      finalPrice,
-      commissionAmount
-    })
-
     let substraction = finalPrice - commissionAmount;
     let division = substraction / finalPrice;
-
-    console.log({
-      substraction,
-      division
-    })
 
     // TODO calcular procentaces correctamente
     this.getCommissionPercentage?.patchValue(this.roundUp(Math.abs((division * 100) - 100), 2))
   }
 
   calculateCommissionByPercentage() {
-    if (this.allowedEdition === 'Amount') return;
+    if (this.allowedEdition.value === 'Amount') return;
 
     const finalPrice = Number(this.getFinalPrice?.value);
     const commissionPercentage = Number(this.getCommissionPercentage?.value)
-
-    console.log({
-      finalPrice,
-      commissionPercentage
-    })
 
     if (!commissionPercentage) return;
 
     let multiply = commissionPercentage / 100;
 
-    console.log({
-      multiply
-    })
-
     this.getCommissionAmount?.patchValue(multiply * finalPrice);
 
   }
 
-  get getCommissionAmount() {
-    return this.form.get('commissionAmount');
-  }
-  get getFinalPrice() {
-    return this.form.get('finalPrice');
-  }
-
-  get getCommissionPercentage() {
-    return this.form.get('commissionPercentage');
-  }
+  get getCommissionAmount() {return this.form.get('commissionAmount');}
+  get getCommission() {return this.form.get('commission');}
+  get getFinalPrice() {return this.form.get('finalPrice');}
+  get getCommissionPercentage() {return this.form.get('commissionPercentage');}
+  get propertyAdviserFinalCommission() {return this.form.get('propertyAdviserFinalCommission');}
+  get clientAdviserFinalCommission() {return this.form.get('clientAdviserFinalCommission');}
 
   calculateBothCommissions() {
     this.calculateCommissionByPercentage();
-    // this.calculateCommissionByAmount();
+    this.calculateCommissionByAmount();
   }
 
   roundUp(num: number, precision: number) {
     precision = Math.pow(10, precision)
     return Math.ceil(num * precision) / precision
+  }
+
+  handleCancel() {
+    // this.form.reset();
+    this.ngOnInit();
+    this.onCancel.emit()
+  }
+
+  // handleChangeToggleAllowed($event: any) {
+  //   if ($event) {
+  //     this.allowedEdition.next('Amount')
+  //   } else {
+  //     this.allowedEdition.next('Percentage')
+  //   }
+  // }
+
+  handleCalculateDivisionByFeature(event: boolean, type: string) {
+    const quarter= (Number(this.getCommissionAmount?.value) / 2) * 0.25;
+    if (type === 'client') {
+      if (event) {
+        this.clientAdviserFinalCommission?.patchValue(this.clientAdviserFinalCommission?.value + quarter);
+      } else {
+        this.clientAdviserFinalCommission?.patchValue(this.clientAdviserFinalCommission?.value - quarter);
+      }
+    }
+  }
+
+  calculateCommissionByType(type: any) {
+    const finalPrice = Number(this.getFinalPrice?.value);
+
+    if (this.property?.operationType === 'Venta') {
+      if (type === 10 || type === 5) {
+        this.getCommissionPercentage?.patchValue(type);
+        this.calculateCommissionByPercentage();
+      } else {
+        this.getCommissionAmount?.patchValue(type);
+        this.calculateCommissionByAmount();
+      }
+    } else {
+      if (type === 'oneMonth') {
+        this.getCommissionAmount?.patchValue(finalPrice)
+      } else if (type === 'twoMonths') {
+        this.getCommissionAmount?.patchValue(finalPrice * 2)
+      }
+    }
   }
 }

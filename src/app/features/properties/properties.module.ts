@@ -26,6 +26,7 @@ import { StatusHistoryComponent } from './status-history/status-history.componen
 import { StatusBadgeComponent } from './status-badge/status-badge.component';
 import {NzTagModule} from "ng-zorro-antd/tag";
 import { CommissionConfigModalComponent } from './commission-config-modal/commission-config-modal.component';
+import {NzSwitchModule} from "ng-zorro-antd/switch";
 
 
 
@@ -39,31 +40,32 @@ import { CommissionConfigModalComponent } from './commission-config-modal/commis
     StatusBadgeComponent,
     CommissionConfigModalComponent
   ],
-  imports: [
-    CommonModule,
-    PropertiesRoutingModule,
-    NzBreadCrumbModule,
-    SharedModule,
-    NzStepsModule,
-    NzFormModule,
-    NzGridModule,
-    NzInputModule,
-    NzSelectModule,
-    ReactiveFormsModule,
-    NzButtonModule,
-    NzIconModule,
-    NzUploadModule,
-    NgOptimizedImage,
-    NzToolTipModule,
-    NzEmptyModule,
-    NzDividerModule,
-    CdkDropList,
-    CdkDrag,
-    CdkDropListGroup,
-    NzCheckboxModule,
-    NzModalModule,
-    FormsModule,
-    NzTagModule
-  ]
+    imports: [
+        CommonModule,
+        PropertiesRoutingModule,
+        NzBreadCrumbModule,
+        SharedModule,
+        NzStepsModule,
+        NzFormModule,
+        NzGridModule,
+        NzInputModule,
+        NzSelectModule,
+        ReactiveFormsModule,
+        NzButtonModule,
+        NzIconModule,
+        NzUploadModule,
+        NgOptimizedImage,
+        NzToolTipModule,
+        NzEmptyModule,
+        NzDividerModule,
+        CdkDropList,
+        CdkDrag,
+        CdkDropListGroup,
+        NzCheckboxModule,
+        NzModalModule,
+        FormsModule,
+        NzTagModule,
+        NzSwitchModule
+    ]
 })
 export class PropertiesModule { }

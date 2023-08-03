@@ -88,9 +88,9 @@ export interface CashFlowTotals {
 }
 
 export interface CashFlowTotal {
-  Bs:  number;
-  USD: number;
-  EUR: number;
+  Bs:  number | null;
+  USD: number | null;
+  EUR: number | null;
 }
 
 

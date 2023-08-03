@@ -19,13 +19,13 @@ import {ReactiveFormsModule} from "@angular/forms";
   declarations: [
     SectionTitleComponent,
     GenericTableComponent,
-    RegisterClientModalComponent
+    RegisterClientModalComponent,
   ],
-  exports: [
-    SectionTitleComponent,
-    GenericTableComponent,
-    RegisterClientModalComponent
-  ],
+    exports: [
+        SectionTitleComponent,
+        GenericTableComponent,
+        RegisterClientModalComponent,
+    ],
   imports: [
     CommonModule,
     NzTableModule,
