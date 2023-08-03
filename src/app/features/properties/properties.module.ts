@@ -25,6 +25,7 @@ import {NzModalModule} from "ng-zorro-antd/modal";
 import { StatusHistoryComponent } from './status-history/status-history.component';
 import { StatusBadgeComponent } from './status-badge/status-badge.component';
 import {NzTagModule} from "ng-zorro-antd/tag";
+import { CommissionConfigModalComponent } from './commission-config-modal/commission-config-modal.component';
 
 
 
@@ -35,7 +36,8 @@ import {NzTagModule} from "ng-zorro-antd/tag";
     PreviewComponent,
     DraggableGridComponent,
     StatusHistoryComponent,
-    StatusBadgeComponent
+    StatusBadgeComponent,
+    CommissionConfigModalComponent
   ],
   imports: [
     CommonModule,

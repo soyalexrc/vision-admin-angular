@@ -31,6 +31,8 @@ export class MainComponent implements OnInit, AfterViewInit {
   selectedStatus: PropertyStatus | null = null;
   currentId: any = null;
   comments = '';
+  showSetCommissionModal = false;
+  currentProperty!: PropertyReview;
 
   constructor(
     private router: Router,
@@ -58,7 +60,8 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   handleChangeStatus(property: PropertyReview) {
-    console.log(property)
+    this.currentProperty = property;
+    this.propertyService.storePropertyReview(property);
     this.showChangeStatusModal = true;
     this.currentStatus = property.property_status as PropertyStatus;
     this.selectedStatus = property.property_status as PropertyStatus;
@@ -152,26 +155,13 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   handleOkChangeStatusModal() {
     this.changeStatusLoading = true;
-    this.propertyService.updateStatus(this.currentId, this.selectedStatus!).subscribe(result => {
-      this.showChangeStatusModal = false;
-      this.uiService.createMessage('success', 'Se edito el estatus de la propiedad con exito!');
-      const payload: UpdatePropertyHistoryPayload = {
-        comments: this.comments,
-        status: this.selectedStatus!,
-        property_id: this.currentId,
-        user_id: this.userService.currentUser?.value?.id,
-        username: this.userService.currentUser?.value?.username
 
-      };
-      this.propertyService.updateHistory(payload).subscribe(res => {
-        this.uiService.createMessage('success', 'Se actualizo el hostorial de la propiedad!');
-      })
-      this.getPropertiesPreview();
-    }, () => {
+    if (this.selectedStatus === 'Cerrado por Vision (punta única)' || this.selectedStatus === 'Cerrado por Vision doble punta') {
       this.changeStatusLoading = false;
-    }, () => {
-      this.changeStatusLoading = false;
-    })
+      this.showSetCommissionModal = true;
+      return;
+    }
+    this.changeStatusProperty();
   }
 
 
@@ -208,5 +198,36 @@ export class MainComponent implements OnInit, AfterViewInit {
       default:
         return 'blue';
     }
+  }
+
+  changeStatusProperty() {
+    this.propertyService.updateStatus(this.currentId, this.selectedStatus!).subscribe(result => {
+      this.showChangeStatusModal = false;
+      this.uiService.createMessage('success', 'Se edito el estatus de la propiedad con exito!');
+      const payload: UpdatePropertyHistoryPayload = {
+        comments: this.comments,
+        status: this.selectedStatus!,
+        property_id: this.currentId,
+        user_id: this.userService.currentUser?.value?.id,
+        username: this.userService.currentUser?.value?.username
+
+      };
+      this.propertyService.updateHistory(payload).subscribe(res => {
+        this.uiService.createMessage('success', 'Se actualizo el hostorial de la propiedad!');
+      })
+      this.getPropertiesPreview();
+    }, () => {
+      this.changeStatusLoading = false;
+    }, () => {
+      this.changeStatusLoading = false;
+    })
+  }
+
+  handleCancelSetCommission() {
+    this.showSetCommissionModal = false;
+  }
+
+  handleSetCommission() {
+    this.showSetCommissionModal = false;
   }
 }

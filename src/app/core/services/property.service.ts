@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {CreationOwnerResponse, GetOneOwnerResponse, Owner, OwnerToCreate} from "../interfaces/owner";
 import {
   Attribute,
@@ -8,7 +8,7 @@ import {
   GetPropertyPreviewResponse,
   PropertyToCreate,
   PropertyType,
-  DeleteOneResponse, PropertyStatus, UpdatePropertyHistoryPayload, PropertyStatusItem
+  DeleteOneResponse, PropertyStatus, UpdatePropertyHistoryPayload, PropertyStatusItem, PropertyReview
 } from "../interfaces/property";
 
 @Injectable({
@@ -16,9 +16,15 @@ import {
 })
 export class PropertyService {
 
+  currentPropertyReview: BehaviorSubject<PropertyReview | null> = new BehaviorSubject<PropertyReview | null>(null);
+
   constructor(
     private http: HttpClient
   ) {
+  }
+
+  storePropertyReview(property: PropertyReview) {
+    this.currentPropertyReview.next(property);
   }
 
   // TODO types de filtros

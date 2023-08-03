@@ -55,6 +55,16 @@
   </ng-container>
 </nz-modal>
 
+
+<app-commission-config-modal
+  [show]="showSetCommissionModal"
+  [status]="selectedStatus || 'no title'"
+  (onCancel)="handleCancelSetCommission()"
+  (onSubmit)="handleSetCommission()"
+>
+
+</app-commission-config-modal>
+
 <ng-template #modalTitle>
   <div class="modal-title-container">
     <p class="modal-title">Estatus de propiedad</p>
