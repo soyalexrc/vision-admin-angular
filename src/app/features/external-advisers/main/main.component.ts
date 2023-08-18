@@ -17,6 +17,10 @@ export class MainComponent implements OnInit, AfterViewInit{
   @ViewChild('dataTable') dataTable!: GenericTableComponent;
   data: Partial<Adviser>[]  = [];
   headers: any[] = [];
+  pageIndex = 1;
+  pageSize = 10;
+  totalItems = 1;
+
   constructor(
     private router: Router,
     private modal: NzModalService,
@@ -45,9 +49,11 @@ export class MainComponent implements OnInit, AfterViewInit{
       nzOkText: 'Aceptar',
       nzOnOk: () => new Promise((resolve, reject) => {
         this.adviserService.deleteOne(id).subscribe(result => {
-          this.uiService.createMessage('success', 'Se elimino el propietario con exito!')
+          this.uiService.createMessage('success', result.message)
           this.getAdvisers()
           setTimeout(() => resolve(), 500);
+        }, (error: Error) => {
+          this.uiService.createMessage('success', error.message)
         })
       })
     });
@@ -59,25 +65,26 @@ export class MainComponent implements OnInit, AfterViewInit{
 
   getAdvisers() {
     this.loading = true;
-    this.adviserService.getAll().subscribe(data => {
-        this.data = data.map(element => ({
+    this.adviserService.getAll(this.pageIndex, this.pageSize).subscribe(data => {
+      this.totalItems = data.count;
+        this.data = data.rows.map(element => ({
           id: element.id,
-          first_name: element.first_name,
-          last_name: element.last_name,
+          first_name: element.firstName,
+          last_name: element.lastName,
           phone: element.phone,
           email: element.email,
-          birthday: element.birthday
+          birthday: element.birthDate
         }));
         const headers = setHeaders([
           {key: 'id', displayName: 'id'},
-          {key: 'first_name', displayName: 'Nombre'},
-          {key: 'last_name', displayName: 'Apellido'},
+          {key: 'firstName', displayName: 'Nombre'},
+          {key: 'lastName', displayName: 'Apellido'},
           {key: 'phone', displayName: 'Telefono'},
           {key: 'email', displayName: 'Correo'},
-          {key: 'birthday', displayName: 'Fecha de cumpleanos'},
+          {key: 'birthDate', displayName: 'Fecha de cumpleanos'},
         ]);
 
-        this.dataTable.render(headers, data);
+        this.dataTable.render(headers, data.rows);
       },
       () => {
         this.loading = false
@@ -86,5 +93,10 @@ export class MainComponent implements OnInit, AfterViewInit{
         this.loading = false
       }
     )
+  }
+
+  handleIndexPageChange(pageIndex: number) {
+    this.pageIndex = pageIndex;
+    this.getAdvisers();
   }
 }

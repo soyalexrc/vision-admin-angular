@@ -17,7 +17,7 @@ export class GenericTableComponent implements OnInit {
   @Input() changeActionTitle: string = '';
   @Input() linkActionTitle: string = '';
   @Input() pageIndex: number = 1;
-  @Input() totalPages: number = 1;
+  @Input() totalItems: number = 1;
   @Input() pageSize: number = 10;
   @Input() historyActionTitle: string = '';
   @Input() actionsFixed: boolean = false;

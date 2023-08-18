@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {
   Ally,
-  CreateEditAllyResponse,
+  CreateEditAllyResponse, GetAllAllies,
 } from "../interfaces/ally";
 import {DeleteResult} from "../interfaces/generics";
 
@@ -16,8 +16,8 @@ export class AllyService {
     private  http: HttpClient
   ) { }
 
-  getAll(pageIndex: number, pageSize: number): Observable<Ally[]> {
-    return this.http.get<Ally[]>(`ally?pageIndex=${pageIndex}&pageSize=${pageSize}`)
+  getAll(pageIndex: number, pageSize: number): Observable<GetAllAllies> {
+    return this.http.get<GetAllAllies>(`ally?pageIndex=${pageIndex}&pageSize=${pageSize}`)
   }
 
   createOne(owner: Ally): Observable<CreateEditAllyResponse> {

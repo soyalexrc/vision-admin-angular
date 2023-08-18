@@ -20,7 +20,6 @@ import {formatCurrency} from "@angular/common";
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit, AfterViewInit {
-  dataValue = 'income';
   loading = true;
   @ViewChild('dataTable') dataTable!: GenericTableComponent;
   data: Partial<CashFlowRegister>[] = [];
@@ -30,6 +29,10 @@ export class MainComponent implements OnInit, AfterViewInit {
   transactionForm!: FormGroup;
   transferLoading = false;
   loadingStats = true;
+  totalItems = 1;
+  pageIndex = 1;
+  pageSize = 10;
+  sourceSelection = 'Ingreso';
 
   constructor(
     private router: Router,
@@ -55,7 +58,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.getCashFlowData(this.dataValue);
+    this.getCashFlowData();
     this.getTotalStats()
   }
 
@@ -74,36 +77,39 @@ export class MainComponent implements OnInit, AfterViewInit {
   handleDelete(id: number) {
     this.modal.confirm({
       nzTitle: 'Atencion',
-      nzContent: 'Eliminar el elemento ?',
+      nzContent: 'Eliminar el registro ?',
       nzCancelText: 'Cancelar',
       nzOkText: 'Aceptar',
       nzOnOk: () => new Promise((resolve, reject) => {
         this.cashFlowService.deleteOne(id).subscribe(result => {
-          this.uiService.createMessage('success', 'Se elimino la transaccion con exito!')
-          this.getCashFlowData(this.dataValue)
+          this.uiService.createMessage('success', result.message)
+          this.getCashFlowData()
           this.getTotalStats();
           setTimeout(() => resolve(), 500);
+        }, (error: Error) => {
+          this.uiService.createMessage('success', error.message)
         })
       })
     });
   }
 
-  getCashFlowData(source: string) {
+  getCashFlowData() {
     let headers: ITableHeader[];
     this.loading = true;
-    this.cashFlowService.getAll().subscribe(data => {
-        if (source === 'income') {
-          this.data = data
-            .filter(x => x.transaction_type === 'Ingreso' && x.temporalTransactionId === null)
+    this.cashFlowService.getAll(this.pageIndex, this.pageSize).subscribe(data => {
+      this.totalItems = data.count;
+        if (this.sourceSelection === 'Ingreso') {
+          this.data = data.rows
+            .filter(x => x.transactionType === 'Ingreso' && !x.isTemporalTransaction)
             .map(element => ({
               id: element.id,
               date: element.date,
-              customProperty: `${element.property?.code} - ${element.property?.property_type} - ${element.property?.operation_type}`,
+              customProperty: `${element.propertyJson?.code} - ${element.propertyJson?.propertyType} - ${element.propertyJson?.operationType}`,
               client: element.client,
               amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
               reason: element.reason,
-              pending_to_collect: `${formatCurrency(Number(element.pending_to_collect), 'en', `${element.currency} `)}`,
-              total_due: `${formatCurrency(Number(element.total_due), 'en', `${element.currency} `)}`
+              pendingToCollect: `${formatCurrency(Number(element.pendingToCollect), 'en', `${element.currency} `)}`,
+              totalDue: `${formatCurrency(Number(element.totalDue), 'en', `${element.currency} `)}`
             }));
           headers = setHeaders([
             {key: 'date', displayName: 'Fecha'},
@@ -111,17 +117,17 @@ export class MainComponent implements OnInit, AfterViewInit {
             {key: 'client', displayName: 'Persona / Cliente'},
             {key: 'amount', displayName: 'Monto'},
             {key: 'reason', displayName: 'Concepto'},
-            {key: 'total_due', displayName: 'Por cobrar'},
-            {key: 'pending_to_collect', displayName: 'Por pagar'},
+            {key: 'totalDue', displayName: 'Por cobrar'},
+            {key: 'pendingToCollect', displayName: 'Por pagar'},
           ]);
         }
-        if (source === 'outcome') {
-          this.data = data
-            .filter(x => x.transaction_type === 'Egreso' && x.temporalTransactionId === null)
+        if (this.sourceSelection === 'Egreso') {
+          this.data = data.rows
+            .filter(x => x.transactionType === 'Egreso' && !x.isTemporalTransaction)
             .map(element => ({
               id: element.id,
               date: element.date,
-              customProperty: `${element.property?.code} - ${element.property?.property_type} - ${element.property?.operation_type}`,
+              customProperty: `${element.propertyJson?.code} - ${element.propertyJson?.propertyType} - ${element.propertyJson?.operationType}`,
               client: element.client,
               amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
               reason: element.reason
@@ -134,42 +140,42 @@ export class MainComponent implements OnInit, AfterViewInit {
             {key: 'reason', displayName: 'Concepto'},
           ]);
         }
-        if (source === 'toPay') {
-          this.data = data
-            .filter(x => x.transaction_type === 'Cuenta por pagar' && x.temporalTransactionId === null)
+        if (this.sourceSelection === 'Cuenta por pagar') {
+          this.data = data.rows
+            .filter(x => x.transactionType === 'Cuenta por pagar' && !x.isTemporalTransaction)
             .map(element => ({
               id: element.id,
               date: element.date,
-              customProperty: `${element.property?.code} - ${element.property?.property_type} - ${element.property?.operation_type}`,
+              customProperty: `${element.propertyJson?.code} - ${element.propertyJson?.propertyType} - ${element.propertyJson?.operationType}`,
               client: element.client,
               reason: element.reason,
-              total_due: `${formatCurrency(Number(element.total_due), 'en', `${element.currency} `)}`
+              totalDue: `${formatCurrency(Number(element.totalDue), 'en', `${element.currency} `)}`
             }));
           headers = setHeaders([
             {key: 'date', displayName: 'Fecha'},
             {key: 'customProperty', displayName: 'Inmueble'},
             {key: 'client', displayName: 'Persona / Cliente'},
             {key: 'reason', displayName: 'Concepto'},
-            {key: 'total_due', displayName: 'Por Pagar'},
+            {key: 'totalDue', displayName: 'Por Pagar'},
           ]);
         }
-        if (source === 'toCollect') {
-          this.data = data
-            .filter(x => x.transaction_type === 'Cuenta por cobrar' && x.temporalTransactionId === null)
+        if (this.sourceSelection === 'Cuenta por cobrar') {
+          this.data = data.rows
+            .filter(x => x.transactionType === 'Cuenta por cobrar' && !x.isTemporalTransaction)
             .map(element => ({
               id: element.id,
               date: element.date,
-              customProperty: `${element.property?.code} - ${element.property?.property_type} - ${element.property?.operation_type}`,
+              customProperty: `${element.propertyJson?.code} - ${element.propertyJson?.propertyType} - ${element.propertyJson?.operationType}`,
               client: element.client,
               reason: element.reason,
-              pending_to_collect: `${formatCurrency(Number(element.pending_to_collect), 'en', `${element.currency} `)}`,
+              pendingToCollect: `${formatCurrency(Number(element.pendingToCollect), 'en', `${element.currency} `)}`,
             }));
           headers = setHeaders([
             {key: 'date', displayName: 'Fecha'},
             {key: 'customProperty', displayName: 'Inmueble'},
             {key: 'client', displayName: 'Persona / Cliente'},
             {key: 'reason', displayName: 'Concepto'},
-            {key: 'pending_to_collect', displayName: 'Por Cobrar'},
+            {key: 'pendingToCollect', displayName: 'Por Cobrar'},
           ]);
         }
 
@@ -185,7 +191,8 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   handleChangeSelection(event: string) {
-    this.getCashFlowData(event)
+    this.sourceSelection = event;
+    this.getCashFlowData()
   }
 
   handleCancelModal() {
@@ -217,9 +224,9 @@ export class MainComponent implements OnInit, AfterViewInit {
       const data = {
         ...result,
         utilidad: {
-          USD: (result?.ingreso?.USD ?? 0) - (result?.cuentasPorCobrar?.USD ?? 0),
-          Bs: (result?.ingreso?.Bs ?? 0) - (result?.cuentasPorCobrar?.Bs ?? 0),
-          EUR: (result?.ingreso?.EUR ?? 0) - (result?.cuentasPorCobrar?.EUR ?? 0)
+          usd: (result?.ingreso?.usd ?? 0) - (result?.cuentasPorCobrar?.usd ?? 0),
+          bs: (result?.ingreso?.bs ?? 0) - (result?.cuentasPorCobrar?.bs ?? 0),
+          eur: (result?.ingreso?.eur ?? 0) - (result?.cuentasPorCobrar?.eur ?? 0)
         }
       };
       this.statsData = data;
@@ -228,5 +235,11 @@ export class MainComponent implements OnInit, AfterViewInit {
     }, () => {
       this.loadingStats = false;
     })
+  }
+
+  handlePageIndexChange(pageIndex: number) {
+    this.pageIndex = pageIndex;
+    this.getCashFlowData();
+    this.getTotalStats();
   }
 }

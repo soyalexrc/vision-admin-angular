@@ -21,4 +21,8 @@
                    [hasDelete]="false"
                    [hasEdit]="false"
                    [loading]="loading"
+                   [pageIndex]="pageIndex"
+                   [totalItems]="totalItems"
+                   [pageSize]="pageSize"
+                   (onPageIndexChange)="onPageIndexChange($event)"
 ></app-generic-table>

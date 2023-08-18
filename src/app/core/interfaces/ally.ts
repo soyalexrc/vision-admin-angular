@@ -7,6 +7,11 @@ export interface Ally {
   birthDate: Date;
 }
 
+export interface GetAllAllies {
+  count: number;
+  rows: Ally[]
+}
+
 export interface CreateEditAllyResponse {
   data: Ally,
   message: string;

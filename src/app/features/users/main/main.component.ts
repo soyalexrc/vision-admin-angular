@@ -21,7 +21,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   headers: any[] = [];
   pageIndex = 1;
   pageSize = 10;
-  totalPages = 100;
+  totalItems = 100;
 
   constructor(
     private router: Router,
@@ -69,7 +69,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   getUsers() {
     this.loading = true;
     this.userService.getAll(this.pageIndex, this.pageSize).subscribe(data => {
-        this.totalPages = data.count;
+        this.totalItems = data.count;
         this.data = data.rows.map(element => ({
           id: element.id,
           username: element.username,

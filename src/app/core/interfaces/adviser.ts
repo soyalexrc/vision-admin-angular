@@ -1,38 +1,45 @@
-
 export interface Adviser {
-  id:         number;
-  first_name: string;
-  last_name:  string;
-  phone:      string;
-  email:      string;
-  birthday:   Date;
-  isInvestor: string;
-  type:       string;
+  id: number;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  birthDate: Date;
+}
+
+export interface CreateEditAdviserResponse {
+  data: Adviser,
+  message: string;
+}
+
+export interface GetAllAdvisers {
+  count: number;
+  rows: Adviser[]
 }
 
 export interface AdviserToCreate {
-  id:         null;
-  firstName:   string;
-  lastName:   string;
-  phone:      string;
-  email:      string;
-  birthday:   Date;
+  id: null;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  birthday: Date;
   isInvestor: string;
-  type:       string;
+  type: string;
 }
 
 
 export interface CreationAdviserResponse {
-  recordsets:   Array<Recordset[]>;
-  recordset:    Recordset[];
-  output:       Output;
+  recordsets: Array<Recordset[]>;
+  recordset: Recordset[];
+  output: Output;
   rowsAffected: any[];
 }
 
 export interface GetOneAdviserResponse {
-  recordsets:   Array<Adviser[]>;
-  recordset:    Adviser[];
-  output:       Output;
+  recordsets: Array<Adviser[]>;
+  recordset: Adviser[];
+  output: Output;
   rowsAffected: any[];
 }
 
@@ -45,7 +52,7 @@ export interface Recordset {
 }
 
 export interface DeleteOneResponse {
-  recordsets:   any[];
-  output:       Output;
+  recordsets: any[];
+  output: Output;
   rowsAffected: number[];
 }

@@ -102,16 +102,16 @@
 
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="type_of_service">Tipo de servicio</nz-form-label>
-            <nz-form-control [nzErrorTip]="type_of_serviceErrTemp">
-              <nz-select nzShowSearch nzAllowClear formControlName="type_of_service" style="width: 100%">
+            <nz-form-label nzRequired nzFor="typeOfService">Tipo de servicio</nz-form-label>
+            <nz-form-control [nzErrorTip]="typeOfServiceErrTemp">
+              <nz-select nzShowSearch nzAllowClear formControlName="typeOfService" style="width: 100%">
                 <nz-option
                   *ngFor="let option of serviceTypeOptions"
                   [nzValue]="option"
                   [nzLabel]="option">
                 </nz-option>
               </nz-select>
-              <ng-template #type_of_serviceErrTemp let-control>
+              <ng-template #typeOfServiceErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de servicio!</ng-container>
               </ng-template>
             </nz-form-control>
@@ -152,9 +152,9 @@
       <div nz-row class="row" [nzGutter]="16" *ngIf="serviceForm.value.service === 'Contabilidad' ">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label  nzFor="tax_payer">Contribuyente</nz-form-label>
+            <nz-form-label  nzFor="taxPayer">Contribuyente</nz-form-label>
             <nz-form-control >
-              <nz-select formControlName="tax_payer" style="width: 100%">
+              <nz-select formControlName="taxPayer" style="width: 100%">
                 <nz-option nzValue="Ordinario Natural" nzLabel="Ordinario Natural"></nz-option>
                 <nz-option nzValue="Ordinario Jurídico" nzLabel="Ordinario Jurídico"></nz-option>
                 <nz-option nzValue="Especial" nzLabel="Especial"></nz-option>
@@ -188,9 +188,9 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="24">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="transaction_type">Tipo de transaccion</nz-form-label>
+            <nz-form-label nzRequired nzFor="transactionType">Tipo de transaccion</nz-form-label>
             <nz-form-control [nzErrorTip]="transactionTypeErrTemp">
-              <nz-radio-group formControlName="transaction_type" nzButtonStyle="solid">
+              <nz-radio-group formControlName="transactionType" nzButtonStyle="solid">
                 <label nz-radio-button nzValue="Ingreso">Ingreso</label>
                 <label nz-radio-button nzValue="Egreso">Egreso</label>
                 <label nz-radio-button nzValue="Cuenta por pagar">Cuenta por pagar</label>
@@ -206,9 +206,9 @@
 
         <div nz-col [nzSpan]="24">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="way_to_pay">Forma de pago</nz-form-label>
+            <nz-form-label nzRequired nzFor="wayToPay">Forma de pago</nz-form-label>
             <nz-form-control [nzErrorTip]="wayToPayErrTemp">
-              <nz-radio-group formControlName="way_to_pay" nzButtonStyle="solid">
+              <nz-radio-group formControlName="wayToPay" nzButtonStyle="solid">
                 <label nz-radio-button nzValue="Efectivo">Efectivo</label>
                 <label nz-radio-button nzValue="Transferencia">Transferencia</label>
                 <label nz-radio-button nzValue="Pago Movil">Pago Movil</label>
@@ -270,17 +270,17 @@
         </div>
         <div nz-col [nzSpan]="6" *ngIf="showTotalDueField()">
           <nz-form-item>
-            <nz-form-label nzFor="total_due">Por pagar</nz-form-label>
+            <nz-form-label nzFor="totalDue">Por pagar</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="total_due" placeholder="Por pagar"/>
+              <input type="text" style="width: 100%" nz-input formControlName="totalDue" placeholder="Por pagar"/>
             </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="6" *ngIf="showPendingToCollectField()">
           <nz-form-item>
-            <nz-form-label nzFor="pending_to_collect">Por cobrar</nz-form-label>
+            <nz-form-label nzFor="pendingToCollect">Por cobrar</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="pending_to_collect" placeholder="Por cobrar"/>
+              <input type="text" style="width: 100%" nz-input formControlName="pendingToCollect" placeholder="Por cobrar"/>
             </nz-form-control>
           </nz-form-item>
         </div>

@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Adviser, AdviserToCreate, CreationAdviserResponse, GetOneAdviserResponse, DeleteOneResponse} from "../interfaces/adviser";
+import {
+  Adviser,
+  AdviserToCreate,
+  CreationAdviserResponse,
+  GetOneAdviserResponse,
+  DeleteOneResponse,
+  GetAllAdvisers, CreateEditAdviserResponse
+} from "../interfaces/adviser";
+import {DeleteResult} from "../interfaces/generics";
 @Injectable({
   providedIn: 'root'
 })
@@ -11,23 +19,23 @@ export class AdviserService {
     private  http: HttpClient
   ) { }
 
-  getAll(): Observable<Adviser[]> {
-    return this.http.get<Adviser[]>('owner/getAllData?type=Asesores%20Externos')
+  getAll(pageIndex: number, pageSize: number): Observable<GetAllAdvisers> {
+    return this.http.get<GetAllAdvisers>(`external-adviser?pageIndex=${pageIndex}&pageSize=${pageSize}`)
   }
 
-  createOne(owner: AdviserToCreate): Observable<CreationAdviserResponse> {
-    return this.http.post<CreationAdviserResponse>('owner/addNewData', owner)
+  createOne(owner: Adviser): Observable<CreateEditAdviserResponse> {
+    return this.http.post<CreateEditAdviserResponse>('external-adviser', owner)
   }
 
-  deleteOne(id: number): Observable<DeleteOneResponse> {
-    return this.http.delete<DeleteOneResponse>(`owner/deleteData?id=${id}`);
+  deleteOne(id: number): Observable<DeleteResult> {
+    return this.http.delete<DeleteResult>(`external-adviser/${id}`);
   }
 
-  getById(id: string): Observable<GetOneAdviserResponse> {
-    return this.http.get<GetOneAdviserResponse>(`owner/getById?id=${id}`)
+  getById(id: string): Observable<Adviser> {
+    return this.http.get<Adviser>(`external-adviser/${id}`)
   }
 
-  update(data: Adviser): Observable<AdviserToCreate> {
-    return this.http.put<AdviserToCreate>(`owner/updateData`, data);
+  update(data: Adviser): Observable<CreateEditAdviserResponse> {
+    return this.http.put<CreateEditAdviserResponse>(`external-adviser/${data.id}`, data);
   }
 }

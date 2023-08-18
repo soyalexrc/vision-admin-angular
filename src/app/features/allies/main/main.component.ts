@@ -18,7 +18,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   data: Partial<Ally>[]  = [];
   headers: any[] = [];
   pageIndex = 1;
-  totalPages = 1;
+  totalItems = 1;
   pageSize = 10;
   constructor(
     private router: Router,
@@ -65,7 +65,8 @@ export class MainComponent implements OnInit, AfterViewInit {
   getAllies() {
     this.loading = true;
     this.alliesService.getAll(this.pageIndex, this.pageSize ).subscribe(data => {
-        this.data = data.map(element => ({
+        this.totalItems = data.count;
+        this.data = data.rows.map(element => ({
           id: element.id,
           firstName: element.firstName,
           lastName: element.lastName,
@@ -82,7 +83,7 @@ export class MainComponent implements OnInit, AfterViewInit {
           {key: 'birthDate', displayName: 'Fecha de cumpleanos'},
         ]);
 
-        this.dataTable.render(headers, data);
+        this.dataTable.render(headers, data.rows);
       },
       () => {
         this.loading = false

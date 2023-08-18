@@ -6,7 +6,7 @@ import {SERVICE_OPTIONS, SERVICE_TYPE_OPTIONS} from "../../../shared/utils/servi
 import {CashFlowService} from "../../../core/services/cash-flow.service";
 import * as moment from "moment/moment";
 import {UiService} from "../../../core/services/ui.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {MONTHS} from "../../../shared/utils/months";
 
 interface Steps {
@@ -38,7 +38,8 @@ export class CreateComponent implements OnInit {
     private propertyService: PropertyService,
     private cashFlowService: CashFlowService,
     private uiService: UiService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
   ) {
   }
 
@@ -52,6 +53,12 @@ export class CreateComponent implements OnInit {
     }).subscribe(result => {
       this.properties = result.data;
     })
+
+    if (!this.router.url.includes('crear')) {
+      this.isEditing = true;
+      this.id = this.route.snapshot.paramMap.get('id')!;
+      this.getCashFlowRegisterById(this.id)
+    }
   }
 
   onIndexChange(index: number): void {
@@ -125,27 +132,28 @@ export class CreateComponent implements OnInit {
       month: [''],
       property: [null],
       location: [''],
-      isTemporalTransaction: [null]
+      isTemporalTransaction: [false],
+      id: [null]
     });
 
     this.serviceForm = this.fb.group({
       canon: [''],
       contract: [''],
       guarantee: [''],
-      type_of_service: [''],
+      typeOfService: [''],
       reason: [''],
       service: [''],
-      tax_payer: ['']
+      taxPayer: ['']
     })
 
     this.paymentDetailForm = this.fb.group({
       amount: [''],
       currency: [''],
-      way_to_pay: [''],
-      transaction_type: [''],
-      total_due: [''],
+      wayToPay: [''],
+      transactionType: [''],
+      totalDue: [''],
       entity: [''],
-      pending_to_collect: [''],
+      pendingToCollect: [''],
       observation: ['']
     })
   }
@@ -166,19 +174,19 @@ export class CreateComponent implements OnInit {
   }
 
   showAmountField() {
-    return this.paymentDetailForm.value.transaction_type === 'Ingreso'
-      || this.paymentDetailForm.value.transaction_type === 'Egreso'
-      || this.paymentDetailForm.value.transaction_type === 'Interbancaria'
+    return this.paymentDetailForm.value.transactionType === 'Ingreso'
+      || this.paymentDetailForm.value.transactionType === 'Egreso'
+      || this.paymentDetailForm.value.transactionType === 'Interbancaria'
   }
 
   showTotalDueField() {
-    return this.paymentDetailForm.value.transaction_type === 'Ingreso'
-      || this.paymentDetailForm.value.transaction_type === 'Cuenta por pagar'
+    return this.paymentDetailForm.value.transactionType === 'Ingreso'
+      || this.paymentDetailForm.value.transactionType === 'Cuenta por pagar'
   }
 
   showPendingToCollectField() {
-    return this.paymentDetailForm.value.transaction_type === 'Ingreso'
-      || this.paymentDetailForm.value.transaction_type === 'Cuenta por cobrar'
+    return this.paymentDetailForm.value.transactionType === 'Ingreso'
+      || this.paymentDetailForm.value.transactionType === 'Cuenta por cobrar'
   }
 
 
@@ -192,14 +200,57 @@ export class CreateComponent implements OnInit {
     data.date = moment(data.birthday).format('YYYY-MM-DD');
     const month = new Date(data.date).getMonth()
     data.month = MONTHS[month];
-    this.cashFlowService.createOne(data).subscribe(result => {
-    this.uiService.createMessage('success', 'Se creo el registro con exito');
-    this.router.navigate(['/flujo-de-caja'])
-      },
-      () => {
-        this.loading = false;
-      }, () => {
-        this.loading = false;
-      })
+    if (this.isEditing) {
+      this.cashFlowService.update(data).subscribe(result => {
+          this.uiService.createMessage('success', result.message);
+          this.router.navigate(['/flujo-de-caja'])
+        },
+        (error: Error) => {
+          this.uiService.createMessage('error', error.message);
+          this.loading = false;
+        }, () => {
+          this.loading = false;
+        })
+    } else {
+      this.cashFlowService.createOne(data).subscribe(result => {
+          this.uiService.createMessage('success', result.message);
+          this.router.navigate(['/flujo-de-caja'])
+        },
+        (error: Error) => {
+          this.uiService.createMessage('error', error.message);
+          this.loading = false;
+        }, () => {
+          this.loading = false;
+        })
+    }
+
+  }
+
+  getCashFlowRegisterById(id: string) {
+    this.cashFlowService.getById(id).subscribe(result => {
+      this.generalForm.get('client')?.patchValue(result.client);
+      this.generalForm.get('date')?.patchValue(result.date);
+      this.generalForm.get('month')?.patchValue(result.month);
+      this.generalForm.get('property')?.patchValue(result.property);
+      this.generalForm.get('location')?.patchValue(result.location);
+      this.generalForm.get('id')?.patchValue(this.id);
+
+      this.serviceForm.get('canon')?.patchValue(result.canon);
+      this.serviceForm.get('contract')?.patchValue(result.contract);
+      this.serviceForm.get('guarantee')?.patchValue(result.guarantee);
+      this.serviceForm.get('typeOfService')?.patchValue(result.typeOfService);
+      this.serviceForm.get('reason')?.patchValue(result.reason);
+      this.serviceForm.get('taxPayer')?.patchValue(result.taxPayer);
+      this.serviceForm.get('service')?.patchValue(result.service);
+
+      this.paymentDetailForm.get('amount')?.patchValue(result.amount);
+      this.paymentDetailForm.get('currency')?.patchValue(result.currency);
+      this.paymentDetailForm.get('wayToPay')?.patchValue(result.wayToPay);
+      this.paymentDetailForm.get('transactionType')?.patchValue(result.transactionType);
+      this.paymentDetailForm.get('totalDue')?.patchValue(result.totalDue);
+      this.paymentDetailForm.get('entity')?.patchValue(result.entity);
+      this.paymentDetailForm.get('pendingToCollect')?.patchValue(result.pendingToCollect);
+      this.paymentDetailForm.get('observations')?.patchValue(result.observations);
+    })
   }
 }

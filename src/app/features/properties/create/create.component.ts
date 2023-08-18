@@ -565,13 +565,13 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   getAllies() {
     this.allyService.getAll(1, 1).subscribe(result => {
-      this.allies = result;
+      this.allies = result.rows;
     })
   }
 
   getAdvisers() {
-    this.adviserService.getAll().subscribe(result => {
-      this.advisers = result;
+    this.adviserService.getAll(1, 1).subscribe(result => {
+      this.advisers = result.rows;
     })
   }
 
