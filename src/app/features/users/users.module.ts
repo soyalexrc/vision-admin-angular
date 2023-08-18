@@ -14,6 +14,7 @@ import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import {ReactiveFormsModule} from "@angular/forms";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {NzStepsModule} from "ng-zorro-antd/steps";
+import {NzSwitchModule} from "ng-zorro-antd/switch";
 
 
 
@@ -22,20 +23,21 @@ import {NzStepsModule} from "ng-zorro-antd/steps";
     MainComponent,
     CreateComponent
   ],
-  imports: [
-    CommonModule,
-    UsersRoutingModule,
-    NzBreadCrumbModule,
-    SharedModule,
-    NzButtonModule,
-    NzDatePickerModule,
-    NzFormModule,
-    NzGridModule,
-    NzInputModule,
-    NzWaveModule,
-    ReactiveFormsModule,
-    NzSelectModule,
-    NzStepsModule
-  ]
+    imports: [
+        CommonModule,
+        UsersRoutingModule,
+        NzBreadCrumbModule,
+        SharedModule,
+        NzButtonModule,
+        NzDatePickerModule,
+        NzFormModule,
+        NzGridModule,
+        NzInputModule,
+        NzWaveModule,
+        ReactiveFormsModule,
+        NzSelectModule,
+        NzStepsModule,
+        NzSwitchModule
+    ]
 })
 export class UsersModule { }

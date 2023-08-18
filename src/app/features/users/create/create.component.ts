@@ -5,8 +5,13 @@ import {ActivatedRoute, Router} from "@angular/router";
 import * as moment from "moment";
 import {UserService} from "../../../core/services/user.service";
 import {decryptValue, encryptValue} from "../../../shared/utils/crypto";
+import {Error} from "../../../core/interfaces/generics";
 
-interface Steps  {first: string, second: string, last: string}
+interface Steps {
+  first: string,
+  second: string,
+  last: string
+}
 
 @Component({
   selector: 'app-create',
@@ -28,14 +33,16 @@ export class CreateComponent implements OnInit {
     private uiService: UiService,
     private router: Router,
     private route: ActivatedRoute,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.socialForm = this.fb.group({
-      socialFacebook: [''],
-      socialInstagram: [''],
-      socialTwitter: [''],
-      socialYoutube: [''],
+      facebook: [''],
+      instagram: [''],
+      twitter: [''],
+      youtube: [''],
+      tiktok: [''],
     })
 
     this.generalForm = this.fb.group({
@@ -45,18 +52,22 @@ export class CreateComponent implements OnInit {
       lastName: ['', Validators.required],
       password: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
-      phonNumber1: ['', Validators.required],
-      phonNumber2: [''],
+      mainPhone: ['', Validators.required],
+      secondaryPhone: [''],
       userType: ['', Validators.required],
-      id: [null]
+      userLevel: ['', Validators.required],
+      userCommission: [0],
+      id: [null],
+      isActive: [true]
     })
 
     this.personalForm = this.fb.group({
-      birthday: ['', Validators.required],
+      birthDate: ['', Validators.required],
       profession: ['', Validators.required],
       city: ['', Validators.required],
       state: ['', Validators.required],
-      fiscalAddress: ['', Validators.required],
+      address: ['', Validators.required],
+      image: [''],
     })
 
     if (!this.router.url.includes('crear')) {
@@ -70,22 +81,24 @@ export class CreateComponent implements OnInit {
     if (this.generalForm.valid && this.personalForm.valid && this.socialForm.valid) {
       this.loading = true;
       const data = {...this.generalForm.value, ...this.socialForm.value, ...this.personalForm.value};
-      data.birthday = moment(data.birthday).format('YYYY-MM-DD');
-      data.password = encryptValue(data.password)
+      data.birthDate = moment(data.birthday).format('YYYY-MM-DD');
+      data.userCommission = data.userLevel === 'Asesor Diamante' ? 80 : data.userLevel === 'Asesor Estrella' ? 70 : data.userLevel === 'Asesor Destacado' ? 60 : 50
       if (this.isEditing) {
         this.userService.update(data).subscribe(result => {
-          this.uiService.createMessage('success', 'Se edito el usuario con exito!')
+          this.uiService.createMessage('success', result.message)
           this.router.navigate(['/usuarios'])
-        }, () => {
+        }, (error: Error) => {
+          this.uiService.createMessage('error', error.message)
           this.loading = false
         }, () => {
           this.loading = false
         })
       } else {
         this.userService.createOne(data).subscribe(result => {
-          this.uiService.createMessage('success', 'Se creo el usuario con exito!')
+          this.uiService.createMessage('success', result.message)
           this.router.navigate(['/usuarios'])
-        }, () => {
+        }, (error: Error) => {
+          this.uiService.createMessage('error', error.message)
           this.loading = false
         }, () => {
           this.loading = false
@@ -100,26 +113,28 @@ export class CreateComponent implements OnInit {
 
 
   getUserById(id: string) {
+    this.generalForm.get('password')?.clearValidators()
     this.userService.getById(id).subscribe(result => {
-      const user = result.recordset[0];
-      this.generalForm.get('username')?.patchValue(user.username)
-      this.generalForm.get('firstName')?.patchValue(user.first_name)
-      this.generalForm.get('lastName')?.patchValue(user.last_name)
-      this.generalForm.get('password')?.patchValue(decryptValue(user.password))
-      this.generalForm.get('email')?.patchValue(user.email)
-      this.generalForm.get('phonNumber1')?.patchValue(user.phone_number1)
-      this.generalForm.get('phonNumber2')?.patchValue(user.phone_number2)
-      this.generalForm.get('userType')?.patchValue(user.user_type)
-      this.personalForm.get('birthday')?.patchValue(user.birthday)
-      this.personalForm.get('profession')?.patchValue(user.profession)
-      this.personalForm.get('city')?.patchValue(user.city)
-      this.personalForm.get('state')?.patchValue(user.state)
-      this.personalForm.get('fiscalAddress')?.patchValue(user.fiscal_address)
-      this.socialForm.get('socialFacebook')?.patchValue(user.social_facebook)
-      this.socialForm.get('socialInstagram')?.patchValue(user.social_instagram)
-      this.socialForm.get('socialTwitter')?.patchValue(user.social_twitter)
-      this.socialForm.get('socialYoutube')?.patchValue(user.social_youtube)
-      this.generalForm.get('id')?.patchValue(user.id)
+      this.generalForm.get('username')?.patchValue(result.username)
+      this.generalForm.get('firstName')?.patchValue(result.firstName)
+      this.generalForm.get('lastName')?.patchValue(result.lastName)
+      this.generalForm.get('email')?.patchValue(result.email)
+      this.generalForm.get('password')?.patchValue(result.password)
+      this.generalForm.get('mainPhone')?.patchValue(result.mainPhone)
+      this.generalForm.get('secondaryPhone')?.patchValue(result.secondaryPhone)
+      this.generalForm.get('userType')?.patchValue(result.userType)
+      this.generalForm.get('isActive')?.patchValue(result.isActive)
+      this.personalForm.get('birthDate')?.patchValue(result.birthDate)
+      this.personalForm.get('profession')?.patchValue(result.profession)
+      this.personalForm.get('city')?.patchValue(result.city)
+      this.personalForm.get('state')?.patchValue(result.state)
+      this.personalForm.get('address')?.patchValue(result.address)
+      this.socialForm.get('facebook')?.patchValue(result.facebook)
+      this.socialForm.get('instagram')?.patchValue(result.instagram)
+      this.socialForm.get('twitter')?.patchValue(result.twitter)
+      this.socialForm.get('youtube')?.patchValue(result.youtube)
+      this.socialForm.get('tiktok')?.patchValue(result.tiktok)
+      this.generalForm.get('id')?.patchValue(result.id)
     })
   }
 
@@ -138,12 +153,12 @@ export class CreateComponent implements OnInit {
     // initial state
 
     if (index === 0) {
-        steps = {
-          first: 'process',
-          second: 'wait',
-          last: 'wait'
-        }
+      steps = {
+        first: 'process',
+        second: 'wait',
+        last: 'wait'
       }
+    }
     if (index === 1) {
       steps = {
         first: 'finish',
@@ -191,7 +206,7 @@ export class CreateComponent implements OnInit {
     Object.values(form.controls).forEach(control => {
       if (control.invalid) {
         control.markAsDirty();
-        control.updateValueAndValidity({ onlySelf: true });
+        control.updateValueAndValidity({onlySelf: true});
       }
     });
   }

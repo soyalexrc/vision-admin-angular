@@ -22,12 +22,12 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
           console.log(err);
           if (err instanceof HttpErrorResponse) {
             if (err.status === 404) {
-              // alert('ocurrio un error 404')
+              alert('ocurrio un error 404')
               console.log(err);
             }
             if (err.status === 401) {
-              // alert('Su session ha vencido')
-              this.router.navigate(['/login']);
+              alert('Su session ha vencido')
+              this.router.navigate(['/autenticacion']);
               return;
             }
 

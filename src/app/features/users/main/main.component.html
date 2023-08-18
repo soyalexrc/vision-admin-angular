@@ -14,4 +14,8 @@
                    [loading]="loading"
                    (onEdit)="handleEdit($event)"
                    (onDelete)="handleDelete($event)"
+                   [pageIndex]="pageIndex"
+                   [pageSize]="pageSize"
+                   [totalPages]="totalPages"
+                   (onPageIndexChange)="handlePageIndexChange($event)"
 ></app-generic-table>

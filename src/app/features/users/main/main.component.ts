@@ -14,17 +14,22 @@ import {User} from "../../../core/interfaces/user";
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit, AfterViewInit{
+export class MainComponent implements OnInit, AfterViewInit {
   loading = true;
   @ViewChild('dataTable') dataTable!: GenericTableComponent;
-  data: Partial<User>[]  = [];
+  data: Partial<User>[] = [];
   headers: any[] = [];
+  pageIndex = 1;
+  pageSize = 10;
+  totalPages = 100;
+
   constructor(
     private router: Router,
     private modal: NzModalService,
     private userService: UserService,
     private uiService: UiService
-  ) {}
+  ) {
+  }
 
 
   ngOnInit() {
@@ -42,14 +47,16 @@ export class MainComponent implements OnInit, AfterViewInit{
   handleDelete(id: number) {
     this.modal.confirm({
       nzTitle: 'Atencion',
-      nzContent: 'Eliminar el elemento ?',
+      nzContent: 'Se eliminara el usuario, quieres continuar?',
       nzCancelText: 'Cancelar',
       nzOkText: 'Aceptar',
       nzOnOk: () => new Promise((resolve, reject) => {
         this.userService.deleteOne(id).subscribe(result => {
-          this.uiService.createMessage('success', 'Se elimino el usuario con exito!')
+          this.uiService.createMessage('success', result.message)
           this.getUsers()
           setTimeout(() => resolve(), 500);
+        }, (error: Error) => {
+          this.uiService.createMessage('error', error.message);
         })
       })
     });
@@ -61,20 +68,21 @@ export class MainComponent implements OnInit, AfterViewInit{
 
   getUsers() {
     this.loading = true;
-    this.userService.getAll().subscribe(data => {
-        this.data = data.map(element => ({
+    this.userService.getAll(this.pageIndex, this.pageSize).subscribe(data => {
+        this.totalPages = data.count;
+        this.data = data.rows.map(element => ({
           id: element.id,
           username: element.username,
-          name: element.first_name + ' ' + element.last_name,
-          user_type: element.user_type,
-          phone_number1: element.phone_number1,
+          name: element.firstName + ' ' + element.lastName,
+          userType: element.userType,
+          mainPhone: element.mainPhone,
           email: element.email,
         }));
         const headers = setHeaders([
           {key: 'username', displayName: 'Nombre de usuario'},
           {key: 'name', displayName: 'Nombre '},
-          {key: 'user_type', displayName: 'Tipo de usuario '},
-          {key: 'phone_number1', displayName: 'Telefono principal'},
+          {key: 'userType', displayName: 'Tipo de usuario '},
+          {key: 'mainPhone', displayName: 'Telefono principal'},
           {key: 'email', displayName: 'Correo'},
         ]);
 
@@ -87,5 +95,10 @@ export class MainComponent implements OnInit, AfterViewInit{
         this.loading = false
       }
     )
+  }
+
+  handlePageIndexChange(pageIndex: number) {
+    this.pageIndex = pageIndex;
+    this.getUsers();
   }
 }

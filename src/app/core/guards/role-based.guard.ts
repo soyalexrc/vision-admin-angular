@@ -20,7 +20,7 @@ export class RoleBasedGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (!this.userService.currentUser.value.allowedRoutes.some(r => r === route.url[0].path)) {
+    if (!this.userService.currentUser?.value?.allowedRoutes?.some(r => r === route.url[0].path)) {
       this.router.navigate(['/inicio'])
       this.uiService.createMessage('warning', 'Estas intentando acceder a una seccion a la que no tienes permiso!')
       return false;

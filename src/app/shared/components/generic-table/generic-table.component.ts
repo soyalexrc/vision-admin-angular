@@ -16,6 +16,9 @@ export class GenericTableComponent implements OnInit {
   @Input() yScroll: string = '100%';
   @Input() changeActionTitle: string = '';
   @Input() linkActionTitle: string = '';
+  @Input() pageIndex: number = 1;
+  @Input() totalPages: number = 1;
+  @Input() pageSize: number = 10;
   @Input() historyActionTitle: string = '';
   @Input() actionsFixed: boolean = false;
   @Input() hasEdit: boolean = true;
@@ -28,6 +31,7 @@ export class GenericTableComponent implements OnInit {
   @Output() onLink: EventEmitter<any> = new EventEmitter<any>()
   @Output() onHistory: EventEmitter<any> = new EventEmitter<any>()
   @Output() onEdit: EventEmitter<number> = new EventEmitter<number>()
+  @Output() onPageIndexChange: EventEmitter<number> = new EventEmitter<number>()
 
   listOfData: any[] = [];
 

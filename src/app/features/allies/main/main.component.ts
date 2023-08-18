@@ -17,6 +17,9 @@ export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('dataTable') dataTable!: GenericTableComponent;
   data: Partial<Ally>[]  = [];
   headers: any[] = [];
+  pageIndex = 1;
+  totalPages = 1;
+  pageSize = 10;
   constructor(
     private router: Router,
     private modal: NzModalService,
@@ -45,9 +48,11 @@ export class MainComponent implements OnInit, AfterViewInit {
       nzOkText: 'Aceptar',
       nzOnOk: () => new Promise((resolve, reject) => {
         this.alliesService.deleteOne(id).subscribe(result => {
-          this.uiService.createMessage('success', 'Se elimino el aliado con exito!')
+          this.uiService.createMessage('success', result.message)
           this.getAllies()
           setTimeout(() => resolve(), 500);
+        }, (error: Error) => {
+          this.uiService.createMessage('error', error.message)
         })
       })
     });
@@ -59,22 +64,22 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getAllies() {
     this.loading = true;
-    this.alliesService.getAll().subscribe(data => {
+    this.alliesService.getAll(this.pageIndex, this.pageSize ).subscribe(data => {
         this.data = data.map(element => ({
           id: element.id,
-          first_name: element.first_name,
-          last_name: element.last_name,
+          firstName: element.firstName,
+          lastName: element.lastName,
           phone: element.phone,
           email: element.email,
-          birthday: element.birthday
+          birthDate: element.birthDate
         }));
         const headers = setHeaders([
           {key: 'id', displayName: 'id'},
-          {key: 'first_name', displayName: 'Nombre'},
-          {key: 'last_name', displayName: 'Apellido'},
+          {key: 'firstName', displayName: 'Nombre'},
+          {key: 'lastName', displayName: 'Apellido'},
           {key: 'phone', displayName: 'Telefono'},
           {key: 'email', displayName: 'Correo'},
-          {key: 'birthday', displayName: 'Fecha de cumpleanos'},
+          {key: 'birthDate', displayName: 'Fecha de cumpleanos'},
         ]);
 
         this.dataTable.render(headers, data);
@@ -86,5 +91,10 @@ export class MainComponent implements OnInit, AfterViewInit {
         this.loading = false
       }
     )
+  }
+
+  handlePageIndexChange(pageIndex: number) {
+    this.pageIndex = pageIndex;
+    this.getAllies();
   }
 }

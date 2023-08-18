@@ -151,13 +151,13 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
   }
 
   getAdvisers() {
-    this.userService.getAll().subscribe(result => {
-      this.advisers = result;
+    this.userService.getAll(1, 1).subscribe(result => {
+      this.advisers = result.rows;
     })
   }
 
   getAdviserLabel(adviser: User) {
-    return `${adviser.first_name} ${adviser.last_name} (${adviser.username})`;
+    return `${adviser.firstName} ${adviser.lastName} (${adviser.username})`;
   }
 
 

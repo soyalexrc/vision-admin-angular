@@ -116,17 +116,30 @@
             </nz-form-control>
           </nz-form-item>
         </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="userLevel">Rango de usuario (aplica para asesores)</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="userLevel">
+                <nz-option nzValue="Asesor Emprendedor" nzLabel="Asesor Emprendedor 50%"></nz-option>
+                <nz-option nzValue="Asesor Destacado" nzLabel="Asesor Destacado 60%"></nz-option>
+                <nz-option nzValue="Asesor Estrella" nzLabel="Asesor Estrella 70%"></nz-option>
+                <nz-option nzValue="Asesor Diamante" nzLabel="Asesor Diamante 80%"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
 
 
       </div>
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="phonNumber1">Numero de telefono principal</nz-form-label>
-            <nz-form-control [nzErrorTip]="phonNumber1ErrTemp">
-              <input type="text" style="width: 100%" nz-input formControlName="phonNumber1"
+            <nz-form-label nzRequired nzFor="mainPhone">Numero de telefono principal</nz-form-label>
+            <nz-form-control [nzErrorTip]="mainPhoneErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="mainPhone"
                      placeholder="Numero de telefono"/>
-              <ng-template #phonNumber1ErrTemp let-control>
+              <ng-template #mainPhoneErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un numero de telefono!</ng-container>
               </ng-template>
             </nz-form-control>
@@ -135,10 +148,19 @@
 
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="phonNumber2">Numero de telefono secundario</nz-form-label>
+            <nz-form-label nzFor="secondaryPhone">Numero de telefono secundario</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="phonNumber2"
+              <input type="text" style="width: 100%" nz-input formControlName="secondaryPhone"
                      placeholder="Numero de telefono secundario"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="isActive">Usuario activo</nz-form-label>
+            <nz-form-control >
+              <nz-switch formControlName="isActive"></nz-switch>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -153,10 +175,10 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="birthday">Fecha de nacimiento</nz-form-label>
-            <nz-form-control [nzErrorTip]="birthdayErrTemp">
-              <nz-date-picker style="width: 100%" formControlName="birthday"></nz-date-picker>
-              <ng-template #birthdayErrTemp let-control>
+            <nz-form-label nzRequired nzFor="birthDate">Fecha de nacimiento</nz-form-label>
+            <nz-form-control [nzErrorTip]="birthDateErrTemp">
+              <nz-date-picker style="width: 100%" formControlName="birthDate"></nz-date-picker>
+              <ng-template #birthDateErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar una fecha de nacimiento!</ng-container>
               </ng-template>
             </nz-form-control>
@@ -207,10 +229,10 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="24">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="fiscalAddress">Direccion fiscal</nz-form-label>
-            <nz-form-control [nzErrorTip]="fiscalAddressErrTemp">
-              <textarea rows="4" nz-input formControlName="fiscalAddress" placeholder="Direccion fiscal"></textarea>
-              <ng-template #fiscalAddressErrTemp let-control>
+            <nz-form-label nzRequired nzFor="address">Direccion fiscal</nz-form-label>
+            <nz-form-control [nzErrorTip]="addressErrTemp">
+              <textarea rows="4" nz-input formControlName="address" placeholder="Direccion fiscal"></textarea>
+              <ng-template #addressErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar una direccion fiscal!</ng-container>
               </ng-template>
             </nz-form-control>
@@ -230,18 +252,18 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="socialInstagram">Instagram</nz-form-label>
+            <nz-form-label nzFor="instagram">Instagram</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="socialInstagram" placeholder="Instagram"/>
+              <input type="text" style="width: 100%" nz-input formControlName="instagram" placeholder="Instagram"/>
             </nz-form-control>
           </nz-form-item>
         </div>
 
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="socialFacebook">Facebook</nz-form-label>
+            <nz-form-label nzFor="facebook">Facebook</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="socialFacebook" placeholder="Facebook"/>
+              <input type="text" style="width: 100%" nz-input formControlName="facebook" placeholder="Facebook"/>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -250,18 +272,27 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="socialTwitter">Twitter</nz-form-label>
+            <nz-form-label nzFor="twitter">Twitter</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="socialTwitter" placeholder="Twitter"/>
+              <input type="text" style="width: 100%" nz-input formControlName="twitter" placeholder="Twitter"/>
             </nz-form-control>
           </nz-form-item>
         </div>
 
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="socialYoutube">Youtube</nz-form-label>
+            <nz-form-label nzFor="youtube">Youtube</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="socialYoutube" placeholder="Youtube"/>
+              <input type="text" style="width: 100%" nz-input formControlName="youtube" placeholder="Youtube"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="tiktok">tiktok</nz-form-label>
+            <nz-form-control >
+              <input type="text" style="width: 100%" nz-input formControlName="tiktok" placeholder="Tiktok"/>
             </nz-form-control>
           </nz-form-item>
         </div>

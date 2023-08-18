@@ -1,8 +1,16 @@
 export interface Login {
-  recordsets:   Array<Recordset[]>;
-  recordset:    Recordset[];
-  output:       Output;
-  rowsAffected: any[];
+  token: string;
+  message: string;
+  userData: LoginUserData
+}
+
+interface LoginUserData {
+  id: number | string,
+  username: string;
+  email: string;
+  image?: string;
+  userType: string;
+  allowedRoutes: string[]
 }
 
 export interface Output {

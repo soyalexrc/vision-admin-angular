@@ -208,8 +208,8 @@ export class MainComponent implements OnInit, AfterViewInit {
         comments: this.comments,
         status: this.selectedStatus!,
         property_id: this.currentId,
-        user_id: this.userService.currentUser?.value?.id,
-        username: this.userService.currentUser?.value?.username
+        user_id: this.userService.currentUser?.value?.id!,
+        username: this.userService.currentUser?.value?.username!
 
       };
       this.propertyService.updateHistory(payload).subscribe(res => {

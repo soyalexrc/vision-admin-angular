@@ -23,42 +23,26 @@ export class AuthService {
   isAuthenticated(): boolean {
     const token = localStorage.getItem('vi-token');
     // Check whether the token is expired and return
+
     // true or false
-    return this.validateSession();
+    return !this.jwtHelper.isTokenExpired(token);;
   }
 
-  decodeToken(token: string) {
-    return this.jwtHelper.decodeToken(token);
+  getToken() {
+    return localStorage.getItem('vi-token' ?? '');
   }
 
-  login(username: string, password: string, remember: boolean): Observable<Login> {
-    return this.http.get<Login>(`user/login?email=${username}`)
+  login(email: string, password: string, remember: boolean): Observable<Login> {
+    return this.http.post<Login>('auth/login', {email, password})
   }
   logout(){
     this.router.navigate(['/']);
     localStorage.removeItem('vi-token');
+    localStorage.removeItem('vi-userData')
     this.message.create('error', 'Su session ha vencido, inicia session de nuevo!')
     return
   }
 
-  validateSession(): boolean {
-    const user = localStorage.getItem('vi-token') ? JSON.parse(localStorage.getItem('vi-token') ?? '') : null;
-
-    if (!user) {
-      this.logout();
-      return false;
-    } else {
-      const exp = user.exp;
-      const dateNow = new Date();
-      if (dateNow > new Date(exp * 1000)) {
-        this.logout();
-        return false;
-      } else {
-        return true;
-      }
-    }
-
-  }
 
   // isBoss() {
   //   return this.getTokenDecoded()?.auth.includes('SERVICIO');

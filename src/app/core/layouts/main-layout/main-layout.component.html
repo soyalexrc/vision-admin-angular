@@ -82,12 +82,12 @@
       <button class="visible" nz-button nzType="text" nzSize="large" (click)="open()"><span nz-icon nzType="menu"></span></button>
       <div style="display: flex; align-items: center">
         <div style="margin-right: .5rem;">
-          <p class="user-name">{{user.username}}</p>
+          <p class="user-name">{{user?.username}}</p>
           <p class="user-role">
-            <span>{{user.user_type}}</span>
+            <span>{{user?.userType}}</span>
           </p>
         </div>
-        <nz-avatar [nzText]="shortener(user.username)" nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomLeft" nzSize="large" style="color:#f56a00; background-color:#fde3cf;"></nz-avatar>
+        <nz-avatar [nzText]="shortener(user?.username ?? '')" nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomLeft" nzSize="large" style="color:#f56a00; background-color:#fde3cf;"></nz-avatar>
       </div>
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu>

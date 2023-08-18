@@ -6,14 +6,20 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environment} from "../../../environments/environment";
+import {AuthService} from "../services/auth.service";
 
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const apiReq = request.clone({ url: `http://100.42.69.119:3000/api/${request.url}` });
+    const apiReq = request.clone({
+      url: `${environment.apiUrl}/${request.url}` ,
+      headers: request.headers.set('Authorization', `Bearer ${this.authService.getToken() }`)
+    });
+
     return next.handle(apiReq);
   }
 }

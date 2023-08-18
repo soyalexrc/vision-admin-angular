@@ -1,4 +1,11 @@
-<nz-table #fixedTable [nzLoading]="loading" [nzLoadingIndicator]="loadingIndicator" [nzData]="tableData.data" [nzScroll]="{ x: xScroll, y: yScroll }">
+<nz-table
+  #fixedTable
+  [nzLoading]="loading"
+  [nzLoadingIndicator]="loadingIndicator"
+  [nzData]="tableData.data"
+  [nzScroll]="{ x: xScroll, y: yScroll }"
+  [nzFrontPagination]="false"
+>
   <thead>
   <tr>
     <th *ngFor="let h of tableData.headers">{{h.displayName}}</th>
@@ -31,6 +38,15 @@
   </tr>
   </tbody>
 </nz-table>
+<div
+style="display: flex; justify-content: flex-end">
+  <nz-pagination
+    [nzPageIndex]="pageIndex"
+    [nzTotal]="totalPages"
+    [nzPageSize]="pageSize"
+    (nzPageIndexChange)="onPageIndexChange.emit($event)"
+  ></nz-pagination>
+</div>
 
 
 <ng-template #loadingIndicator>

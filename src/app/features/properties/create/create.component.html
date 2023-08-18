@@ -580,7 +580,7 @@
             <nz-form-label  nzFor="ally">Aliado</nz-form-label>
             <nz-form-control >
               <nz-select formControlName="ally">
-                <nz-option *ngFor="let ally of allies" [nzValue]="ally.id" [nzLabel]="ally.first_name + ' ' + ally.last_name"></nz-option>
+                <nz-option *ngFor="let ally of allies" [nzValue]="ally.id" [nzLabel]="ally.firstName + ' ' + ally.lastName"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
