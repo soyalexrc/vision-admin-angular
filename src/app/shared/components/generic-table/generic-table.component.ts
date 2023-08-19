@@ -32,6 +32,7 @@ export class GenericTableComponent implements OnInit {
   @Output() onHistory: EventEmitter<any> = new EventEmitter<any>()
   @Output() onEdit: EventEmitter<number> = new EventEmitter<number>()
   @Output() onPageIndexChange: EventEmitter<number> = new EventEmitter<number>()
+  @Output() onChangeUserStatus: EventEmitter<any> = new EventEmitter<any>()
 
   listOfData: any[] = [];
 
@@ -56,4 +57,7 @@ export class GenericTableComponent implements OnInit {
     this.dragTrace = {src: -1, dest: -1}
   }
 
+  handleChange($event: any) {
+    console.log($event)
+  }
 }

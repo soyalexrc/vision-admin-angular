@@ -205,8 +205,8 @@ export class CreateComponent implements OnInit {
           this.uiService.createMessage('success', result.message);
           this.router.navigate(['/flujo-de-caja'])
         },
-        (error: Error) => {
-          this.uiService.createMessage('error', error.message);
+        (error) => {
+          this.uiService.createMessage('error', error.error.message)
           this.loading = false;
         }, () => {
           this.loading = false;
@@ -216,8 +216,8 @@ export class CreateComponent implements OnInit {
           this.uiService.createMessage('success', result.message);
           this.router.navigate(['/flujo-de-caja'])
         },
-        (error: Error) => {
-          this.uiService.createMessage('error', error.message);
+        (error) => {
+          this.uiService.createMessage('error', error.error.message)
           this.loading = false;
         }, () => {
           this.loading = false;

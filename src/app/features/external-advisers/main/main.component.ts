@@ -52,8 +52,8 @@ export class MainComponent implements OnInit, AfterViewInit{
           this.uiService.createMessage('success', result.message)
           this.getAdvisers()
           setTimeout(() => resolve(), 500);
-        }, (error: Error) => {
-          this.uiService.createMessage('success', error.message)
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
         })
       })
     });

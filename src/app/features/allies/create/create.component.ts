@@ -49,8 +49,8 @@ export class CreateComponent {
         this.allyService.update(data).subscribe(result => {
           this.uiService.createMessage('success', result.message)
           this.router.navigate(['/aliados'])
-        }, (error: Error) => {
-          this.uiService.createMessage('success', error.message)
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
           this.loading = false
         }, () => {
           this.loading = false
@@ -59,8 +59,8 @@ export class CreateComponent {
         this.allyService.createOne(data).subscribe(result => {
           this.uiService.createMessage('success', result.message)
           this.router.navigate(['/aliados'])
-        }, (error: Error) => {
-          this.uiService.createMessage('error', error.message)
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
           this.loading = false
         }, () => {
           this.loading = false

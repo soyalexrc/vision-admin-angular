@@ -32,7 +32,7 @@
         <a (click)="onDelete.emit(row.id)" nz-tooltip="true" nzTooltipTitle="Eliminar">
           <span nz-icon nzType="delete" style="font-size: 18px" [nzTheme]="'twotone'" [nzTwotoneColor]="'#ff4d4f'"></span>
         </a>
-
+        <nz-switch *ngIf="row.isUserTable" nz-tooltip="true" [(ngModel)]="row.status" (ngModelChange)="onChangeUserStatus.emit({value: $event, id: row.id})" nzTooltipTitle="Deshabilitar o habilitar usuario"></nz-switch>
       </div>
     </td>
   </tr>

@@ -87,8 +87,8 @@ export class CreateComponent implements OnInit {
         this.userService.update(data).subscribe(result => {
           this.uiService.createMessage('success', result.message)
           this.router.navigate(['/usuarios'])
-        }, (error: Error) => {
-          this.uiService.createMessage('error', error.message)
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
           this.loading = false
         }, () => {
           this.loading = false
@@ -97,8 +97,8 @@ export class CreateComponent implements OnInit {
         this.userService.createOne(data).subscribe(result => {
           this.uiService.createMessage('success', result.message)
           this.router.navigate(['/usuarios'])
-        }, (error: Error) => {
-          this.uiService.createMessage('error', error.message)
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
           this.loading = false
         }, () => {
           this.loading = false

@@ -39,7 +39,7 @@ export class AuthService {
     this.router.navigate(['/']);
     localStorage.removeItem('vi-token');
     localStorage.removeItem('vi-userData')
-    this.message.create('error', 'Su session ha vencido, inicia session de nuevo!')
+    // this.message.create('error', 'Su session ha vencido, inicia session de nuevo!')
     return
   }
 

@@ -11,8 +11,10 @@ import { RegisterClientModalComponent } from './components/register-client-modal
 import {NzModalModule} from "ng-zorro-antd/modal";
 import {NzFormModule} from "ng-zorro-antd/form";
 import {NzSelectModule} from "ng-zorro-antd/select";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NzPaginationModule} from "ng-zorro-antd/pagination";
+import {NzSwitchModule} from "ng-zorro-antd/switch";
+
 
 
 
@@ -27,18 +29,20 @@ import {NzPaginationModule} from "ng-zorro-antd/pagination";
         GenericTableComponent,
         RegisterClientModalComponent,
     ],
-    imports: [
-        CommonModule,
-        NzTableModule,
-        NzIconModule,
-        NzButtonModule,
-        NzSpinModule,
-        NzToolTipModule,
-        NzModalModule,
-        NzFormModule,
-        NzSelectModule,
-        ReactiveFormsModule,
-        NzPaginationModule
-    ]
+  imports: [
+    CommonModule,
+    NzTableModule,
+    NzIconModule,
+    NzButtonModule,
+    NzSpinModule,
+    NzToolTipModule,
+    NzModalModule,
+    NzFormModule,
+    NzSelectModule,
+    ReactiveFormsModule,
+    NzPaginationModule,
+    NzSwitchModule,
+    FormsModule
+  ]
 })
 export class SharedModule { }

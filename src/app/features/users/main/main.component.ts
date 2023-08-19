@@ -55,8 +55,8 @@ export class MainComponent implements OnInit, AfterViewInit {
           this.uiService.createMessage('success', result.message)
           this.getUsers()
           setTimeout(() => resolve(), 500);
-        }, (error: Error) => {
-          this.uiService.createMessage('error', error.message);
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message);
         })
       })
     });
@@ -77,6 +77,9 @@ export class MainComponent implements OnInit, AfterViewInit {
           userType: element.userType,
           mainPhone: element.mainPhone,
           email: element.email,
+          status: element.isActive,
+          statusString: element.isActive ? 'Activo' : 'Inactivo',
+          isUserTable: true,
         }));
         const headers = setHeaders([
           {key: 'username', displayName: 'Nombre de usuario'},
@@ -84,6 +87,7 @@ export class MainComponent implements OnInit, AfterViewInit {
           {key: 'userType', displayName: 'Tipo de usuario '},
           {key: 'mainPhone', displayName: 'Telefono principal'},
           {key: 'email', displayName: 'Correo'},
+          {key: 'statusString', displayName: 'Estatus'},
         ]);
 
         this.dataTable.render(headers, this.data);
@@ -100,5 +104,19 @@ export class MainComponent implements OnInit, AfterViewInit {
   handlePageIndexChange(pageIndex: number) {
     this.pageIndex = pageIndex;
     this.getUsers();
+  }
+
+  handleChangeUserStatus(data: {value: boolean, id: number}) {
+    this.loading = true;
+    this.userService.changeStatus(data.value, data.id).subscribe(result => {
+      this.uiService.createMessage('success', result.message)
+      this.getUsers();
+    }, (error) => {
+      this.uiService.createMessage('error', error.error.message)
+      this.loading = false;
+      this.getUsers();
+    }, () => {
+      this.loading = false;
+    })
   }
 }

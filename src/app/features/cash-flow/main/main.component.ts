@@ -86,8 +86,8 @@ export class MainComponent implements OnInit, AfterViewInit {
           this.getCashFlowData()
           this.getTotalStats();
           setTimeout(() => resolve(), 500);
-        }, (error: Error) => {
-          this.uiService.createMessage('success', error.message)
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
         })
       })
     });
@@ -220,7 +220,6 @@ export class MainComponent implements OnInit, AfterViewInit {
   getTotalStats() {
     this.loadingStats = true;
     this.cashFlowService.getTotals().subscribe(result => {
-      console.log(result);
       const data = {
         ...result,
         utilidad: {

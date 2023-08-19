@@ -50,6 +50,10 @@ export class UserService {
     return this.http.put<CreateEditUserResponse>(`user/${data.id}`, data);
   }
 
+  changeStatus(value: boolean, id: number): Observable<CreateEditUserResponse> {
+    return this.http.patch<CreateEditUserResponse>('user/changeStatus', {value, id})
+  }
+
   checkAllowedRouteByUserRole(route: string) {
     return this.currentUser.value?.allowedRoutes?.some(r => r === route)
   }

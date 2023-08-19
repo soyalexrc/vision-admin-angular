@@ -4,6 +4,7 @@ import {AuthService} from "../../../core/services/auth.service";
 import { NzMessageService } from 'ng-zorro-antd/message';
 import {UserService} from "../../../core/services/user.service";
 import {User} from "../../../core/interfaces/user";
+import {UiService} from "../../../core/services/ui.service";
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit {
     private auth: AuthService,
     private message: NzMessageService,
     private userService: UserService,
+    private uiService: UiService
   ) {}
   ngOnInit() {
     if (localStorage.getItem('vi-remember')) {
@@ -31,26 +33,23 @@ export class LoginComponent implements OnInit {
 
   login() {
     if (!this.email) {
-      this.message.create('error', 'ingresa un usuario')
+      this.uiService.createMessage('error', 'ingresa un usuario')
       return;
     }
     if (!this.password) {
-      this.message.create('error', 'ingresa una contrasena')
+      this.uiService.createMessage('error', 'ingresa una contrasena')
       return;
     }
 
     this.auth.login(this.email, this.password, this.remember).subscribe(data => {
       this.userService.updateCurrentUser(data.userData as Partial<User>, data.token);
       this.router.navigate(['/'])
-      this.showMessage('success', `Bienvenid@, ${this.email}`)
+      this.uiService.createMessage('success', `Bienvenid@, ${this.email}`)
 
-    }, error => {
-      this.showMessage('error', (error.error.message || 'Ocurrio un error inesperado, por favor prueba mas tarde...'))
+    }, (error) => {
+      if (error.status !== 403)
+      this.uiService.createMessage('error', error.error.message)
     })
-  }
-
-  showMessage(type: string, message: string): void {
-    this.message.create(type, message);
   }
 
   handleRememberChange(event: any) {
