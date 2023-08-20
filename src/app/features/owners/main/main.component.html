@@ -1,0 +1,17 @@
+
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Propietarios</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<app-section-title
+  [title]="'Propietarios'"
+  [buttonText]="'Nuevo propietario'"
+  (onRefresh)="getOwners()"
+  (onNewElement)="handleNewOwner()"
+></app-section-title>
+<app-generic-table #dataTable
+                   [loading]="loading"
+                   (onEdit)="handleEdit($event)"
+                   (onDelete)="handleDelete($event)"
+></app-generic-table>
