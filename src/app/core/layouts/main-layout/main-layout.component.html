@@ -21,6 +21,10 @@
         <span nz-icon nzType="user" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Clientes</span>
       </li>
+      <li nz-menu-item nzMatchRouter routerLink="/propietarios" *ngIf="validateAccess('propietarios')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="solution" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Propietarios</span>
+      </li>
       <li nz-menu-item nzMatchRouter routerLink="/usuarios" *ngIf="validateAccess('usuarios')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="idcard" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Usuarios</span>
@@ -115,6 +119,10 @@
         <li nz-menu-item nzMatchRouter routerLink="/clientes" *ngIf="validateAccess('clientes')" >
           <span nz-icon nzType="user" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Clientes</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/propietarios" *ngIf="validateAccess('propietarios')" >
+          <span nz-icon nzType="solution" nzTheme="outline" style="margin-right: .5rem"></span>
+          <span style="width: 135px">Propietarios</span>
         </li>
         <li nz-menu-item nzMatchRouter routerLink="/usuarios" *ngIf="validateAccess('usuarios')" >
           <span nz-icon nzType="idcard" nzTheme="outline" style="margin-right: .5rem"></span>

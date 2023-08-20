@@ -64,6 +64,12 @@ const routes: Routes = [
         component: MainLayoutComponent,
         loadChildren: () => import('./features/properties/properties.module').then(m => m.PropertiesModule)
       },
+      {
+        path: 'propietarios',
+        canActivate: [RoleBasedGuard],
+        component: MainLayoutComponent,
+        loadChildren: () => import('./features/owners/owners.module').then(m => m.OwnersModule)
+      },
     ]
   },
   {

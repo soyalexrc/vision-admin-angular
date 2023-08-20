@@ -29,7 +29,7 @@ export class UiService {
     this.message.create(type, content);
   }
 
-  removeSessionFromInactive(title: string, message: string) {
+  removeSession(title: string, message: string) {
     this.modal.error({
       nzClosable: false,
       nzCloseIcon: undefined,

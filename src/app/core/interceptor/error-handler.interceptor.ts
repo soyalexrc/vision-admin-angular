@@ -26,7 +26,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
               console.log(err);
             }
             if (err.status === 403) {
-              this.uiService.removeSessionFromInactive(err.error.title, err.error.message);
+              this.uiService.removeSession(err.error.title, err.error.message);
               console.log(err);
             }
             if (err.status === 401) {
