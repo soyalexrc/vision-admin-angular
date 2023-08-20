@@ -547,15 +547,15 @@ export class CreateComponent implements OnInit, OnDestroy {
   getClientValue(client: Owner) {
     return {
       id: client.id,
-      name: `${client.first_name} ${client.last_name}`
+      name: `${client.firstName} ${client.lastName}`
     }
   }
 
 
   getClients() {
     this.clientsLoading = true;
-    this.clientService.getAll().subscribe(result => {
-      this.clients = result;
+    this.clientService.getAll(1, 1).subscribe(result => {
+      this.clients = result.rows;
     }, () => {
       this.clientsLoading = false;
     }, () => {

@@ -29,9 +29,8 @@ export class CreateComponent implements OnInit{
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       phone: ['', Validators.required],
-      birthday: ['', Validators.required],
+      birthdate: ['', Validators.required],
       isInvestor: [false, Validators.required],
-      type: ['Propietarios'],
       id: [null]
     })
 
@@ -47,22 +46,23 @@ export class CreateComponent implements OnInit{
     if (this.form.valid) {
       this.loading = true;
       const data = this.form.value;
-      data.birthday = moment(data.birthday).format('YYYY-MM-DD');
-      data.isInvestor = data.isInvestor ? 'Si' : 'No';
+      data.birthdate = moment(data.birthdate).format('YYYY-MM-DD');
       if (this.isEditing) {
         this.ownerService.update(data).subscribe(result => {
-          this.uiService.createMessage('success', 'Se edito el propietario con exito!')
+          this.uiService.createMessage('success', result.message);
           this.router.navigate(['/propietarios'])
-        }, () => {
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message);
           this.loading = false
         }, () => {
           this.loading = false
         })
       } else {
         this.ownerService.createOne(data).subscribe(result => {
-          this.uiService.createMessage('success', 'Se creo el propietario con exito!')
+          this.uiService.createMessage('success', result.message)
           this.router.navigate(['/propietarios'])
-        }, () => {
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message);
           this.loading = false
         }, () => {
           this.loading = false
@@ -81,14 +81,13 @@ export class CreateComponent implements OnInit{
 
   getOwnerById(id: string) {
     this.ownerService.getById(id).subscribe(result => {
-      const owner = result.recordset[0];
-      this.form.get('firstName')?.patchValue(owner.first_name);
-      this.form.get('lastName')?.patchValue(owner.last_name);
-      this.form.get('isInvestor')?.patchValue(owner.isInvestor);
-      this.form.get('birthday')?.patchValue(owner.birthday);
-      this.form.get('email')?.patchValue(owner.email);
-      this.form.get('phone')?.patchValue(owner.phone);
-      this.form.get('id')?.patchValue(owner.id);
+      this.form.get('firstName')?.patchValue(result.firstName);
+      this.form.get('lastName')?.patchValue(result.lastName);
+      this.form.get('isInvestor')?.patchValue(result.isInvestor);
+      this.form.get('birthdate')?.patchValue(result.birthdate);
+      this.form.get('email')?.patchValue(result.email);
+      this.form.get('phone')?.patchValue(result.phone);
+      this.form.get('id')?.patchValue(result.id);
     })
   }
 

@@ -1,1 +1,21 @@
-<p>main works!</p>
+
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Clientes</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<app-section-title
+  [title]="'Clientes'"
+  [buttonText]="'Nuevo cliente'"
+  (onRefresh)="getClients()"
+  (onNewElement)="handleNewClient()"
+></app-section-title>
+<app-generic-table #dataTable
+                   [loading]="loading"
+                   (onEdit)="handleEdit($event)"
+                   (onDelete)="handleDelete($event)"
+                   [pageIndex]="pageIndex"
+                   [totalItems]="totalItems"
+                   [pageSize]="pageSize"
+                   (onPageIndexChange)="handlePageIndexChange($event)"
+></app-generic-table>
