@@ -29,16 +29,14 @@ export class CreateComponent {
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       phone: ['', Validators.required],
-      birthday: ['', Validators.required],
-      isInvestor: [false],
-      type: ['Aliados'],
+      birthDate: ['', Validators.required],
       id: [null]
     })
 
     if (!this.router.url.includes('crear')) {
       this.isEditing = true;
       this.id = this.route.snapshot.paramMap.get('id')!;
-      this.getOwnerById(this.id)
+      this.getAlly(this.id)
     }
   }
 
@@ -46,22 +44,23 @@ export class CreateComponent {
     if (this.form.valid) {
       this.loading = true;
       const data = this.form.value;
-      data.birthday = moment(data.birthday).format('YYYY-MM-DD');
-      data.isInvestor = data.isInvestor ? 'Si' : 'No';
+      data.birthDate = moment(data.birthDate).format('YYYY-MM-DD');
       if (this.isEditing) {
         this.allyService.update(data).subscribe(result => {
-          this.uiService.createMessage('success', 'Se edito el aliado con exito!')
+          this.uiService.createMessage('success', result.message)
           this.router.navigate(['/aliados'])
-        }, () => {
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
           this.loading = false
         }, () => {
           this.loading = false
         })
       } else {
         this.allyService.createOne(data).subscribe(result => {
-          this.uiService.createMessage('success', 'Se creo el aliado con exito!')
+          this.uiService.createMessage('success', result.message)
           this.router.navigate(['/aliados'])
-        }, () => {
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
           this.loading = false
         }, () => {
           this.loading = false
@@ -78,16 +77,14 @@ export class CreateComponent {
   }
 
 
-  getOwnerById(id: string) {
+  getAlly(id: string) {
     this.allyService.getById(id).subscribe(result => {
-      const ally = result.recordset[0];
-      this.form.get('firstName')?.patchValue(ally.first_name);
-      this.form.get('lastName')?.patchValue(ally.last_name);
-      this.form.get('isInvestor')?.patchValue(ally.isInvestor);
-      this.form.get('birthday')?.patchValue(ally.birthday);
-      this.form.get('email')?.patchValue(ally.email);
-      this.form.get('phone')?.patchValue(ally.phone);
-      this.form.get('id')?.patchValue(ally.id);
+      this.form.get('firstName')?.patchValue(result.firstName);
+      this.form.get('lastName')?.patchValue(result.lastName);
+      this.form.get('birthday')?.patchValue(result.birthDate);
+      this.form.get('email')?.patchValue(result.email);
+      this.form.get('phone')?.patchValue(result.phone);
+      this.form.get('id')?.patchValue(result.id);
     })
   }
 

@@ -3,6 +3,8 @@ import {Router} from "@angular/router";
 import {AuthService} from "../../../core/services/auth.service";
 import { NzMessageService } from 'ng-zorro-antd/message';
 import {UserService} from "../../../core/services/user.service";
+import {User} from "../../../core/interfaces/user";
+import {UiService} from "../../../core/services/ui.service";
 
 @Component({
   selector: 'app-login',
@@ -12,7 +14,7 @@ import {UserService} from "../../../core/services/user.service";
 export class LoginComponent implements OnInit {
   passwordVisible = false;
   password: any;
-  username: any;
+  email: any;
   remember= false
 
   constructor(
@@ -20,44 +22,40 @@ export class LoginComponent implements OnInit {
     private auth: AuthService,
     private message: NzMessageService,
     private userService: UserService,
+    private uiService: UiService
   ) {}
   ngOnInit() {
     if (localStorage.getItem('vi-remember')) {
-      this.username = localStorage.getItem('vi-username')
+      this.email = localStorage.getItem('vi-username')
       this.remember = true;
     }
   }
 
   login() {
-    if (!this.username) {
-      this.message.create('error', 'ingresa un usuario')
+    if (!this.email) {
+      this.uiService.createMessage('error', 'ingresa un usuario')
       return;
     }
     if (!this.password) {
-      this.message.create('error', 'ingresa una contrasena')
+      this.uiService.createMessage('error', 'ingresa una contrasena')
       return;
     }
 
-    this.auth.login(this.username, this.password, this.remember).subscribe(data => {
-      let date = new Date();
-      date.setDate(date.getDate() + 10);
-      this.userService.updateCurrentUser(this.userService.setAllowedRoutes({...data.recordset[0], exp: date.getTime(), allowedRoutes: []}));
+    this.auth.login(this.email, this.password, this.remember).subscribe(data => {
+      this.userService.updateCurrentUser(data.userData as Partial<User>, data.token);
       this.router.navigate(['/'])
-      this.showMessage('success', `Bienvenid@, ${this.username}`)
+      this.uiService.createMessage('success', `Bienvenid@, ${this.email}`)
 
-    }, error => {
-      this.showMessage('error', (error.error.detail || 'Ocurrio un error inesperado, por favor prueba mas tarde...'))
+    }, (error) => {
+      if (error.status !== 403)
+      this.uiService.createMessage('error', error.error.message)
     })
-  }
-
-  showMessage(type: string, message: string): void {
-    this.message.create(type, message);
   }
 
   handleRememberChange(event: any) {
     if (event) {
       localStorage.setItem('vi-remember', event);
-      localStorage.setItem('vi-username', this.username);
+      localStorage.setItem('vi-username', this.email);
     } else {
       localStorage.removeItem('vi-remember');
       localStorage.removeItem('vi-username');

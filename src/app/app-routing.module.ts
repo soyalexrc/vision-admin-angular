@@ -49,7 +49,6 @@ const routes: Routes = [
       },
       {
         path: 'inicio',
-        canActivate: [RoleBasedGuard],
         component: MainLayoutComponent,
         loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule)
       },

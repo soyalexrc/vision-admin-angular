@@ -1,4 +1,11 @@
-<nz-table #fixedTable [nzLoading]="loading" [nzLoadingIndicator]="loadingIndicator" [nzData]="tableData.data" [nzScroll]="{ x: xScroll, y: yScroll }">
+<nz-table
+  #fixedTable
+  [nzLoading]="loading"
+  [nzLoadingIndicator]="loadingIndicator"
+  [nzData]="tableData.data"
+  [nzScroll]="{ x: xScroll, y: yScroll }"
+  [nzFrontPagination]="false"
+>
   <thead>
   <tr>
     <th *ngFor="let h of tableData.headers">{{h.displayName}}</th>
@@ -25,12 +32,21 @@
         <a (click)="onDelete.emit(row.id)" nz-tooltip="true" nzTooltipTitle="Eliminar">
           <span nz-icon nzType="delete" style="font-size: 18px" [nzTheme]="'twotone'" [nzTwotoneColor]="'#ff4d4f'"></span>
         </a>
-
+        <nz-switch *ngIf="row.isUserTable" nz-tooltip="true" [(ngModel)]="row.status" (ngModelChange)="onChangeUserStatus.emit({value: $event, id: row.id})" nzTooltipTitle="Deshabilitar o habilitar usuario"></nz-switch>
       </div>
     </td>
   </tr>
   </tbody>
 </nz-table>
+<div
+style="display: flex; justify-content: flex-end">
+  <nz-pagination
+    [nzPageIndex]="pageIndex"
+    [nzTotal]="totalItems"
+    [nzPageSize]="pageSize"
+    (nzPageIndexChange)="onPageIndexChange.emit($event)"
+  ></nz-pagination>
+</div>
 
 
 <ng-template #loadingIndicator>

@@ -7,7 +7,7 @@
   [title]="'Flujo de caja'"
   [buttonText]="'Nuevo registro'"
   [additionalButton]="true"
-  (onRefresh)="getCashFlowData(dataValue)"
+  (onRefresh)="getCashFlowData()"
   (onAdditionalAction)="showModal = true"
   (onNewElement)="handleNewRegister()"
   additionalButtonText="Nuevo traslado de dinero"
@@ -25,9 +25,9 @@
     <h1>Utilidad estimada</h1>
     <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
     <div class="stat-content" *ngIf="!loadingStats">
-      <h2> {{statsData?.utilidad?.USD ?? 0 | currency}}</h2>
-      <h4> {{statsData?.utilidad?.Bs ?? 0 | currency: 'Bs. '}}</h4>
-      <h4> {{statsData?.utilidad?.EUR ?? 0 | currency: '€ '}}</h4>
+      <h2> {{statsData?.utilidad?.usd ?? 0 | currency}}</h2>
+      <h4> {{statsData?.utilidad?.bs ?? 0 | currency: 'Bs. '}}</h4>
+      <h4> {{statsData?.utilidad?.eur ?? 0 | currency: '€ '}}</h4>
     </div>
   </div>
   <div class="other-stats">
@@ -39,9 +39,9 @@
         <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
         <div class="stat-content" *ngIf="!loadingStats">
           <h3>Total por pagar</h3>
-          <h2> {{statsData?.cuentasPorPagar?.USD ?? 0 | currency}}</h2>
-          <h4> {{statsData?.cuentasPorPagar?.Bs ?? 0 | currency: 'Bs. '}}</h4>
-          <h4> {{statsData?.cuentasPorPagar?.EUR ?? 0 | currency: '€ '}}</h4>
+          <h2> {{statsData?.cuentasPorPagar?.usd ?? 0 | currency}}</h2>
+          <h4> {{statsData?.cuentasPorPagar?.bs ?? 0 | currency: 'Bs. '}}</h4>
+          <h4> {{statsData?.cuentasPorPagar?.eur ?? 0 | currency: '€ '}}</h4>
         </div>
       </div>
       <div class="stat">
@@ -51,9 +51,9 @@
         <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
         <div class="stat-content" *ngIf="!loadingStats">
           <h3>Total por cobrar</h3>
-          <h2> {{statsData?.cuentasPorCobrar?.USD ?? 0 | currency}}</h2>
-          <h4> {{statsData?.cuentasPorCobrar?.Bs ?? 0  | currency: 'Bs. '}}</h4>
-          <h4> {{statsData?.cuentasPorCobrar?.EUR ?? 0  | currency: '€ '}}</h4>
+          <h2> {{statsData?.cuentasPorCobrar?.usd ?? 0 | currency}}</h2>
+          <h4> {{statsData?.cuentasPorCobrar?.bs ?? 0  | currency: 'Bs. '}}</h4>
+          <h4> {{statsData?.cuentasPorCobrar?.eur ?? 0  | currency: '€ '}}</h4>
         </div>
       </div>
     </div>
@@ -65,9 +65,9 @@
         <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
         <div class="stat-content" *ngIf="!loadingStats">
           <h3>Total de ingresos</h3>
-          <h2> {{statsData?.ingreso?.USD ?? 0 | currency}}</h2>
-          <h4> {{statsData?.ingreso?.Bs ?? 0  | currency: 'Bs. '}}</h4>
-          <h4> {{statsData?.ingreso?.EUR ?? 0  | currency: '€ '}}</h4>
+          <h2> {{statsData?.ingreso?.usd ?? 0 | currency}}</h2>
+          <h4> {{statsData?.ingreso?.bs ?? 0  | currency: 'Bs. '}}</h4>
+          <h4> {{statsData?.ingreso?.eur ?? 0  | currency: '€ '}}</h4>
         </div>
       </div>
       <div class="stat">
@@ -77,9 +77,9 @@
         <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
         <div class="stat-content" *ngIf="!loadingStats">
           <h3>Total de egresos</h3>
-          <h2> {{statsData?.egreso?.USD ?? 0  | currency}}</h2>
-          <h4> {{statsData?.egreso?.Bs ?? 0 | currency: 'Bs. '}}</h4>
-          <h4> {{statsData?.egreso?.EUR ?? 0 | currency: '€ '}}</h4>
+          <h2> {{statsData?.egreso?.usd ?? 0  | currency}}</h2>
+          <h4> {{statsData?.egreso?.bs ?? 0 | currency: 'Bs. '}}</h4>
+          <h4> {{statsData?.egreso?.eur ?? 0 | currency: '€ '}}</h4>
         </div>
       </div>
     </div>
@@ -87,11 +87,11 @@
 </div>
 
 <div class="button-group">
-  <nz-radio-group [(ngModel)]="dataValue" (ngModelChange)="handleChangeSelection($event)" nzButtonStyle="solid">
-    <label nz-radio-button nzValue="income">Ingresos</label>
-    <label nz-radio-button nzValue="outcome">Egresos</label>
-    <label nz-radio-button nzValue="toPay">Cuentas por pagar</label>
-    <label nz-radio-button nzValue="toCollect">Cuentas por cobrar</label>
+  <nz-radio-group [(ngModel)]="sourceSelection" (ngModelChange)="handleChangeSelection($event)" nzButtonStyle="solid">
+    <label nz-radio-button nzValue="Ingreso">Ingresos</label>
+    <label nz-radio-button nzValue="Egreso">Egresos</label>
+    <label nz-radio-button nzValue="Cuenta por pagar">Cuentas por pagar</label>
+    <label nz-radio-button nzValue="Cuenta por cobrar">Cuentas por cobrar</label>
   </nz-radio-group>
 </div>
 
@@ -99,6 +99,10 @@
                    [loading]="loading"
                    (onEdit)="handleEdit($event)"
                    (onDelete)="handleDelete($event)"
+                   [pageIndex]="pageIndex"
+                   [pageSize]="pageSize"
+                   [totalItems]="totalItems"
+                   (onPageIndexChange)="handlePageIndexChange($event)"
 ></app-generic-table>
 
 

@@ -569,7 +569,7 @@
             <nz-form-label nzRequired nzFor="adviser">Asesor</nz-form-label>
             <nz-form-control >
               <nz-select formControlName="adviser">
-                <nz-option *ngFor="let adviser of advisers" [nzValue]="adviser.id" [nzLabel]="adviser.first_name + ' ' + adviser.last_name"></nz-option>
+                <nz-option *ngFor="let adviser of advisers" [nzValue]="adviser.id" [nzLabel]="adviser.firstName + ' ' + adviser.lastName"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -580,7 +580,7 @@
             <nz-form-label  nzFor="ally">Aliado</nz-form-label>
             <nz-form-control >
               <nz-select formControlName="ally">
-                <nz-option *ngFor="let ally of allies" [nzValue]="ally.id" [nzLabel]="ally.first_name + ' ' + ally.last_name"></nz-option>
+                <nz-option *ngFor="let ally of allies" [nzValue]="ally.id" [nzLabel]="ally.firstName + ' ' + ally.lastName"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>

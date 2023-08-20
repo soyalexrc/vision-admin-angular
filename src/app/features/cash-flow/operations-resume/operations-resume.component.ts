@@ -23,6 +23,10 @@ export class OperationsResumeComponent implements AfterViewInit{
   @ViewChild('dataTable') dataTable!: GenericTableComponent;
   data: any  = [];
   headers: any[] = [];
+  pageIndex = 1;
+  pageSize = 10;
+  totalItems = 1;
+
   constructor(
     private router: Router,
     private modal: NzModalService,
@@ -36,15 +40,16 @@ export class OperationsResumeComponent implements AfterViewInit{
   }
   getTemporalTransactions() {
     this.loading = true;
-    this.cashFlowService.getTemporalTransactions().subscribe(result => {
-      const data = Array.from(groupBy(result, (transaction: CashFlowRegister) => transaction.temporalTransactionId));
-      this.data = data.map(element => ({
-          id: element[0],
-          date: moment(element[1][0].createdAt).calendar(),
-          amount: `${element[1][0].currency} ${element[1][0].amount}`,
-          origin: element[1][0].entity,
-          destiny: element[1][1].entity,
-          createdBy: element[1][0].createdBy
+    this.cashFlowService.getTemporalTransactions(this.pageIndex, this.pageSize).subscribe(result => {
+      this.totalItems = result.count;
+
+      this.data = result.rows.map(element => ({
+          id: element.id,
+          date: moment(element.createdAt).calendar(),
+          amount: element.amount,
+          origin: element.origin,
+          destiny: element.destiny,
+          createdBy: element.createdBy,
         }));
         const headers = setHeaders([
           {key: 'date', displayName: 'Fecha de transaccion'},
@@ -80,4 +85,9 @@ export class OperationsResumeComponent implements AfterViewInit{
     this.pdfService.updatePdfTable(['sample1', 'sampple2'])
     this.router.navigate(['/export-pdf/table'])
   }
- }
+
+  onPageIndexChange(pageIndex: number) {
+    this.pageIndex = pageIndex;
+    this.getTemporalTransactions();
+  }
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from "../../services/auth.service";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {Router} from "@angular/router";
@@ -12,8 +12,8 @@ import {User} from "../../interfaces/user";
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss']
 })
-export class MainLayoutComponent {
-  user!: User;
+export class MainLayoutComponent implements OnInit, OnDestroy {
+  user!: Partial<User>;
   isCollapsed = false;
   confirmModal?: NzModalRef; // For testing by now
   visible = false;

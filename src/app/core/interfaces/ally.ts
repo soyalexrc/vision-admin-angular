@@ -1,38 +1,45 @@
-
 export interface Ally {
-  id:         number;
-  first_name: string;
-  last_name:  string;
-  phone:      string;
-  email:      string;
-  birthday:   Date;
-  isInvestor: string;
-  type:       string;
+  id: number;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  birthDate: Date;
+}
+
+export interface GetAllAllies {
+  count: number;
+  rows: Ally[]
+}
+
+export interface CreateEditAllyResponse {
+  data: Ally,
+  message: string;
 }
 
 export interface AllyToCreate {
-  id:         null;
-  firstName:   string;
-  lastName:   string;
-  phone:      string;
-  email:      string;
-  birthday:   Date;
+  id: null;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  birthday: Date;
   isInvestor: string;
-  type:       string;
+  type: string;
 }
 
 
 export interface CreationAllyResponse {
-  recordsets:   Array<Recordset[]>;
-  recordset:    Recordset[];
-  output:       Output;
+  recordsets: Array<Recordset[]>;
+  recordset: Recordset[];
+  output: Output;
   rowsAffected: any[];
 }
 
 export interface GetOneAllyResponse {
-  recordsets:   Array<Ally[]>;
-  recordset:    Ally[];
-  output:       Output;
+  recordsets: Array<Ally[]>;
+  recordset: Ally[];
+  output: Output;
   rowsAffected: any[];
 }
 
@@ -45,7 +52,7 @@ export interface Recordset {
 }
 
 export interface DeleteOneResponse {
-  recordsets:   any[];
-  output:       Output;
+  recordsets: any[];
+  output: Output;
   rowsAffected: number[];
 }

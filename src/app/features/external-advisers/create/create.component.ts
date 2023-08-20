@@ -29,9 +29,7 @@ export class CreateComponent implements OnInit {
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       phone: ['', Validators.required],
-      birthday: ['', Validators.required],
-      isInvestor: [false],
-      type: ['Asesores Externos'],
+      birthDate: ['', Validators.required],
       id: [null]
     })
 
@@ -46,22 +44,23 @@ export class CreateComponent implements OnInit {
     if (this.form.valid) {
       this.loading = true;
       const data = this.form.value;
-      data.birthday = moment(data.birthday).format('YYYY-MM-DD');
-      data.isInvestor = data.isInvestor ? 'Si' : 'No';
-      if (this.isEditing) {
+      data.birthDate = moment(data.birthDate).format('YYYY-MM-DD');
+        if (this.isEditing) {
         this.adviserService.update(data).subscribe(result => {
-          this.uiService.createMessage('success', 'Se edito el asesor con exito!')
+          this.uiService.createMessage('success', result.message)
           this.router.navigate(['/asesores-externos'])
-        }, () => {
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
           this.loading = false
         }, () => {
           this.loading = false
         })
       } else {
         this.adviserService.createOne(data).subscribe(result => {
-          this.uiService.createMessage('success', 'Se creo el asesor con exito!')
+          this.uiService.createMessage('success', result.message)
           this.router.navigate(['/asesores-externos'])
-        }, () => {
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
           this.loading = false
         }, () => {
           this.loading = false
@@ -80,14 +79,12 @@ export class CreateComponent implements OnInit {
 
   getOwnerById(id: string) {
     this.adviserService.getById(id).subscribe(result => {
-      const adviser = result.recordset[0];
-      this.form.get('firstName')?.patchValue(adviser.first_name);
-      this.form.get('lastName')?.patchValue(adviser.last_name);
-      this.form.get('isInvestor')?.patchValue(adviser.isInvestor);
-      this.form.get('birthday')?.patchValue(adviser.birthday);
-      this.form.get('email')?.patchValue(adviser.email);
-      this.form.get('phone')?.patchValue(adviser.phone);
-      this.form.get('id')?.patchValue(adviser.id);
+      this.form.get('firstName')?.patchValue(result.firstName);
+      this.form.get('lastName')?.patchValue(result.lastName);
+      this.form.get('birthDate')?.patchValue(result.birthDate);
+      this.form.get('email')?.patchValue(result.email);
+      this.form.get('phone')?.patchValue(result.phone);
+      this.form.get('id')?.patchValue(result.id);
     })
   }
 }

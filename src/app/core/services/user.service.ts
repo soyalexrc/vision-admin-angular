@@ -1,93 +1,60 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {CreationUserResponse, GetOneUserResponse, User, UserToCreate, DeleteOneResponse} from "../interfaces/user";
+import {
+  User, GetAllUsers, CreateEditUserResponse,
+} from "../interfaces/user";
+import {DeleteResult} from "../interfaces/generics";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  currentUser = new BehaviorSubject<User>(
-    localStorage.getItem('vi-token')
-      ? JSON.parse(localStorage.getItem('vi-token') ?? '')
+  currentUser = new BehaviorSubject<Partial<User>>(
+    localStorage.getItem('vi-userData')
+      ? JSON.parse(localStorage.getItem('vi-userData') ?? '')
       : {}
   )
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   get getCurrentUser() {
     return this.currentUser.getValue();
   }
 
-  updateCurrentUser(data: User) {
-    localStorage.setItem('vi-token', JSON.stringify(data));
+  updateCurrentUser(data: Partial<User>, token: string) {
+    localStorage.setItem('vi-token', token);
+    localStorage.setItem('vi-userData', JSON.stringify(data));
     this.currentUser.next(data);
   }
 
-  getAll(): Observable<User[]> {
-    return this.http.get<User[]>('user/getAllData')
+  getAll(pageIndex: number, pageSize: number): Observable<GetAllUsers> {
+    return this.http.get<GetAllUsers>(`user?pageIndex=${pageIndex}&pageSize=${pageSize}`)
   }
 
-  createOne(owner: UserToCreate): Observable<CreationUserResponse> {
-    return this.http.post<CreationUserResponse>('user/addNewData', owner)
+  createOne(data: User): Observable<CreateEditUserResponse> {
+    return this.http.post<CreateEditUserResponse>('user', data)
   }
 
-  deleteOne(id: number): Observable<DeleteOneResponse> {
-    return this.http.delete<DeleteOneResponse>(`user/deleteData?id=${id}`);
+  deleteOne(id: number): Observable<DeleteResult> {
+    return this.http.delete<DeleteResult>(`user/${id}`);
   }
 
-  getById(id: string): Observable<GetOneUserResponse> {
-    return this.http.get<GetOneUserResponse>(`user/getById?id=${id}`)
+  getById(id: string): Observable<User> {
+    return this.http.get<User>(`user/${id}`)
   }
 
-  update(data: User): Observable<UserToCreate> {
-    return this.http.put<UserToCreate>(`user/updateData`, data);
+  update(data: User): Observable<CreateEditUserResponse> {
+    return this.http.put<CreateEditUserResponse>(`user/${data.id}`, data);
   }
 
-
-  setAllowedRoutes(user: User): User {
-    let userToReturn = user;
-    const role = user.user_type;
-    let routes: string[] = [];
-
-    if (role === 'Administrador') {
-      routes = [
-        'inicio',
-        'clientes',
-        'propietarios',
-        'usuarios',
-        'asesores-externos',
-        'aliados',
-        'propiedades',
-        'administracion',
-        'flujo-de-caja',
-        'calculo-de-comisiones'
-      ]
-    }
-
-    if (role === 'Asesor inmobiliario Vision') {
-      routes = [
-        'inicio',
-        'propiedades'
-      ]
-    }
-
-    if (role === 'Coordinador de servicios') {
-      routes = [
-        'inicio',
-        'propiedades',
-        'flujo-de-caja',
-        'clientes',
-        'calculo-de-comisiones'
-      ]
-    }
-    userToReturn.allowedRoutes = routes;
-
-    return userToReturn;
+  changeStatus(value: boolean, id: number): Observable<CreateEditUserResponse> {
+    return this.http.patch<CreateEditUserResponse>('user/changeStatus', {value, id})
   }
 
   checkAllowedRouteByUserRole(route: string) {
-    return this.currentUser.value.allowedRoutes.some(r => r === route)
+    return this.currentUser.value?.allowedRoutes?.some(r => r === route)
   }
 }
