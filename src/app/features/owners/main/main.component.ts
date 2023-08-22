@@ -6,6 +6,7 @@ import {GenericTableComponent} from "../../../shared/components/generic-table/ge
 import {Owner} from "../../../core/interfaces/owner";
 import {OwnerService} from "../../../core/services/owner.service";
 import {UiService} from "../../../core/services/ui.service";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-main',
@@ -45,9 +46,11 @@ export class MainComponent implements OnInit, AfterViewInit {
       nzOkText: 'Aceptar',
       nzOnOk: () => new Promise((resolve, reject) => {
         this.ownerService.deleteOne(id).subscribe(result => {
-          this.uiService.createMessage('success', 'Se elimino el propietario con exito!')
+          this.uiService.createMessage('success', result.message)
           this.getOwners()
           setTimeout(() => resolve(), 500);
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
         })
       })
     });
@@ -59,27 +62,27 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getOwners() {
     this.loading = true;
-    this.ownerService.getAll().subscribe(data => {
-        this.data = data.map(element => ({
+    this.ownerService.getAll(1, 10).subscribe(data => {
+      console.log(data);
+        this.data = data.rows.map(element => ({
           id: element.id,
-          first_name: element.first_name,
-          last_name: element.last_name,
+          firstName: element.firstName,
+          lastName: element.lastName,
           phone: element.phone,
           email: element.email,
-          birthday: element.birthday,
+          customBirthdate: moment(element.birthdate).calendar(),
           isInvestor: element.isInvestor
         }));
         const headers = setHeaders([
-          {key: 'id', displayName: 'id'},
-          {key: 'first_name', displayName: 'Nombre'},
-          {key: 'last_name', displayName: 'Apellido'},
+          {key: 'firstName', displayName: 'Nombre'},
+          {key: 'lastName', displayName: 'Apellido'},
           {key: 'phone', displayName: 'Telefono'},
           {key: 'email', displayName: 'Correo'},
-          {key: 'birthday', displayName: 'Fecha de cumpleanos'},
+          {key: 'customBirthdate', displayName: 'Fecha de cumpleanos'},
           {key: 'isInvestor', displayName: 'Es inversor?'},
         ]);
 
-        this.dataTable.render(headers, data);
+        this.dataTable.render(headers, this.data);
       },
       () => {
         this.loading = false

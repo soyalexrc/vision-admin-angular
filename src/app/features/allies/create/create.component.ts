@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -10,7 +10,7 @@ import {AllyService} from "../../../core/services/ally.service";
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent {
+export class CreateComponent implements OnInit{
   form!: FormGroup;
   loading = false;
   isEditing = false;

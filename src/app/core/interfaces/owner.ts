@@ -1,12 +1,22 @@
 export interface Owner {
-  id:         number;
-  first_name:  string;
-  last_name:  string;
-  phone:      string;
-  email:      string;
-  birthday:   Date;
-  isInvestor: string;
-  type:       string;
+  id: number;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  birthdate: Date;
+  property_id: null | number;
+  isInvestor: boolean;
+}
+
+export interface GetAllOwners {
+  count: number;
+  rows: Owner[]
+}
+
+export interface CreateEditOwnerResponse {
+  data: Owner,
+  message: string;
 }
 
 export interface OwnerToCreate {

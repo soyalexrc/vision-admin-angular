@@ -1,7 +1,16 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {CreationOwnerResponse, DeleteOneResponse, GetOneOwnerResponse, Owner, OwnerToCreate} from "../interfaces/owner";
+import {
+  CreateEditOwnerResponse,
+  CreationOwnerResponse,
+  DeleteOneResponse,
+  GetAllOwners,
+  GetOneOwnerResponse,
+  Owner,
+  OwnerToCreate
+} from "../interfaces/owner";
+import {DeleteResult} from "../interfaces/generics";
 
 @Injectable({
   providedIn: 'root'
@@ -12,23 +21,23 @@ export class OwnerService {
     private  http: HttpClient
   ) { }
 
-  getAll(): Observable<Owner[]> {
-    return this.http.get<Owner[]>('owner/getAllData?type=Propietarios')
+  getAll(pageIndex: number, pageSize: number): Observable<GetAllOwners> {
+    return this.http.get<GetAllOwners>(`owner?pageIndex=${pageIndex}&pageSize=${pageSize}`)
   }
 
-  createOne(owner: OwnerToCreate): Observable<CreationOwnerResponse> {
-    return this.http.post<CreationOwnerResponse>('owner/addNewData', owner)
+  createOne(owner: Owner): Observable<CreateEditOwnerResponse> {
+    return this.http.post<CreateEditOwnerResponse>('owner', owner)
   }
 
-  deleteOne(id: number): Observable<DeleteOneResponse> {
-    return this.http.delete<DeleteOneResponse>(`owner/deleteData?id=${id}`);
+  deleteOne(id: number): Observable<DeleteResult> {
+    return this.http.delete<DeleteResult>(`owner/${id}`);
   }
 
-  getById(id: string): Observable<GetOneOwnerResponse> {
-    return this.http.get<GetOneOwnerResponse>(`owner/getById?id=${id}`)
+  getById(id: string): Observable<Owner> {
+    return this.http.get<Owner>(`owner/${id}`)
   }
 
-  update(data: Owner): Observable<OwnerToCreate> {
-    return this.http.put<OwnerToCreate>(`owner/updateData`, data);
+  update(data: Owner): Observable<CreateEditOwnerResponse> {
+    return this.http.put<CreateEditOwnerResponse>(`owner/${data.id}`, data);
   }
 }

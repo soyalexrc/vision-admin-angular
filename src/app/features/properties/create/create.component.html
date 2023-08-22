@@ -613,7 +613,7 @@
           <nz-form-item style="margin: 1rem 0">
             <nz-form-control >
               <nz-select formControlName="client" [nzLoading]="clientsLoading">
-                <nz-option *ngFor="let client of clients" [nzValue]="client.id" [nzLabel]="client.first_name + ' ' + client.last_name"></nz-option>
+                <nz-option *ngFor="let client of clients" [nzValue]="client.id" [nzLabel]="client.firstName + ' ' + client.lastName"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
