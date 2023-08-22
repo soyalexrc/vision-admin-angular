@@ -1,0 +1,402 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
+  <nz-breadcrumb-item>
+    <a routerLink="/clientes">Clientes</a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{isEditing ? 'Editar' : 'Crear'}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<h2>{{index === 0 ? 'Datos de cliente' : 'Detalle de servicio'}}</h2>
+
+<div class="form mt-3">
+  <div class="content">
+    <nz-steps [nzCurrent]="index">
+      <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
+      <nz-step nzTitle="Servicio" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
+    </nz-steps>
+  </div>
+</div>
+
+
+<ng-container *ngIf="index === 0">
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="generalForm">
+    <div class="content">
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="name">Nombre</nz-form-label>
+            <nz-form-control [nzErrorTip]="nameErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="name"
+                     placeholder="Nombre"/>
+              <ng-template #nameErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un nombre!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="phone">Telefono</nz-form-label>
+            <nz-form-control [nzErrorTip]="phoneErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="phone"
+                     placeholder="Telefono"/>
+              <ng-template #phoneErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un telefono!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="contactFrom">De donde nos contacta?</nz-form-label>
+            <nz-form-control [nzErrorTip]="contactFromErrTemp">
+              <nz-select formControlName="contactFrom" (ngModelChange)="handleContactFromSelection($event)">
+                <nz-option nzValue="Mercado libre" nzLabel="Mercado libre"></nz-option>
+                <nz-option nzValue="Instagram" nzLabel="Instagram"></nz-option>
+                <nz-option nzValue="Facebook" nzLabel="Facebook"></nz-option>
+                <nz-option nzValue="Whatsapp" nzLabel="Whatsapp"></nz-option>
+                <nz-option nzValue="Llamada" nzLabel="Llamada"></nz-option>
+                <nz-option nzValue="Mensajeria de texto" nzLabel="Mensajeria de texto"></nz-option>
+                <nz-option nzValue="Pagina web" nzLabel="Pagina web"></nz-option>
+                <nz-option nzValue="Cliente recurrente" nzLabel="Cliente recurrente"></nz-option>
+                <nz-option nzValue="Referido" nzLabel="Referido"></nz-option>
+              </nz-select>
+              <ng-template #contactFromErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <ng-container *ngIf="contactFrom === 'Referido' ">
+          <div nz-col [nzSpan]="8">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="referrer">Referido</nz-form-label>
+              <nz-form-control [nzErrorTip]="referrerErrTemp">
+                <input type="text" style="width: 100%" nz-input formControlName="referrer"
+                       placeholder="Referido"/>
+                <ng-template #referrerErrTemp let-control>
+                  <ng-container *ngIf="control.hasError('required')">Debes ingresar un telefono!</ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </ng-container>
+      </div>
+
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="service">Tipo de servicio</nz-form-label>
+            <nz-form-control [nzErrorTip]="serviceErrTemp">
+              <nz-select formControlName="service" (ngModelChange)="handleServiceSelection($event)">
+                <nz-option nzValue="Inmobiliario" nzLabel="Inmobiliario"></nz-option>
+              </nz-select>
+              <ng-template #serviceErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un servicio!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+      </div>
+
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="24">
+          <label class="checkbox" nz-checkbox formControlName="isPotentialInvestor">Es potencial inversionista?</label>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="index === 1">
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="operationForm">
+    <div class="content">
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="24">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="operationType">Tipo de operacion</nz-form-label>
+            <nz-form-control [nzErrorTip]="operationTypeErrTemp">
+              <nz-select formControlName="operationType" (ngModelChange)="handleOperationTypeSelect($event)">
+                <nz-option *ngFor="let option of operationOptions" [nzValue]="option" [nzLabel]="option"></nz-option>
+              </nz-select>
+              <ng-template #operationTypeErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un servicio!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <nz-divider></nz-divider>
+
+      <div *ngIf="serviceType === 'Inmobiliario' && operationType === 'Alquiler residencial' ">
+        <div nz-row class="row" [nzGutter]="16">
+          <div nz-col [nzSpan]="24">
+            <h2 style="text-align: center; margin: 1.5rem 0 3rem 0">Servicio inmobiliario - Alquiler residencial</h2>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="propertyOfInterest">Inmueble solicitado</nz-form-label>
+              <nz-form-control [nzErrorTip]="propertyOfInterestErrTemp">
+                <nz-select formControlName="propertyOfInterest" (ngModelChange)="handleOperationTypeSelect($event)">
+                  <nz-option nzValue="Apartamento" nzLabel="Apartamento"></nz-option>
+                  <nz-option nzValue="Locales Comerciales" nzLabel="Locales Comerciales"></nz-option>
+                  <nz-option nzValue="Galpones" nzLabel="Galpones"></nz-option>
+                  <nz-option nzValue="Terrenos" nzLabel="Terrenos"></nz-option>
+                  <nz-option nzValue="Oficinas" nzLabel="Oficinas"></nz-option>
+                  <nz-option nzValue="Casa / Townhouse" nzLabel="Casa / Townhouse"></nz-option>
+                  <nz-option nzValue="Habitacion" nzLabel="Habitacion"></nz-option>
+                  <nz-option nzValue="Anexo" nzLabel="Anexo"></nz-option>
+                  <nz-option nzValue="Fondos de Comercio" nzLabel="Fondos de Comercio"></nz-option>
+                </nz-select>
+                <ng-template #propertyOfInterestErrTemp let-control>
+                  <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="usageProperty">Uso de la propiedad</nz-form-label>
+              <nz-form-control [nzErrorTip]="usagePropertyErrTemp">
+                <nz-select formControlName="usageProperty" (ngModelChange)="handleOperationTypeSelect($event)">
+                  <nz-option nzValue="Usado" nzLabel="Usado"></nz-option>
+                  <nz-option nzValue="Nuevo" nzLabel="Nuevo"></nz-option>
+                </nz-select>
+                <ng-template #usagePropertyErrTemp let-control>
+                  <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="aspiredPrice">Precio aspirado</nz-form-label>
+              <nz-form-control [nzErrorTip]="aspiredPriceErrTemp">
+                <input type="text" style="width: 100%" nz-input formControlName="aspiredPrice"
+                       placeholder="Precio aspirado"/>
+                <ng-template #aspiredPriceErrTemp let-control>
+                  <ng-container *ngIf="control.hasError('required')">Debes ingresar un precio!</ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+        <div nz-row class="row" [nzGutter]="16">
+          <div nz-col [nzSpan]="8">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="amountOfPeople">Cantidad de personas a habitar</nz-form-label>
+              <nz-form-control [nzErrorTip]="amountOfPeopleErrTemp">
+                <input type="text" style="width: 100%" nz-input formControlName="amountOfPeople"
+                       placeholder="Cantidad de personas a habitar"/>
+                <ng-template #amountOfPeopleErrTemp let-control>
+                  <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="amountOfYounger">Cantidad de menores de edad</nz-form-label>
+              <nz-form-control [nzErrorTip]="amountOfYoungerErrTemp">
+                <input type="text" style="width: 100%" nz-input formControlName="amountOfYounger"
+                       placeholder="Cantidad de menores de edad"/>
+                <ng-template #amountOfYoungerErrTemp let-control>
+                  <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="amountOfPets">Cantidad de mascotas</nz-form-label>
+              <nz-form-control [nzErrorTip]="amountOfPetsErrTemp">
+                <input type="text" style="width: 100%" nz-input formControlName="amountOfPets"
+                       placeholder="Cantidad de mascotas"/>
+                <ng-template #amountOfPetsErrTemp let-control>
+                  <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+        <div nz-row class="row" [nzGutter]="16">
+          <div nz-col [nzSpan]="6">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="typeOfPerson">Tipo de persona</nz-form-label>
+              <nz-form-control [nzErrorTip]="typeOfPersonErrTemp">
+                <nz-select formControlName="typeOfPerson" (ngModelChange)="handlePersonTypeSelection($event)">
+                  <nz-option nzValue="Natural" nzLabel="Natural"></nz-option>
+                  <nz-option nzValue="Juridica" nzLabel="Juridica"></nz-option>
+                </nz-select>
+                <ng-template #typeOfPersonErrTemp let-control>
+                  <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <ng-container *ngIf="personType === 'Juridica'">
+            <div nz-col [nzSpan]="6">
+              <nz-form-item>
+                <nz-form-label nzRequired nzFor="personEntry">Rubro</nz-form-label>
+                <nz-form-control [nzErrorTip]="personEntryErrTemp">
+                  <input type="text" style="width: 100%" nz-input formControlName="personEntry"
+                         placeholder="Rubro"/>
+                  <ng-template #personEntryErrTemp let-control>
+                    <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="6">
+              <nz-form-item>
+                <nz-form-label nzRequired nzFor="personHeadquarters">Sede</nz-form-label>
+                <nz-form-control [nzErrorTip]="personHeadquartersErrTemp">
+                  <nz-select formControlName="personHeadquarters">
+                    <nz-option nzValue="Fisica" nzLabel="Fisica"></nz-option>
+                    <nz-option nzValue="Virtual" nzLabel="Virtual"></nz-option>
+                    <nz-option nzValue="Ninguna" nzLabel="Ninguna"></nz-option>
+                  </nz-select>
+                  <ng-template #personHeadquartersErrTemp let-control>
+                    <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="6">
+              <nz-form-item>
+                <nz-form-label nzRequired nzFor="personLocation">Ubicacion</nz-form-label>
+                <nz-form-control [nzErrorTip]="personLocationErrTemp">
+                  <input type="text" style="width: 100%" nz-input formControlName="personLocation"
+                         placeholder="Ubicacion"/>
+                  <ng-template #personLocationErrTemp let-control>
+                    <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </ng-container>
+        </div>
+
+        <nz-divider style="margin-bottom: 1rem"></nz-divider>
+
+        <div nz-row class="row" [nzGutter]="16" style="margin-bottom: 1rem">
+          <div nz-col [nzSpan]="10">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="margin: 0">Zonas de interes</h3>
+              <button (click)="addZone()" nz-button nzType="primary" nzShape="circle"><span nz-icon
+                                                                                            nzType="plus"></span>
+              </button>
+            </div>
+            <ng-container formArrayName="zonesOfInterest">
+              <div *ngFor="let zone of zonesOfInterest.controls; index as i">
+                <div style="display: flex;">
+                  <nz-form-item style="flex: 1" [formGroupName]="i">
+                    <nz-form-control>
+                      <input
+                        type="text"
+                        style="width: 100%"
+                        nz-input
+                        formControlName="value"
+                        placeholder="Zona de interes"/>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <button
+                    style="margin-left: 1rem;"
+                    (click)="deleteZone(i)"
+                    nz-button
+                    nzType="default"
+                    nzShape="circle">
+                    <span
+                      [nzTheme]="'twotone'"
+                      [nzTwotoneColor]="'#ff4d4f'"
+                      nz-icon
+                      nzType="delete">
+                    </span>
+                  </button>
+
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <div nz-col [nzSpan]="2"></div>
+          <div nz-col [nzSpan]="10">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="margin: 0">Caracteristicas esenciales</h3>
+              <button (click)="addFeature()" nz-button nzType="primary" nzShape="circle"><span nz-icon
+                                                                                               nzType="plus"></span>
+              </button>
+            </div>
+            <ng-container formArrayName="essentialFeatures">
+              <div *ngFor="let feature of essentialFeatures.controls; index as i">
+                <div style="display: flex;">
+                  <nz-form-item style="flex: 1" [formGroupName]="i">
+                    <nz-form-control>
+                      <input
+                        type="text"
+                        style="width: 100%"
+                        nz-input
+                        formControlName="value"
+                        placeholder="Caracteristica"/>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <button
+                    style="margin-left: 1rem;"
+                    (click)="deleteFeature(i)"
+                    nz-button
+                    nzType="default"
+                    nzShape="circle">
+                    <span
+                      [nzTheme]="'twotone'"
+                      [nzTwotoneColor]="'#ff4d4f'"
+                      nz-icon
+                      nzType="delete">
+                    </span>
+                  </button>
+
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+</ng-container>
+
+<div style="display: flex; justify-content: center; margin-top: 2rem">
+  <div style="width: 900px; display: flex; justify-content: space-between">
+    <div>
+      <button
+        nz-button
+        nzType="default"
+        *ngIf="index > 0"
+        (click)="goPrev()"
+      >
+        Anterior
+      </button>
+    </div>
+    <button
+      nz-button
+      *ngIf="index !== 1"
+      nzType="primary"
+      [disabled]="handleGoNextButtonDisabled()"
+      (click)="goNext()"
+    >
+      Siguiente
+    </button>
+    <button
+      nz-button
+      *ngIf="index === 1"
+      nzType="primary"
+      (click)="submitForm()"
+      [disabled]="generalForm.invalid || operationForm.invalid"
+      [nzLoading]="loading">Registar cliente
+    </button>
+  </div>
+</div>
