@@ -6,6 +6,7 @@ import {UiService} from "../../../core/services/ui.service";
 import {setHeaders} from "../../../shared/utils/generic-table";
 import {Ally} from "../../../core/interfaces/ally";
 import {AllyService} from "../../../core/services/ally.service";
+import * as moment from "moment";
 
 @Component({
   selector: 'app-main',
@@ -72,18 +73,17 @@ export class MainComponent implements OnInit, AfterViewInit {
           lastName: element.lastName,
           phone: element.phone,
           email: element.email,
-          birthDate: element.birthDate
+          customBirthdate: moment(element.birthDate).calendar(),
         }));
         const headers = setHeaders([
-          {key: 'id', displayName: 'id'},
           {key: 'firstName', displayName: 'Nombre'},
           {key: 'lastName', displayName: 'Apellido'},
           {key: 'phone', displayName: 'Telefono'},
           {key: 'email', displayName: 'Correo'},
-          {key: 'birthDate', displayName: 'Fecha de cumpleanos'},
+          {key: 'customBirthdate', displayName: 'Fecha de cumpleanos'},
         ]);
 
-        this.dataTable.render(headers, data.rows);
+        this.dataTable.render(headers, this.data);
       },
       () => {
         this.loading = false

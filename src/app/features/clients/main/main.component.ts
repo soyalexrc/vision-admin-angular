@@ -6,6 +6,7 @@ import {UiService} from "../../../core/services/ui.service";
 import {setHeaders} from "../../../shared/utils/generic-table";
 import {Client} from "../../../core/interfaces/client";
 import {ClientService} from "../../../core/services/client.service";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-main',
@@ -68,16 +69,23 @@ export class MainComponent implements OnInit, AfterViewInit{
         this.totalItems = data.count;
         this.data = data.rows.map(element => ({
           id: element.id,
+          date: moment(element.createdAt).calendar(),
           name: element.name,
           phone: element.phone,
+          contactFrom: element.contactFrom,
+          status: element.requirementStatus ? 'Activo' : 'Inactivo',
+          operationType: element.operationType.toUpperCase()
         }));
         const headers = setHeaders([
-          {key: 'id', displayName: 'id'},
+          {key: 'date', displayName: 'Fecha de registro'},
           {key: 'name', displayName: 'Nombre'},
           {key: 'phone', displayName: 'Telefono'},
+          {key: 'contactFrom', displayName: 'De dónde nos contacta'},
+          {key: 'operationType', displayName: 'Tipo de operacion'},
+          {key: 'status', displayName: 'Estatus de la solicitud'},
         ]);
 
-        this.dataTable.render(headers, data.rows);
+        this.dataTable.render(headers, this.data);
       },
       () => {
         this.loading = false

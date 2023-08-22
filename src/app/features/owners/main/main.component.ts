@@ -6,6 +6,7 @@ import {GenericTableComponent} from "../../../shared/components/generic-table/ge
 import {Owner} from "../../../core/interfaces/owner";
 import {OwnerService} from "../../../core/services/owner.service";
 import {UiService} from "../../../core/services/ui.service";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-main',
@@ -69,16 +70,15 @@ export class MainComponent implements OnInit, AfterViewInit {
           lastName: element.lastName,
           phone: element.phone,
           email: element.email,
-          birthdate: element.birthdate,
+          customBirthdate: moment(element.birthdate).calendar(),
           isInvestor: element.isInvestor
         }));
         const headers = setHeaders([
-          {key: 'id', displayName: 'id'},
           {key: 'firstName', displayName: 'Nombre'},
           {key: 'lastName', displayName: 'Apellido'},
           {key: 'phone', displayName: 'Telefono'},
           {key: 'email', displayName: 'Correo'},
-          {key: 'birthdate', displayName: 'Fecha de cumpleanos'},
+          {key: 'customBirthdate', displayName: 'Fecha de cumpleanos'},
           {key: 'isInvestor', displayName: 'Es inversor?'},
         ]);
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Client, GetAllClients} from "../interfaces/client";
+import {Client, CreateEditClientResponse, GetAllClients} from "../interfaces/client";
 import {DeleteResult} from "../interfaces/generics";
 
 @Injectable({
@@ -14,7 +14,7 @@ export class ClientService {
   ) { }
 
   getAll(pageIndex: number, pageSize: number) : Observable<GetAllClients> {
-    return this.http.get<GetAllClients>(`client?pageIndex=${pageIndex}&pageSize=${pageSize}`)
+    return this.http.get<GetAllClients>(`client/getPreviews?pageIndex=${pageIndex}&pageSize=${pageSize}`)
   }
 
   deleteOne(id: number): Observable<DeleteResult> {
@@ -29,7 +29,7 @@ export class ClientService {
 
   }
 
-  createOne(data: Client) {
-
+  createOne(data: Client): Observable<CreateEditClientResponse> {
+    return this.http.post<CreateEditClientResponse>('client', data);
   }
 }

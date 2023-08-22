@@ -28,6 +28,7 @@ export interface Client {
   personEntry: null;
   personHeadquarters: null;
   personLocation: null;
+  createdAt: Date;
 }
 
 export interface GetAllClients {
