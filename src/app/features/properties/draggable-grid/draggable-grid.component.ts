@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {Image} from "../../../core/interfaces/property";
 import {NzImageService} from "ng-zorro-antd/image";
 import {CdkDrag, CdkDragMove, CdkDropList, CdkDropListGroup, moveItemInArray} from "@angular/cdk/drag-drop";
 import {ViewportRuler} from "@angular/cdk/overlay";
+import {DOCUMENT_EXTENSIONS, IMAGE_EXTENSIONS, SPREADSHEET_EXTENSIONS} from "../../../core/constants/extentions";
 
 @Component({
   selector: 'app-draggable-grid',
@@ -11,9 +11,9 @@ import {ViewportRuler} from "@angular/cdk/overlay";
 })
 export class DraggableGridComponent implements AfterViewInit {
 
-  @Input() elements: Image[] = [];
-  @Output() onDeleteElement: EventEmitter<Image> = new EventEmitter<Image>()
-  @Output() onSortElements: EventEmitter<Image[]> = new EventEmitter<Image[]>()
+  @Input() elements: string[] = [];
+  @Output() onDeleteElement: EventEmitter<string> = new EventEmitter<string>()
+  @Output() onSortElements: EventEmitter<string[]> = new EventEmitter<string[]>()
 
   @ViewChild(CdkDropListGroup) listGroup!: CdkDropListGroup<CdkDropList>;
   @ViewChild(CdkDropList) placeholder!: CdkDropList;
@@ -126,12 +126,12 @@ export class DraggableGridComponent implements AfterViewInit {
 
 
 
-showPreview(image: Image) {
+showPreview(image: string) {
     const img = [{
-      src: this.setImageUrl(image.id.includes('pdf') ? image.name! : image.imageData),
+      src: image,
       width: '600px',
       height: '600px',
-      alt: 'sample'
+      alt: image
     }]
     if (img[0].src.includes('pdf')) {
       window.open(img[0].src, '_blank')
@@ -159,4 +159,23 @@ showPreview(image: Image) {
       return y >= top && y <= bottom && x >= left && x <= right;
   }
 
+  isSpreadSheet(file: string) {
+    const fileExtension = file.split('.').pop();
+    return SPREADSHEET_EXTENSIONS.some(extension => extension === fileExtension);
+  }
+
+  isDocument(file: string) {
+    const fileExtension = file.split('.').pop();
+    return DOCUMENT_EXTENSIONS.some(extension => extension === fileExtension);
+  }
+
+  isImage(file: string) {
+    const fileExtension = file.split('.').pop();
+    return IMAGE_EXTENSIONS.some(extension => extension === fileExtension);
+  }
+
+
+  isOtherFileType(file: string) {
+    return (!this.isDocument(file) && !this.isSpreadSheet(file) && !this.isImage(file) && !file.includes('pdf'))
+  }
 }

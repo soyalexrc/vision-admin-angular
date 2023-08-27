@@ -1,7 +1,7 @@
 <nz-breadcrumb>
   <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
   <nz-breadcrumb-item>
-    <a routerLink="/propiedades">Propiedades</a>
+    <a routerLink="/propiedades" (click)="saveTemporalChanges()">Propiedades</a>
   </nz-breadcrumb-item>
   <nz-breadcrumb-item>{{isEditing ? 'Editar' : 'Crear'}}</nz-breadcrumb-item>
 </nz-breadcrumb>
@@ -20,7 +20,7 @@
   }} de propiedad
 </h2>
 
-<nz-steps nzSize="small" [nzCurrent]="index" >
+<nz-steps nzSize="small" [nzCurrent]="index" (nzIndexChange)="isEditing ? index = $event : null" >
   <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
   <nz-step nzTitle="Ubicacion" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
   <nz-step nzTitle="Fotografias" [nzStatus]="getStatusBasedOnIndex(index).third"></nz-step>
@@ -418,7 +418,7 @@
           </ng-template>
         </nz-empty>
       </div>
-      <input style="display: none" (change)="handleUploadImage($event, 'image')" multiple type="file" #imageInputFile
+      <input style="display: none" (change)="handleUploadImage($event)" multiple type="file" #imageInputFile
              accept="image/*">
 
       <app-draggable-grid
@@ -467,7 +467,7 @@
             <nz-form-item [formGroup]="getFormGroup(attributeForm)">
               <nz-form-label style="font-size: 12px"  nzFor="value">{{attributeForm.value.label}}</nz-form-label>
               <nz-form-control>
-                <ng-container *ngIf="attributeForm.value.form_type === 'text'">
+                <ng-container *ngIf="attributeForm.value.formType === 'text'">
                   <input
                     type="text"
                     style="width: 100%"
@@ -475,10 +475,10 @@
                     formControlName="value"
                     [placeholder]="attributeForm.value.placeholder"/>
                 </ng-container>
-                <ng-container *ngIf="attributeForm.value.form_type === 'select' || attributeForm.value.form_type === 'check' " >
+                <ng-container *ngIf="attributeForm.value.formType === 'select' || attributeForm.value.formType === 'check' " >
                   <nz-select formControlName="value">
                     <nz-option
-                      *ngFor="let option of attributeForm.value.values.split('#'), index as i"
+                      *ngFor="let option of attributeForm.value.options.split('#'), index as i"
                       [nzValue]="option"
                       [nzLabel]="option">
                     </nz-option>
@@ -525,22 +525,9 @@
 
         <div nz-col [nzSpan]="6">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="comission">Procentaje de comision</nz-form-label>
-            <nz-form-control [nzErrorTip]="comissionErrTemp">
-              <input type="text" style="width: 100%" nz-input formControlName="comission"
-                     placeholder="Procentaje de comision"/>
-              <ng-template #comissionErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-
-        <div nz-col [nzSpan]="6">
-          <nz-form-item>
-            <nz-form-label  nzFor="minimunNegotiation">Negociacion minima</nz-form-label>
+            <nz-form-label  nzFor="minimumNegotiation">Negociacion minima</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="minimunNegotiation"
+              <input type="text" style="width: 100%" nz-input formControlName="minimumNegotiation"
                      placeholder="Negociacion minima"/>
             </nz-form-control>
           </nz-form-item>
@@ -563,17 +550,6 @@
       </div>
 
       <div nz-row class="row" [nzGutter]="16">
-
-        <div nz-col [nzSpan]="6">
-          <nz-form-item>
-            <nz-form-label nzRequired nzFor="adviser">Asesor</nz-form-label>
-            <nz-form-control >
-              <nz-select formControlName="adviser">
-                <nz-option *ngFor="let adviser of advisers" [nzValue]="adviser.id" [nzLabel]="adviser.firstName + ' ' + adviser.lastName"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
 
         <div nz-col [nzSpan]="6">
           <nz-form-item>
@@ -600,10 +576,10 @@
       <nz-divider></nz-divider>
 
       <div style="display: flex; align-items: center; justify-content: space-between">
-        <h3>Datos de cliente</h3>
-        <button nz-button nzType="link" (click)="showRegisterClientsModal = true">
+        <h3>Datos de propietario</h3>
+        <button nz-button nzType="link" (click)="showRegisterOwnersModal = true">
           <span nz-icon nzType="plus"></span>
-          Registrar nuevo cliente
+          Registrar nuevo propietario
         </button>
       </div>
 
@@ -612,8 +588,8 @@
         <div nz-col [nzSpan]="10">
           <nz-form-item style="margin: 1rem 0">
             <nz-form-control >
-              <nz-select formControlName="client" [nzLoading]="clientsLoading">
-                <nz-option *ngFor="let client of clients" [nzValue]="client.id" [nzLabel]="client.firstName + ' ' + client.lastName"></nz-option>
+              <nz-select formControlName="owner" [nzLoading]="ownersLoading">
+                <nz-option *ngFor="let owner of owners" [nzValue]="owner.id" [nzLabel]="owner.firstName + ' ' + owner.lastName"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -653,11 +629,11 @@
 
         <div nz-col [nzSpan]="6">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="contactCellPhone">Telefono</nz-form-label>
-            <nz-form-control [nzErrorTip]="contactCellPhoneErrTemp">
-              <input type="text" style="width: 100%" nz-input formControlName="contactCellPhone"
+            <nz-form-label nzRequired nzFor="contactPhone">Telefono</nz-form-label>
+            <nz-form-control [nzErrorTip]="contactPhoneErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="contactPhone"
                      placeholder="Telefono"/>
-              <ng-template #contactCellPhoneErrTemp let-control>
+              <ng-template #contactPhoneErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un numero de telefono!</ng-container>
               </ng-template>
             </nz-form-control>
@@ -711,11 +687,11 @@
 
         <div nz-col [nzSpan]="6">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="attorneyCellPhone">Telefono</nz-form-label>
-            <nz-form-control [nzErrorTip]="attorneyCellPhoneErrTemp">
-              <input type="text" style="width: 100%" nz-input formControlName="attorneyCellPhone"
+            <nz-form-label nzRequired nzFor="attorneyPhone">Telefono</nz-form-label>
+            <nz-form-control [nzErrorTip]="attorneyPhoneErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="attorneyPhone"
                      placeholder="Telefono"/>
-              <ng-template #attorneyCellPhoneErrTemp let-control>
+              <ng-template #attorneyPhoneErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un numero de telefono!</ng-container>
               </ng-template>
             </nz-form-control>
@@ -754,7 +730,7 @@
           </ng-template>
         </nz-empty>
       </div>
-      <input style="display: none" (change)="handleUploadImage($event, 'document')" multiple type="file" #documentInputFile
+      <input style="display: none" (change)="handleUploadFile($event)" multiple type="file" #documentInputFile
              accept="/*">
 
 
@@ -812,7 +788,7 @@
   </div>
 </div>
 
-<app-register-client-modal (onFinished)="getClients()" (onCancel)="showRegisterClientsModal = $event" [showModal]="showRegisterClientsModal"></app-register-client-modal>
+<app-register-client-modal (onFinished)="getOwners()" (onCancel)="showRegisterOwnersModal = $event" [showModal]="showRegisterOwnersModal"></app-register-client-modal>
 
 
 

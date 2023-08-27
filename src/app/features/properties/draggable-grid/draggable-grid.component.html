@@ -1,10 +1,10 @@
-<!--<div class="images-grid" cdkDropListGroup>-->
+<!--<div class="files-grid" cdkDropListGroup>-->
 <!--  <div-->
 <!--    class="img-container"-->
 <!--    cdkDropList-->
 <!--    [cdkDropListEnterPredicate]="dropListEnterPredicate"-->
 <!--    (cdkDropListDropped)="dropListDropped($event)"-->
-<!--    *ngFor="let image of elements; index as i"-->
+<!--    *ngFor="let file of elements; index as i"-->
 <!--  >-->
 <!--    <div  cdkDrag (cdkDragMoved)="dragMoved($event)">-->
 <!--      <img width="200px" class="img-item" height="200px" [src]="setImageUrl(image.imageData)" [alt]="image.imageData">-->
@@ -23,18 +23,27 @@
 <!--</div>-->
 
 <div class="images-grid" >
-  <div class="img-container" *ngFor="let image of elements; index as i">
+  <div class="img-container" *ngFor="let file of elements; index as i">
     <div  class="img-item">
-      <img *ngIf="!image.id.includes('pdf')" width="200px" height="200px" [src]="setImageUrl(image.id)" [alt]="image.id">
-      <div *ngIf="image.id.includes('pdf')" style="width: 200px; height: 200px">
+      <img *ngIf="isImage(file)" width="200px" height="200px" [src]="file" [alt]="file">
+      <div *ngIf="file.includes('pdf')" style="width: 200px; height: 200px">
         <span nz-icon nzType="file-pdf" [nzTheme]="'twotone'" nzTheme="outline" style="position: absolute; top: 50%; left: 50%; font-size: 30px"></span>
       </div>
+      <div *ngIf="isSpreadSheet(file)" style="width: 200px; height: 200px">
+        <span nz-icon nzType="file-excel" [nzTheme]="'twotone'" nzTheme="outline" style="position: absolute; top: 50%; left: 50%; font-size: 30px"></span>
+      </div>
+      <div *ngIf="isDocument(file)" style="width: 200px; height: 200px">
+        <span nz-icon nzType="file-word" [nzTheme]="'twotone'" nzTheme="outline" style="position: absolute; top: 50%; left: 50%; font-size: 30px"></span>
+      </div>
+      <div *ngIf="isOtherFileType(file)" style="width: 200px; height: 200px">
+        <span nz-icon nzType="file" [nzTheme]="'twotone'" nzTheme="outline" style="position: absolute; top: 50%; left: 50%; font-size: 30px"></span>
+      </div>
       <div class="img-overlay">
-        <button nz-tooltip="true" (click)="showPreview(image)" nzTooltipTitle="Ver en pantalla completa" nz-button
+        <button nz-tooltip="true" (click)="showPreview(file)" nzTooltipTitle="Ver en pantalla completa" nz-button
                 nzShape="circle" type="button" nzType="primary">
           <span nz-icon nzType="fullscreen"></span>
         </button>
-        <button nz-tooltip="true" (click)="onDeleteElement.emit(image)" nzTooltipTitle="Eliminar imagen" nz-button
+        <button nz-tooltip="true" (click)="onDeleteElement.emit(file)" nzTooltipTitle="Eliminar filen" nz-button
                 nzShape="circle" type="button" nzType="primary" nzDanger>
           <span nz-icon nzType="delete"></span>
         </button>

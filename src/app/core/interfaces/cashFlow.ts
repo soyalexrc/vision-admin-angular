@@ -1,4 +1,4 @@
-import {Property, PropertyReview} from "./property";
+import { PropertyReview} from "./property";
 
 export interface CustomProperty extends PropertyReview {
   property_type: string;
@@ -14,7 +14,7 @@ export interface CashFlowRegister {
   month: string;
   date: Date;
   property?: number;
-  propertyJson?: Partial<Property>
+  propertyJson?: Partial<PropertyReview>
   location?: string;
   client?: string;
   amount: string;

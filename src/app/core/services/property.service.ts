@@ -1,15 +1,17 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, Observable} from "rxjs";
-import {CreationOwnerResponse, GetOneOwnerResponse, Owner, OwnerToCreate} from "../interfaces/owner";
 import {
   Attribute,
-  CreationPropertyResponse,
-  GetPropertyPreviewResponse,
-  PropertyToCreate,
   PropertyType,
-  DeleteOneResponse, PropertyStatus, UpdatePropertyHistoryPayload, PropertyStatusItem, PropertyReview
+  PropertyStatus,
+  UpdatePropertyHistoryPayload,
+  PropertyStatusItem,
+  PropertyReview,
+  GetAllPreviews,
+  PropertyFull, CreateEditPropertyResponse
 } from "../interfaces/property";
+import {DeleteResult} from "../interfaces/generics";
 
 @Injectable({
   providedIn: 'root'
@@ -29,32 +31,36 @@ export class PropertyService {
 
   // TODO types de filtros
 
-  getAllPreview(filters: any): Observable<GetPropertyPreviewResponse> {
-    return this.http.post<GetPropertyPreviewResponse>('property/getallDataFilter', filters)
+  getPreviews(pageSize: number, pageIndex: number): Observable<GetAllPreviews> {
+    return this.http.get<GetAllPreviews>(`property/previews?pageSize=${pageSize}&pageIndex=${pageIndex}`)
   }
 
-  createOne(property: PropertyToCreate): Observable<CreationPropertyResponse> {
-    return this.http.post<CreationPropertyResponse>('property/addNewData', property)
+  getAllPreviews(): Observable<GetAllPreviews> {
+    return this.http.get<GetAllPreviews>(`property/previews`)
   }
 
-  deleteOne(id: number): Observable<DeleteOneResponse> {
-    return this.http.delete<DeleteOneResponse>(`property/deleteData?id=${id}`);
+  createOne(property: PropertyFull): Observable<CreateEditPropertyResponse> {
+    return this.http.post<CreateEditPropertyResponse>('property', property)
   }
 
-  getById(id: string): Observable<PropertyToCreate> {
-    return this.http.get<PropertyToCreate>(`property/getById?id=${id}`)
+  deleteOne(id: number): Observable<DeleteResult> {
+    return this.http.delete<DeleteResult>(`property/${id}`);
   }
 
-  update(data: PropertyToCreate): Observable<CreationPropertyResponse> {
-    return this.http.put<CreationPropertyResponse>(`property/updateData`, data);
+  getById(id: string): Observable<PropertyFull> {
+    return this.http.get<PropertyFull>(`property/${id}`)
+  }
+
+  update(data: PropertyFull): Observable<CreateEditPropertyResponse> {
+    return this.http.put<CreateEditPropertyResponse>(`property/${data.id}`, data);
   }
 
   getAttributesByPropertyType(propertyType: PropertyType): Observable<Attribute[]> {
-    return this.http.get<Attribute[]>(`attribute/getAllDataByPropertyType?propertyType=${propertyType}`)
+    return this.http.get<Attribute[]>(`attribute/getByPropertyType?propertyType=${propertyType}`)
   }
 
-  updateStatus(id: string | number, status: PropertyStatus): Observable<DeleteOneResponse> {
-    return this.http.put<DeleteOneResponse>(`property/updateStatus`, {id, property_status: status})
+  updateStatus(id: string | number, status: PropertyStatus): Observable<CreateEditPropertyResponse> {
+    return this.http.put<CreateEditPropertyResponse>(`property/updateStatus`, {id, property_status: status})
   }
 
   updateHistory(payload: UpdatePropertyHistoryPayload): Observable<any> {

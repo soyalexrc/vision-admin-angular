@@ -7,7 +7,7 @@ import {UserService} from "../../../core/services/user.service";
 import {UiService} from "../../../core/services/ui.service";
 import {setHeaders} from "../../../shared/utils/generic-table";
 import {
-  Property,
+  PropertyFull,
   PropertyReview,
   PropertyStatus,
   UpdatePropertyHistoryPayload
@@ -33,6 +33,8 @@ export class MainComponent implements OnInit, AfterViewInit {
   comments = '';
   showSetCommissionModal = false;
   currentProperty!: PropertyReview;
+  pageIndex = 1;
+  pageSize = 10;
 
   constructor(
     private router: Router,
@@ -63,8 +65,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.currentProperty = property;
     this.propertyService.storePropertyReview(property);
     this.showChangeStatusModal = true;
-    this.currentStatus = property.property_status as PropertyStatus;
-    this.selectedStatus = property.property_status as PropertyStatus;
+    this.currentStatus = property.status as PropertyStatus;
+    this.selectedStatus = property.status as PropertyStatus;
     this.currentId = property.id;
   }
 
@@ -76,9 +78,13 @@ export class MainComponent implements OnInit, AfterViewInit {
       nzOkText: 'Aceptar',
       nzOnOk: () => new Promise((resolve, reject) => {
         this.propertyService.deleteOne(id).subscribe(result => {
-          this.uiService.createMessage('success', 'Se elimino la propiedad con exito!')
+          this.uiService.createMessage('success', result.message)
           this.getPropertiesPreview()
           setTimeout(() => resolve(), 500);
+        }, (error) => {
+          this.uiService.createMessage('error', error.error.message)
+        }, () => {
+
         })
       })
     });
@@ -90,22 +96,22 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getPropertiesPreview() {
     this.loading = true;
-    this.propertyService.getAllPreview({filters: [], pageNumber: 1, pageSize: 10}).subscribe(data => {
-        this.data = data.data.map(element => ({
+    this.propertyService.getPreviews(this.pageSize, this.pageIndex).subscribe(data => {
+        this.data = data.rows.map(element => ({
           id: element.id,
           code: element.code,
-          created_date: moment(element.created_date).calendar(),
+          created_date: moment(element.createdAt).calendar(),
           propertyType: element.propertyType,
-          customLocation: `${element.location.country} - ${element.location.city} - ${element.location.state} - ${element.location.municipality}`,
+          customLocation: `${element.country} - ${element.city} - ${element.state} - ${element.municipality}`,
           price: element.price,
-          minimunNegotiation: element.minimunNegotiation,
-          owner: element.owner,
+          minimumNegotiation: element.minimumNegotiation,
+          owner: element.owner_id,
           operationType: element.operationType,
-          ally: element.ally,
-          adviser: element.adviser,
-          externalCapacitur: element.externalCapacitur,
+          ally: element.ally_id,
+          user: element.user_id,
+          externalCapacitor: element.externalCapacitor,
           operationReason: 'colocar data aca',
-          property_status: element.property_status,
+          status: element.status,
           documentStatus: 'colocar data aca',
           nomenclature: element.nomenclature,
           footageGround: element.footageGround,
@@ -118,14 +124,14 @@ export class MainComponent implements OnInit, AfterViewInit {
           {key: 'propertyType', displayName: 'Inmueble '},
           {key: 'customLocation', displayName: 'Ubicacion'},
           {key: 'price', displayName: 'Precio'},
-          {key: 'minimunNegotiation', displayName: 'Negociacion'},
+          {key: 'minimumNegotiation', displayName: 'Negociacion'},
           {key: 'owner', displayName: 'Propietario'},
           {key: 'operationType', displayName: 'Tipo de operacion'},
           {key: 'ally', displayName: 'Aliado'},
           {key: 'adviser', displayName: 'Asesor'},
-          {key: 'externalCapacitur', displayName: 'Capacitador externo'},
+          {key: 'externalCapacitor', displayName: 'Capacitador externo'},
           {key: 'operationReason', displayName: 'Motivo de operacion'},
-          {key: 'property_status', displayName: 'Estatus'},
+          {key: 'status', displayName: 'Estatus'},
           {key: 'documentStatus', displayName: 'Estatus de documentos'},
           {key: 'nomenclature', displayName: 'Nomenclatura'},
           {key: 'footageGround', displayName: 'Metraje de terreno'},

@@ -1,29 +1,58 @@
+import {Client} from "./client";
+import {CashFlowRegister} from "./cashFlow";
+
 export interface PropertyReview {
-  id:                   number;
-  company:              null;
-  userId:               null;
-  code:                 string;
-  operationType:        string;
-  propertyType:         PropertyType;
-  propertyCondition:    string;
-  footageGround:        string;
-  footageBuilding:      string;
-  description:          string;
-  price:                string;
-  property_status:      string;
-  nomenclature:         string;
-  adviser:              string;
-  ally:                 string;
+  id: number;
+  propertyType: string;
+  operationType: string;
+  price: string;
+  images: string[];
+  ally_id: null | number;
+  owner_id: number;
+  code: string;
+  country: string;
+  city: string;
+  municipality: string;
+  state: string;
+  createdAt: Date;
+  minimumNegotiation: string;
+  user_id: number;
+  externalCapacitor: string;
+  reasonToSellOrRent: string;
+  status: string;
+  files: string[];
+  nomenclature: string;
+  footageGround: string;
+  footageBuilding: string;
   distributionComments: string;
-  observations:         string;
-  externalCapacitur:    null;
-  owner:                string;
-  minimunNegotiation:   string;
-  created_date:         Date | string;
-  image:                string;
-  attributes:           Attribute[];
-  location:             Location;
-  requestDelete:        null;
+}
+
+export interface GetAllPreviews {
+  rows: PropertyReview[];
+  count: number;
+}
+
+export interface CreateEditPropertyResponse {
+  message: string;
+  data: CashFlowRegister
+}
+
+
+export interface PropertyFull {
+  id?: number;
+  user_id: number;
+  ally_id: null | number;
+  owner_id: number;
+  files: string[];
+  images: string[];
+  attributes: Attribute[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  generalInformation: GeneralInformation;
+  locationInformation: LocationInformation;
+  negotiationInformation: NegotiationInformation;
+  publicationSource: PublicationSource;
+  client?: null | Client;
 }
 
 export interface GetPropertyPreviewResponse {
@@ -32,14 +61,14 @@ export interface GetPropertyPreviewResponse {
 }
 
 export interface Attribute {
-  id:            number;
-  property_type: PropertyType;
-  form_type:     FormType;
-  label:         string;
-  category:      Category;
-  placeholder:   null | string;
-  values:        null | string;
-  value:         null;
+  id: number;
+  propertyType: PropertyType;
+  formType: FormType;
+  label: string;
+  category: Category;
+  placeholder: null | string;
+  options: null | string;
+  value: null;
 }
 
 export type Category = "General" | "Custom" | "Property" | "Furniture";
@@ -57,119 +86,83 @@ export type PropertyStatus =
   | "Cerrado por Vision (punta única)"
   | "Cerrado fuera de Vision"
 
-export interface Location {
-  location:             string;
-  isClosedStreet:       string;
-  country:                string;
-  state:                  string;
-  municipality:           string;
-  urbanization:           null;
-  avenue:                 string;
-  street:                 string;
-  buildingShoppingcenter: string;
-  buildingNumber:         string;
-  floor:                  string;
-  referencePoint:         string;
-  hotToGet:               null;
-  trunkNumber:            string;
-  parkingNumber:          string;
-  trunkLevel:             string;
-  parkingLevel:           string;
-  city:                   string;
-}
 
-
-
-
-export interface PropertyToCreate {
-  property:          Property;
-  location:          Location;
-  clientData:        ClientData;
-  publicationSource: PublicationSource;
-  images:            Image[];
-  attributes:        Attribute[];
-  files:             Image[];
-}
-
-
-export interface ClientData {
-  price:                string;
-  minimunNegotiation:   string;
-  adviser:              number;
-  externalCapacitor:    string;
-  ally:                 number;
-  client:                 number;
-  owner:                number;
-  comission:         string;
-  reasonToSellOrRent:         string;
-  firstName:         string;
-  lastName:          string;
-  cellPhone:         string;
-  email:             string;
-  birthday:          Date;
-  contactFirstName:  string;
-  contactLastName:   string;
-  contactCellPhone:  string;
-  contactEmail:      string;
-  attorneyFirstName: string;
-  attorneyLastName:  string;
-  attorneyCellPhone: string;
-  attorneyEmail:     string;
-  partOfPayment:     string;
-}
-
-export interface Image {
-  id:        string;
-  imageData: string;
-  imageType?: string;
-  name?: string;
-  label?: string;
-}
-
-
-export interface Property {
-  property_status:      string;
-  code:                 string;
-  nomenclature:         string;
-  footageGround:        string;
-  footageBuilding:      string;
+export interface GeneralInformation {
+  id: number;
+  property_id: number;
+  status: string;
+  code: string;
+  nomenclature: string;
+  footageGround: string;
+  footageBuilding: string;
   distributionComments: string;
-  description:          string;
-  operationType:        string;
-  propertyType:         PropertyType;
-  propertyCondition:    string;
+  description: string;
+  operationType: string;
+  propertyType: string;
+  propertyCondition: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface LocationInformation {
+  id: number;
+  property_id: number;
+  location: string;
+  isClosedStreet: string;
+  country: string;
+  state: string;
+  municipality: string;
+  urbanization: string;
+  avenue: string;
+  street: string;
+  buildingShoppingCenter: string;
+  buildingNumber: string;
+  floor: string;
+  referencePoint: string;
+  howToGet: string;
+  trunkNumber: string;
+  trunkLevel: string;
+  parkingNumber: string;
+  parkingLevel: string;
+  city: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface NegotiationInformation {
+  id: number;
+  property_id: number;
+  price: string;
+  minimumNegotiation: string;
+  client: string;
+  externalCapacitor: string;
+  reasonToSellOrRent: string;
+  contactFirstName: string;
+  contactLastName: string;
+  contactPhone: string;
+  contactEmail: string;
+  attorneyEmail: string;
+  attorneyPhone: string;
+  attorneyFirstName: string;
+  attorneyLastName: string;
+  partOfPayment: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface PublicationSource {
-  instagram:    boolean;
-  facebook:     boolean;
-  tiktok:       boolean;
+  id: number;
+  property_id: number;
+  instagram: boolean;
+  facebook: boolean;
+  tiktok: boolean;
   mercadolibre: boolean;
-  conlallave:   boolean;
-  whatsapp:     boolean;
+  whatsapp: boolean;
+  conlallave: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-
-
-export interface CreationPropertyResponse {
-  recordsets:   Array<Recordset[]>;
-  recordset:    Recordset[];
-  output:       Output;
-  rowsAffected: any[];
-}
-
-export interface DeleteOneResponse {
-  recordsets:   any[];
-  output:       Output;
-  rowsAffected: number[];
-}
-
-export interface Output {
-}
-
-export interface Recordset {
-  ID: number;
-}
 
 export interface UpdatePropertyHistoryPayload {
   comments: string;
@@ -179,7 +172,7 @@ export interface UpdatePropertyHistoryPayload {
   username: string;
 }
 
-export interface PropertyStatusItem extends UpdatePropertyHistoryPayload{
+export interface PropertyStatusItem extends UpdatePropertyHistoryPayload {
   created_date: Date;
   id: number;
   user_Id: number;
