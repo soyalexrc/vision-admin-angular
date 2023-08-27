@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PropertyService} from "../../../core/services/property.service";
-import {Property, PropertyReview} from "../../../core/interfaces/property";
+import { PropertyReview} from "../../../core/interfaces/property";
 import {SERVICE_OPTIONS, SERVICE_TYPE_OPTIONS} from "../../../shared/utils/services";
 import {CashFlowService} from "../../../core/services/cash-flow.service";
 import * as moment from "moment/moment";
@@ -46,12 +46,8 @@ export class CreateComponent implements OnInit {
   ngOnInit() {
     this.buildForms();
 
-    this.propertyService.getAllPreview({
-      "filters": [],
-      "pageNumber": 1,
-      "pageSize": 10
-    }).subscribe(result => {
-      this.properties = result.data;
+    this.propertyService.getAllPreviews().subscribe(result => {
+      this.properties = result.rows;
     })
 
     if (!this.router.url.includes('crear')) {

@@ -1,11 +1,11 @@
-import {Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PropertyService} from "../../../core/services/property.service";
 import {v4 as uuidv4} from 'uuid';
 import {FileService} from "../../../core/services/file.service";
-import {Image, PropertyType} from "../../../core/interfaces/property";
+import {PropertyFull, PropertyType} from "../../../core/interfaces/property";
 import {Subscription} from "rxjs";
 import {Ally} from "../../../core/interfaces/ally";
 import {AllyService} from "../../../core/services/ally.service";
@@ -13,6 +13,8 @@ import {Owner} from "../../../core/interfaces/owner";
 import {OwnerService} from "../../../core/services/owner.service";
 import {Adviser} from "../../../core/interfaces/adviser";
 import {AdviserService} from "../../../core/services/adviser.service";
+import {NzModalService} from "ng-zorro-antd/modal";
+import {UserService} from "../../../core/services/user.service";
 
 interface Steps {
   first: string,
@@ -44,20 +46,27 @@ export class CreateComponent implements OnInit, OnDestroy {
   index = 0;
   imagesSubscription = new Subscription();
   documentsSubscription = new Subscription();
-  images: Image[] = [];
-  documents: Image[] = [];
+  images: string[] = [];
+  documents: string[] = [];
 
   allies: Ally[] = [];
-  clients: Owner[] = [];
+  owners: Owner[] = [];
   advisers: Adviser[] = [];
 
-  showRegisterClientsModal = false;
-  clientsLoading = true;
+  showRegisterOwnersModal = false;
+  ownersLoading = true;
+  firstRender = false;
+  creatingFromStoredData = false;
 
 
   @ViewChild('imageInputFile') imageInputFile!: ElementRef<HTMLInputElement>
   @ViewChild('documentInputFile') documentInputFile!: ElementRef<HTMLInputElement>
   visitedImages = false;
+
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event: any) {
+    this.saveTemporalChanges()
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -67,8 +76,10 @@ export class CreateComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private fileService: FileService,
     private allyService: AllyService,
-    private clientService: OwnerService,
-    private adviserService: AdviserService
+    private ownerService: OwnerService,
+    private modal: NzModalService,
+    private adviserService: AdviserService,
+    private userService: UserService,
   ) {
   }
 
@@ -83,7 +94,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.buildForms();
 
     this.getAdvisers();
-    this.getClients();
+    this.getOwners();
     this.getAllies();
 
 
@@ -91,6 +102,27 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.isEditing = true;
       this.id = this.route.snapshot.paramMap.get('id')!;
       this.getUserById(this.id)
+      this.firstRender = true;
+    } else {
+      if (localStorage.getItem('property_create_temporal')) {
+        this.modal.confirm({
+          nzClosable: false,
+          nzCloseIcon: '',
+          nzWidth: '600px',
+          nzTitle: 'Atencion',
+          nzContent: 'Existe informacion de la ultima propiedad que intentaste registrar, pero no completaste el proceso. Te gustaria completarlo ahora?. Si la respuesta es NO, se eliminaran los cambios guardados',
+          nzCancelText: 'No, Eliminar cambios guardados',
+          nzOkText: 'Si, Completar ahora',
+          nzOnOk: () => new Promise((resolve, reject) => {
+            this.recoverDataFromStorage();
+            setTimeout(() => resolve(), 500);
+          }),
+          nzOnCancel: () => new Promise((resolve, reject) => {
+            this.clearStorageData()
+            setTimeout(() => resolve(), 500);
+          }),
+        })
+      }
     }
   }
 
@@ -119,7 +151,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       nomenclature: [''],
       propertyCondition: [''],
       operationType: ['', Validators.required],
-      property_status: ['Incompleto'],
+      status: ['Incompleto'],
       propertyType: ['', Validators.required],
     })
 
@@ -148,27 +180,20 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     this.negotiationForm = this.fb.group({
       price: ['', Validators.required],
-      client: ['', Validators.required],
-      attorneyCellPhone: ['', Validators.required],
+      owner: ['', Validators.required],
+      attorneyPhone: ['', Validators.required],
       attorneyEmail: ['', Validators.required],
       attorneyFirstName: ['', Validators.required],
       attorneyLastName: ['', Validators.required],
-      contactCellPhone: ['', Validators.required],
+      contactPhone: ['', Validators.required],
       contactEmail: ['', Validators.required],
       contactFirstName: ['', Validators.required],
       contactLastName: ['', Validators.required],
-      birthday: [''],
-      phone: [''],
-      firstName: [''],
-      lastName: [''],
-      email: [''],
-      comission: ['', Validators.required],
-      minimunNegotiation: [''],
+      minimumNegotiation: [''],
       reasonToSellOrRent: [''],
       externalCapacitor: [''],
       ally: [''],
       partOfPayment: ['', Validators.required],
-      adviser: ['', Validators.required],
     })
 
     this.documentsForm = this.fb.group({
@@ -189,16 +214,20 @@ export class CreateComponent implements OnInit, OnDestroy {
     if (this.generalForm.valid && this.locationForm.valid && this.negotiationForm.valid) {
       this.loading = true;
       const data = {
-        property: this.generalForm.value,
-        location: this.locationForm.value,
-        clientData: this.negotiationForm.value,
+        id: this.id,
+        generalInformation: this.generalForm.value,
+        locationInformation: this.locationForm.value,
+        negotiationInformation: this.negotiationForm.value,
         images: this.images,
         files: this.documents,
         publicationSource: this.publicationSourceForm.value,
-        attributes: this.attributes.value
+        attributes: this.attributes.value,
+        user_id: this.userService.currentUser.value.id,
+        owner_id: this.negotiationForm.get('owner')?.value,
+        ally_id: this.negotiationForm.get('ally')?.value === '' ? null : this.negotiationForm.get('ally')?.value,
       };
       if (this.isEditing) {
-        this.propertyService.update(data).subscribe(result => {
+        this.propertyService.update(data as PropertyFull).subscribe(result => {
           this.uiService.createMessage('success', 'Se edito la propiedad con exito!')
           this.router.navigate(['/propiedades'])
         }, () => {
@@ -207,7 +236,7 @@ export class CreateComponent implements OnInit, OnDestroy {
           this.loading = false
         })
       } else {
-        this.propertyService.createOne(data).subscribe(result => {
+        this.propertyService.createOne(data as PropertyFull).subscribe(result => {
           this.uiService.createMessage('success', 'Se creo la propiedad con exito!')
           this.router.navigate(['/propiedades'])
         }, () => {
@@ -226,41 +255,41 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   getUserById(id: string) {
     this.propertyService.getById(id).subscribe(result => {
-      this.generalForm.get('code')?.patchValue(result.property.code);
-      this.generalForm.get('nomenclature')?.patchValue(result.property.nomenclature);
-      this.generalForm.get('footageBuilding')?.patchValue(result.property.footageBuilding);
-      this.generalForm.get('footageGround')?.patchValue(result.property.footageGround);
-      this.generalForm.get('distributionComments')?.patchValue(result.property.distributionComments);
-      this.generalForm.get('description')?.patchValue(result.property.description);
-      this.generalForm.get('propertyType')?.patchValue(result.property.propertyType);
-      this.generalForm.get('operationType')?.patchValue(result.property.operationType);
-      this.generalForm.get('propertyCondition')?.patchValue(result.property.propertyCondition);
+      this.generalForm.get('code')?.patchValue(result.generalInformation.code);
+      this.generalForm.get('nomenclature')?.patchValue(result.generalInformation.nomenclature);
+      this.generalForm.get('footageBuilding')?.patchValue(result.generalInformation.footageBuilding);
+      this.generalForm.get('footageGround')?.patchValue(result.generalInformation.footageGround);
+      this.generalForm.get('distributionComments')?.patchValue(result.generalInformation.distributionComments);
+      this.generalForm.get('description')?.patchValue(result.generalInformation.description);
+      this.generalForm.get('propertyType')?.patchValue(result.generalInformation.propertyType);
+      this.generalForm.get('operationType')?.patchValue(result.generalInformation.operationType);
+      this.generalForm.get('propertyCondition')?.patchValue(result.generalInformation.propertyCondition);
 
-      this.locationForm.get('city')?.patchValue(result.location.city);
-      this.locationForm.get('state')?.patchValue(result.location.state);
-      this.locationForm.get('country')?.patchValue(result.location.country);
-      this.locationForm.get('municipality')?.patchValue(result.location.municipality);
-      this.locationForm.get('avenue')?.patchValue(result.location.avenue);
-      this.locationForm.get('street')?.patchValue(result.location.street);
-      this.locationForm.get('floor')?.patchValue(result.location.floor);
-      this.locationForm.get('buildingNumber')?.patchValue(result.location.buildingNumber);
-      this.locationForm.get('hotToGet')?.patchValue(result.location.hotToGet);
-      this.locationForm.get('urbanization')?.patchValue(result.location.urbanization);
-      this.locationForm.get('trunkNumber')?.patchValue(result.location.trunkNumber);
-      this.locationForm.get('trunkLevel')?.patchValue(result.location.trunkLevel);
-      this.locationForm.get('referencePoint')?.patchValue(result.location.referencePoint);
-      this.locationForm.get('buildingShoppingcenter')?.patchValue(result.location.buildingShoppingcenter);
+      this.locationForm.get('city')?.patchValue(result.locationInformation.city);
+      this.locationForm.get('state')?.patchValue(result.locationInformation.state);
+      this.locationForm.get('country')?.patchValue(result.locationInformation.country);
+      this.locationForm.get('municipality')?.patchValue(result.locationInformation.municipality);
+      this.locationForm.get('avenue')?.patchValue(result.locationInformation.avenue);
+      this.locationForm.get('street')?.patchValue(result.locationInformation.street);
+      this.locationForm.get('floor')?.patchValue(result.locationInformation.floor);
+      this.locationForm.get('buildingNumber')?.patchValue(result.locationInformation.buildingNumber);
+      this.locationForm.get('howToGet')?.patchValue(result.locationInformation.howToGet);
+      this.locationForm.get('urbanization')?.patchValue(result.locationInformation.urbanization);
+      this.locationForm.get('trunkNumber')?.patchValue(result.locationInformation.trunkNumber);
+      this.locationForm.get('trunkLevel')?.patchValue(result.locationInformation.trunkLevel);
+      this.locationForm.get('referencePoint')?.patchValue(result.locationInformation.referencePoint);
+      this.locationForm.get('buildingShoppingcenter')?.patchValue(result.locationInformation.buildingShoppingCenter);
 
       result.attributes.forEach(attr => {
         this.attributes.push(this.fb.group({
           id: [attr.id],
-          property_type: [attr.property_type],
-          form_type: [attr.form_type],
+          propertyType: [attr.propertyType],
+          formType: [attr.formType],
           label: [attr.label],
           category: [attr.category],
           placeholder: [attr.placeholder],
-          values: [attr.values],
-          value: [null],
+          options: [attr.options],
+          value: [attr.value],
         }))
       })
 
@@ -268,23 +297,21 @@ export class CreateComponent implements OnInit, OnDestroy {
         this.fileService.storeImage(image);
       });
 
-      this.negotiationForm.get('price')?.patchValue(result.clientData.price);
-      this.negotiationForm.get('partOfPayment')?.patchValue(result.clientData.partOfPayment);
-      this.negotiationForm.get('comission')?.patchValue(result.clientData.comission);
-      this.negotiationForm.get('minimunNegotiation')?.patchValue(result.clientData.minimunNegotiation);
-      this.negotiationForm.get('reasonToSellOrRent')?.patchValue(result.clientData.reasonToSellOrRent);
-      this.negotiationForm.get('adviser')?.patchValue(result.clientData.adviser);
-      this.negotiationForm.get('ally')?.patchValue(result.clientData.ally);
-      this.negotiationForm.get('externalCapacitor')?.patchValue(result.clientData.externalCapacitor);
-      this.negotiationForm.get('client')?.patchValue(result.clientData.client);
-      this.negotiationForm.get('attorneyEmail')?.patchValue(result.clientData.attorneyEmail);
-      this.negotiationForm.get('attorneyFirstName')?.patchValue(result.clientData.attorneyFirstName);
-      this.negotiationForm.get('attorneyLastName')?.patchValue(result.clientData.attorneyLastName);
-      this.negotiationForm.get('attorneyCellPhone')?.patchValue(result.clientData.attorneyCellPhone);
-      this.negotiationForm.get('contactEmail')?.patchValue(result.clientData.contactEmail);
-      this.negotiationForm.get('contactFirstName')?.patchValue(result.clientData.contactFirstName);
-      this.negotiationForm.get('contactLastName')?.patchValue(result.clientData.contactLastName);
-      this.negotiationForm.get('contactCellPhone')?.patchValue(result.clientData.contactCellPhone);
+      this.negotiationForm.get('price')?.patchValue(result.negotiationInformation.price);
+      this.negotiationForm.get('partOfPayment')?.patchValue(result.negotiationInformation.partOfPayment);
+      this.negotiationForm.get('minimumNegotiation')?.patchValue(result.negotiationInformation.minimumNegotiation);
+      this.negotiationForm.get('reasonToSellOrRent')?.patchValue(result.negotiationInformation.reasonToSellOrRent);
+      this.negotiationForm.get('ally')?.patchValue(result.ally_id);
+      this.negotiationForm.get('externalCapacitor')?.patchValue(result.negotiationInformation.externalCapacitor);
+      this.negotiationForm.get('owner')?.patchValue(result.owner_id);
+      this.negotiationForm.get('attorneyEmail')?.patchValue(result.negotiationInformation.attorneyEmail);
+      this.negotiationForm.get('attorneyFirstName')?.patchValue(result.negotiationInformation.attorneyFirstName);
+      this.negotiationForm.get('attorneyLastName')?.patchValue(result.negotiationInformation.attorneyLastName);
+      this.negotiationForm.get('attorneyPhone')?.patchValue(result.negotiationInformation.attorneyPhone);
+      this.negotiationForm.get('contactEmail')?.patchValue(result.negotiationInformation.contactEmail);
+      this.negotiationForm.get('contactFirstName')?.patchValue(result.negotiationInformation.contactFirstName);
+      this.negotiationForm.get('contactLastName')?.patchValue(result.negotiationInformation.contactLastName);
+      this.negotiationForm.get('contactPhone')?.patchValue(result.negotiationInformation.contactPhone);
 
       result.files.forEach(file => {
         this.fileService.storeDocument(file);
@@ -298,6 +325,80 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.publicationSourceForm.get('whatsapp')?.patchValue(result.publicationSource.whatsapp)
 
     })
+  }
+
+  recoverDataFromStorage() {
+    this.creatingFromStoredData = true;
+    const data = JSON.parse(localStorage.getItem('property_create_temporal')!);
+    console.log(data);
+    this.generalForm.get('code')?.patchValue(data.generalInformation.code);
+    this.generalForm.get('nomenclature')?.patchValue(data.generalInformation.nomenclature);
+    this.generalForm.get('footageBuilding')?.patchValue(data.generalInformation.footageBuilding);
+    this.generalForm.get('footageGround')?.patchValue(data.generalInformation.footageGround);
+    this.generalForm.get('distributionComments')?.patchValue(data.generalInformation.distributionComments);
+    this.generalForm.get('description')?.patchValue(data.generalInformation.description);
+    this.generalForm.get('propertyType')?.patchValue(data.generalInformation.propertyType);
+    this.generalForm.get('operationType')?.patchValue(data.generalInformation.operationType);
+    this.generalForm.get('propertyCondition')?.patchValue(data.generalInformation.propertyCondition);
+
+    this.locationForm.get('city')?.patchValue(data.locationInformation.city);
+    this.locationForm.get('state')?.patchValue(data.locationInformation.state);
+    this.locationForm.get('country')?.patchValue(data.locationInformation.country);
+    this.locationForm.get('municipality')?.patchValue(data.locationInformation.municipality);
+    this.locationForm.get('avenue')?.patchValue(data.locationInformation.avenue);
+    this.locationForm.get('street')?.patchValue(data.locationInformation.street);
+    this.locationForm.get('floor')?.patchValue(data.locationInformation.floor);
+    this.locationForm.get('buildingNumber')?.patchValue(data.locationInformation.buildingNumber);
+    this.locationForm.get('hotToGet')?.patchValue(data.locationInformation.howToGet);
+    this.locationForm.get('urbanization')?.patchValue(data.locationInformation.urbanization);
+    this.locationForm.get('trunkNumber')?.patchValue(data.locationInformation.trunkNumber);
+    this.locationForm.get('trunkLevel')?.patchValue(data.locationInformation.trunkLevel);
+    this.locationForm.get('referencePoint')?.patchValue(data.locationInformation.referencePoint);
+    this.locationForm.get('buildingShoppingcenter')?.patchValue(data.locationInformation.buildingShoppingCenter);
+
+    this.negotiationForm.get('price')?.patchValue(data.negotiationInformation.price);
+    this.negotiationForm.get('partOfPayment')?.patchValue(data.negotiationInformation.partOfPayment);
+    this.negotiationForm.get('minimunNegotiation')?.patchValue(data.negotiationInformation.minimumNegotiation);
+    this.negotiationForm.get('reasonToSellOrRent')?.patchValue(data.negotiationInformation.reasonToSellOrRent);
+    this.negotiationForm.get('externalCapacitor')?.patchValue(data.negotiationInformation.externalCapacitor);
+    this.negotiationForm.get('owner')?.patchValue(data.negotiationInformation.owner);
+    this.negotiationForm.get('attorneyEmail')?.patchValue(data.negotiationInformation.attorneyEmail);
+    this.negotiationForm.get('attorneyFirstName')?.patchValue(data.negotiationInformation.attorneyFirstName);
+    this.negotiationForm.get('attorneyLastName')?.patchValue(data.negotiationInformation.attorneyLastName);
+    this.negotiationForm.get('attorneyPhone')?.patchValue(data.negotiationInformation.attorneyPhone);
+    this.negotiationForm.get('contactEmail')?.patchValue(data.negotiationInformation.contactEmail);
+    this.negotiationForm.get('contactFirstName')?.patchValue(data.negotiationInformation.contactFirstName);
+    this.negotiationForm.get('contactLastName')?.patchValue(data.negotiationInformation.contactLastName);
+    this.negotiationForm.get('contactPhone')?.patchValue(data.negotiationInformation.contactPhone);
+
+    this.publicationSourceForm.get('conlallave')?.patchValue(data.publicationSource.conlallave)
+    this.publicationSourceForm.get('facebook')?.patchValue(data.publicationSource.facebook)
+    this.publicationSourceForm.get('instagram')?.patchValue(data.publicationSource.instagram)
+    this.publicationSourceForm.get('tiktok')?.patchValue(data.publicationSource.tiktok)
+    this.publicationSourceForm.get('mercadolibre')?.patchValue(data.publicationSource.mercadolibre)
+    this.publicationSourceForm.get('whatsapp')?.patchValue(data.publicationSource.whatsapp)
+
+    data.files.forEach((file: string) => {
+      this.fileService.storeDocument(file);
+    });
+
+    data.images.forEach((file: string) => {
+      this.fileService.storeImage(file);
+    });
+
+    data.attributes.forEach((attr: any) => {
+      this.attributes.push(this.fb.group({
+        id: [attr.id],
+        propertyType: [attr.propertyType],
+        formType: [attr.formType],
+        label: [attr.label],
+        category: [attr.category],
+        placeholder: [attr.placeholder],
+        options: [attr.options],
+        value: [attr.value],
+      }))
+    })
+
   }
 
   onIndexChange(index: number): void {
@@ -423,14 +524,9 @@ export class CreateComponent implements OnInit, OnDestroy {
     return this.attributesForm.controls["attributes"] as FormArray;
   }
 
-  async handleUploadImage(event: any, type: string) {
+  async handleUploadImage(event: any) {
     this.loadingImage = true;
 
-    let obj: any = {
-      id: '',
-      imageData: '',
-      imageType: ''
-    }
     const {files} = event.target;
 
     const forLoop = async () => {
@@ -439,23 +535,8 @@ export class CreateComponent implements OnInit, OnDestroy {
           const reader = new FileReader();
           reader.readAsDataURL(files[i]);
           reader.onload = async () => {
-            obj.imageData = reader.result;
-            obj.id = uuidv4();
-            obj.imageType = files[i].type
-            this.fileService.uploadFile(obj).subscribe(result => {
-                if (type === 'image') {
-                  this.fileService.storeImage({
-                    id: result,
-                    imageData: result,
-                    imageType: files[i].type
-                  })
-                } else {
-                  this.fileService.storeDocument({
-                    id: result,
-                    imageData: result,
-                    imageType: files[i].type
-                  })
-                }
+            this.fileService.uploadPropertyImage(files[i], this.generalForm.get('code')?.value).subscribe(result => {
+                this.fileService.storeImage(result.secureUrl)
               },
               () => {
                 this.loadingImage = false;
@@ -475,7 +556,39 @@ export class CreateComponent implements OnInit, OnDestroy {
     await forLoop();
   }
 
-  handleDeleteImage(image: Image, type: string) {
+  async handleUploadFile(event: any) {
+    this.loadingImage = true;
+
+    const {files} = event.target;
+
+    const forLoop = async () => {
+      for (let i = 0; i < files.length; i++) {
+        try {
+          const reader = new FileReader();
+          reader.readAsDataURL(files[i]);
+          reader.onload = async () => {
+            this.fileService.uploadPropertyFile(files[i], this.generalForm.get('code')?.value).subscribe(result => {
+                this.fileService.storeDocument(result.secureUrl)
+              },
+              () => {
+                this.loadingImage = false;
+                this.uiService.createMessage('error', 'No se logro subir la imagen, ocurrio un error. Intenalo de nuevo')
+              },
+              () => {
+                if (i === files.length - 1) {
+                  this.loadingImage = false;
+                }
+              }
+            )
+          }
+        } catch (e) {
+        }
+      }
+    }
+    await forLoop();
+  }
+
+  handleDeleteImage(image: string, type: string) {
     if (type === 'image') {
       this.fileService.deleteImage(image);
     } else {
@@ -498,16 +611,18 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   handleSelectPropertyType(propertyType: PropertyType) {
     this.clearFormArray(this.attributes);
+    if (!propertyType || this.firstRender || this.creatingFromStoredData) return;
     this.propertyService.getAttributesByPropertyType(propertyType).subscribe(result => {
+      this.firstRender = false;
       result.forEach(attr => {
         this.attributes.push(this.fb.group({
           id: [attr.id],
-          property_type: [attr.property_type],
-          form_type: [attr.form_type],
+          propertyType: [attr.propertyType],
+          formType: [attr.formType],
           label: [attr.label],
           category: [attr.category],
           placeholder: [attr.placeholder],
-          values: [attr.values],
+          options: [attr.options],
           value: [null],
         }))
       })
@@ -529,7 +644,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.generalForm.get('propertyType')?.markAsDirty();
   }
 
-  handleSortElements(images: Image[], type: string) {
+  handleSortElements(images: string[], type: string) {
     if (type === 'image') {
       this.fileService.setReorderImages(images)
     } else {
@@ -537,29 +652,15 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  getAllyValue(ally: Ally) {
-    return {
-      id: ally.id,
-      name: `${ally.firstName} ${ally.lastName}`
-    }
-  }
 
-  getClientValue(client: Owner) {
-    return {
-      id: client.id,
-      name: `${client.firstName} ${client.lastName}`
-    }
-  }
-
-
-  getClients() {
-    this.clientsLoading = true;
-    this.clientService.getAll(1, 1).subscribe(result => {
-      this.clients = result.rows;
+  getOwners() {
+    this.ownersLoading = true;
+    this.ownerService.getAll(1, 1).subscribe(result => {
+      this.owners = result.rows;
     }, () => {
-      this.clientsLoading = false;
+      this.ownersLoading = false;
     }, () => {
-      this.clientsLoading = false;
+      this.ownersLoading = false;
     })
   }
 
@@ -591,7 +692,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       bool = this.generalForm.invalid
     }
 
-    if (this.index === 1 ) {
+    if (this.index === 1) {
       bool = this.locationForm.invalid
     }
 
@@ -612,5 +713,26 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
 
     return bool;
+  }
+
+  saveTemporalChanges() {
+    const data = {
+      generalInformation: this.generalForm.value,
+      locationInformation: this.locationForm.value,
+      negotiationInformation: this.negotiationForm.value,
+      images: this.images,
+      files: this.documents,
+      publicationSource: this.publicationSourceForm.value,
+      attributes: this.attributes.value
+    };
+    if (!this.isEditing && (this.generalForm.touched || this.locationForm.touched || this.negotiationForm.touched || this.publicationSourceForm.touched || this.attributesForm.touched)) {
+      localStorage.setItem('property_create_temporal', JSON.stringify(data));
+    }
+  }
+
+  clearStorageData() {
+    this.fileService.deleteTemporalImages();
+    this.fileService.deleteTemporalFiles();
+    localStorage.removeItem('property_create_temporal')
   }
 }
