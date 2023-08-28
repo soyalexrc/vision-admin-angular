@@ -29,7 +29,7 @@
         <a *ngIf="historyAction" (click)="onHistory.emit(row)" nz-tooltip="true" [nzTooltipTitle]="historyActionTitle">
           <span nz-icon nzType="history" style="font-size: 18px" ></span>
         </a>
-        <a (click)="onDelete.emit(row.id)" nz-tooltip="true" nzTooltipTitle="Eliminar">
+        <a (click)="onDelete.emit(row.id)" nz-tooltip="true" nzTooltipTitle="Eliminar" *ngIf="canDelete">
           <span nz-icon nzType="delete" style="font-size: 18px" [nzTheme]="'twotone'" [nzTwotoneColor]="'#ff4d4f'"></span>
         </a>
         <nz-switch *ngIf="row.isUserTable" nz-tooltip="true" [(ngModel)]="row.status" (ngModelChange)="onChangeUserStatus.emit({value: $event, id: row.id})" nzTooltipTitle="Deshabilitar o habilitar usuario"></nz-switch>

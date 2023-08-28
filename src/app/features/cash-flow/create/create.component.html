@@ -12,7 +12,7 @@
 
 <div class="form mt-3">
   <div class="content">
-    <nz-steps [nzCurrent]="index"  (nzIndexChange)="onIndexChange($event)">
+    <nz-steps [nzCurrent]="index"  (nzIndexChange)=" isEditing ? onIndexChange($event) : null">
       <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
       <nz-step nzTitle="Servicio" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
       <nz-step nzTitle="Informacion de pago" [nzStatus]="getStatusBasedOnIndex(index).last"></nz-step>
@@ -264,7 +264,7 @@
           <nz-form-item>
             <nz-form-label nzFor="amount">Monto</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="amount" placeholder="Monto"/>
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="amount" placeholder="Monto"/>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -272,7 +272,7 @@
           <nz-form-item>
             <nz-form-label nzFor="totalDue">Por pagar</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="totalDue" placeholder="Por pagar"/>
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="totalDue" placeholder="Por pagar"/>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -280,7 +280,7 @@
           <nz-form-item>
             <nz-form-label nzFor="pendingToCollect">Por cobrar</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="pendingToCollect" placeholder="Por cobrar"/>
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="pendingToCollect" placeholder="Por cobrar"/>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -298,9 +298,35 @@
   </form>
 </ng-container>
 
-<div class="form">
-  <div class="content">
-    <button nz-button nzType="primary" nzBlock (click)="submitForm()" [disabled]="generalForm.invalid || serviceForm.invalid || paymentDetailForm.invalid" [nzLoading]="loading">Guardar cambios</button>
+<div style="display: flex; justify-content: center; margin-top: 2rem">
+  <div style="width: 900px; display: flex; justify-content: space-between">
+    <div>
+      <button
+        nz-button
+        nzType="default"
+        *ngIf="index > 0"
+        (click)="goPrev()"
+      >
+        Anterior
+      </button>
+    </div>
+    <button
+      nz-button
+      *ngIf="index !== 2"
+      nzType="primary"
+      [disabled]="handleGoNextButtonDisabled()"
+      (click)="goNext()"
+    >
+      Siguiente
+    </button>
+    <button
+      nz-button
+      *ngIf="index === 2"
+      nzType="primary"
+      (click)="submitForm()"
+      [disabled]="generalForm.invalid || serviceForm.invalid || paymentDetailForm.invalid"
+      [nzLoading]="loading">Guardar cambios
+    </button>
   </div>
 </div>
 

@@ -25,6 +25,7 @@ export class GenericTableComponent implements OnInit {
   @Input() hasDelete: boolean = true;
   @Input() changeAction: boolean = false;
   @Input() linkAction: boolean = false;
+  @Input() canDelete: boolean = false;
   @Input() historyAction: boolean = false;
   @Output() onDelete: EventEmitter<any> = new EventEmitter<any>()
   @Output() onChange: EventEmitter<any> = new EventEmitter<any>()

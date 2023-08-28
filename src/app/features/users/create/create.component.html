@@ -15,7 +15,7 @@
 
 <div class="form mt-3">
   <div class="content">
-    <nz-steps [nzCurrent]="index"  (nzIndexChange)="onIndexChange($event)">
+    <nz-steps [nzCurrent]="index"  (nzIndexChange)="isEditing ? onIndexChange($event) : null">
       <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
       <nz-step nzTitle="Personal" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
       <nz-step nzTitle="Social" [nzStatus]="getStatusBasedOnIndex(index).last"></nz-step>
@@ -99,11 +99,12 @@
             </nz-form-control>
           </nz-form-item>
         </div>
+        <div nz-col [nzSpan]="12"></div>
         <div nz-col [nzSpan]="12">
           <nz-form-item>
             <nz-form-label nzRequired nzFor="userType">Tipo de usuario</nz-form-label>
             <nz-form-control [nzErrorTip]="emailErrTemp">
-              <nz-select formControlName="userType">
+              <nz-select formControlName="userType" (ngModelChange)="handleSelectUserType($event)">
                 <nz-option nzValue="Administrador" nzLabel="Administrador"></nz-option>
                 <nz-option nzValue="Coordinador de servicios" nzLabel="Coordinador de servicios"></nz-option>
                 <nz-option nzValue="Asesor inmobiliario vision" nzLabel="Asesor inmobiliario vision"></nz-option>
@@ -118,7 +119,7 @@
         </div>
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="userLevel">Rango de usuario (aplica para asesores)</nz-form-label>
+            <nz-form-label nzFor="userLevel">Rango de asesor </nz-form-label>
             <nz-form-control>
               <nz-select formControlName="userLevel">
                 <nz-option nzValue="Asesor Emprendedor" nzLabel="Asesor Emprendedor 50%"></nz-option>
@@ -137,7 +138,7 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="mainPhone">Numero de telefono principal</nz-form-label>
             <nz-form-control [nzErrorTip]="mainPhoneErrTemp">
-              <input type="text" style="width: 100%" nz-input formControlName="mainPhone"
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="mainPhone"
                      placeholder="Numero de telefono"/>
               <ng-template #mainPhoneErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un numero de telefono!</ng-container>
@@ -150,7 +151,7 @@
           <nz-form-item>
             <nz-form-label nzFor="secondaryPhone">Numero de telefono secundario</nz-form-label>
             <nz-form-control >
-              <input type="text" style="width: 100%" nz-input formControlName="secondaryPhone"
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="secondaryPhone"
                      placeholder="Numero de telefono secundario"/>
             </nz-form-control>
           </nz-form-item>
@@ -302,8 +303,35 @@
   </form>
 </ng-container>
 
-<div class="form">
-  <div class="content">
-    <button nz-button nzType="primary" nzBlock (click)="submitForm()" [disabled]="generalForm.invalid || personalForm.invalid || socialForm.invalid" [nzLoading]="loading">Guardar cambios</button>
+
+<div style="display: flex; justify-content: center; margin-top: 2rem">
+  <div style="width: 900px; display: flex; justify-content: space-between">
+    <div>
+      <button
+        nz-button
+        nzType="default"
+        *ngIf="index > 0"
+        (click)="goPrev()"
+      >
+        Anterior
+      </button>
+    </div>
+    <button
+      nz-button
+      *ngIf="index !== 2"
+      nzType="primary"
+      [disabled]="handleGoNextButtonDisabled()"
+      (click)="goNext()"
+    >
+      Siguiente
+    </button>
+    <button
+      nz-button
+      *ngIf="index === 2"
+      nzType="primary"
+      (click)="submitForm()"
+      [disabled]="generalForm.invalid || personalForm.invalid || socialForm.invalid"
+      [nzLoading]="loading">Guardar cambios
+    </button>
   </div>
 </div>

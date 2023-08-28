@@ -7,13 +7,17 @@ import {NzButtonModule} from "ng-zorro-antd/button";
 import { GenericTableComponent } from './components/generic-table/generic-table.component';
 import {NzSpinModule} from "ng-zorro-antd/spin";
 import {NzToolTipModule} from "ng-zorro-antd/tooltip";
-import { RegisterClientModalComponent } from './components/register-client-modal/register-client-modal.component';
+import { RegisterOwnerModalComponent } from './components/register-client-modal/register-owner-modal.component';
 import {NzModalModule} from "ng-zorro-antd/modal";
 import {NzFormModule} from "ng-zorro-antd/form";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NzPaginationModule} from "ng-zorro-antd/pagination";
 import {NzSwitchModule} from "ng-zorro-antd/switch";
+import { OnlyNumbersDirective } from './directives/only-numbers.directive';
+import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
+import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
+import {NzInputModule} from "ng-zorro-antd/input";
 
 
 
@@ -22,12 +26,14 @@ import {NzSwitchModule} from "ng-zorro-antd/switch";
   declarations: [
     SectionTitleComponent,
     GenericTableComponent,
-    RegisterClientModalComponent,
+    RegisterOwnerModalComponent,
+    OnlyNumbersDirective,
   ],
     exports: [
         SectionTitleComponent,
         GenericTableComponent,
-        RegisterClientModalComponent,
+        RegisterOwnerModalComponent,
+        OnlyNumbersDirective,
     ],
   imports: [
     CommonModule,
@@ -42,7 +48,10 @@ import {NzSwitchModule} from "ng-zorro-antd/switch";
     ReactiveFormsModule,
     NzPaginationModule,
     NzSwitchModule,
-    FormsModule
+    FormsModule,
+    NzCheckboxModule,
+    NzDatePickerModule,
+    NzInputModule
   ]
 })
 export class SharedModule { }

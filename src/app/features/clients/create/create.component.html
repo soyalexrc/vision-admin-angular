@@ -39,7 +39,7 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="phone">Telefono</nz-form-label>
             <nz-form-control [nzErrorTip]="phoneErrTemp">
-              <input type="text" style="width: 100%" nz-input formControlName="phone"
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="phone"
                      placeholder="Telefono"/>
               <ng-template #phoneErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un telefono!</ng-container>

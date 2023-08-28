@@ -512,13 +512,10 @@
 
         <div nz-col [nzSpan]="6">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="partOfPayment">Recibe como medio de pago</nz-form-label>
-            <nz-form-control [nzErrorTip]="partOfPaymentErrTemp">
+            <nz-form-label  nzFor="partOfPayment">Recibe como medio de pago</nz-form-label>
+            <nz-form-control >
               <input type="text" style="width: 100%" nz-input formControlName="partOfPayment"
                      placeholder="Recibe como medio de pago"/>
-              <ng-template #partOfPaymentErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar una opcion!</ng-container>
-              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -537,13 +534,10 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="24">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="reasonToSellOrRent">Motivo de alquier / venta</nz-form-label>
-            <nz-form-control [nzErrorTip]="priceErrTemp">
+            <nz-form-label  nzFor="reasonToSellOrRent">Motivo de alquier / venta</nz-form-label>
+            <nz-form-control >
               <textarea type="text" style="width: 100%" cols="3" nz-input formControlName="reasonToSellOrRent"
                         placeholder="Motivo de alquier / venta"></textarea>
-              <ng-template #priceErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar el precio del inmueble!</ng-container>
-              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -631,7 +625,7 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="contactPhone">Telefono</nz-form-label>
             <nz-form-control [nzErrorTip]="contactPhoneErrTemp">
-              <input type="text" style="width: 100%" nz-input formControlName="contactPhone"
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="contactPhone"
                      placeholder="Telefono"/>
               <ng-template #contactPhoneErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un numero de telefono!</ng-container>
@@ -648,6 +642,7 @@
                      placeholder="Email"/>
               <ng-template #contactEmailErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un email!</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">Ingresa un email valido!</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -689,7 +684,7 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="attorneyPhone">Telefono</nz-form-label>
             <nz-form-control [nzErrorTip]="attorneyPhoneErrTemp">
-              <input type="text" style="width: 100%" nz-input formControlName="attorneyPhone"
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="attorneyPhone"
                      placeholder="Telefono"/>
               <ng-template #attorneyPhoneErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un numero de telefono!</ng-container>
@@ -706,6 +701,7 @@
                      placeholder="Email"/>
               <ng-template #attorneyEmailErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un email!</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">Ingresa un email valido!</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -788,7 +784,7 @@
   </div>
 </div>
 
-<app-register-client-modal (onFinished)="getOwners()" (onCancel)="showRegisterOwnersModal = $event" [showModal]="showRegisterOwnersModal"></app-register-client-modal>
+<app-register-owner-modal (onClose)="showRegisterOwnersModal = false" (onFinished)="getOwners()" (onCancel)="showRegisterOwnersModal = $event" [showModal]="showRegisterOwnersModal"></app-register-owner-modal>
 
 
 

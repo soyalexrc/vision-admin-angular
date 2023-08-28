@@ -169,7 +169,7 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="amount">Monto</nz-form-label>
             <nz-form-control [nzErrorTip]="amountErrTemp">
-              <input type="text" style="width: 100%" nz-input formControlName="amount"/>
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="amount"/>
               <ng-template #amountErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un monto!</ng-container>
               </ng-template>

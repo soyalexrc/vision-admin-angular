@@ -55,7 +55,7 @@ export class CreateComponent implements OnInit {
       mainPhone: ['', Validators.required],
       secondaryPhone: [''],
       userType: ['', Validators.required],
-      userLevel: ['', Validators.required],
+      userLevel: [{value: '', disabled: true}],
       userCommission: [0],
       id: [null],
       isActive: [true]
@@ -82,7 +82,7 @@ export class CreateComponent implements OnInit {
       this.loading = true;
       const data = {...this.generalForm.value, ...this.socialForm.value, ...this.personalForm.value};
       data.birthDate = moment(data.birthday).format('YYYY-MM-DD');
-      data.userCommission = data.userLevel === 'Asesor Diamante' ? 80 : data.userLevel === 'Asesor Estrella' ? 70 : data.userLevel === 'Asesor Destacado' ? 60 : 50
+      data.userCommission = data.userLevel === 'Asesor Diamante' ? 80 : data.userLevel === 'Asesor Estrella' ? 70 : data.userLevel === 'Asesor Destacado' ? 60 : data.userLevel === 'Asesor Emprendedor' ? 50 : 0;
       if (this.isEditing) {
         this.userService.update(data).subscribe(result => {
           this.uiService.createMessage('success', result.message)
@@ -209,5 +209,44 @@ export class CreateComponent implements OnInit {
         control.updateValueAndValidity({onlySelf: true});
       }
     });
+  }
+
+  handleSelectUserType(value: string) {
+    if (value === 'Asesor inmobiliario vision') {
+      console.log(value)
+      this.generalForm.get('userLevel')?.enable();
+    } else {
+      this.generalForm.get('userLevel')?.disable();
+      this.generalForm.get('userLevel')?.setValue('');
+    }
+  }
+
+  goPrev() {
+    this.index -= 1;
+  }
+
+  goNext() {
+    this.index += 1;
+  }
+
+  handleGoNextButtonDisabled(): boolean {
+
+    let bool = true;
+
+    if (this.index === 0) {
+      bool = this.generalForm.invalid
+    }
+
+
+
+    if (this.index === 1 ) {
+      bool = this.personalForm.invalid
+    }
+
+    if (this.index === 2 ) {
+      bool = this.socialForm.invalid
+    }
+
+    return bool;
   }
 }

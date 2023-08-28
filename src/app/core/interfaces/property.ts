@@ -178,4 +178,19 @@ export interface PropertyStatusItem extends UpdatePropertyHistoryPayload {
   user_Id: number;
 }
 
+export interface PropertyStatusResponse {
+  rows: PropertyHistoryElement[],
+  count: number;
+}
+
+export interface PropertyHistoryElement {
+  id?: number;
+  username: string;
+  comments: string;
+  status: string;
+  property_id: number | string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 

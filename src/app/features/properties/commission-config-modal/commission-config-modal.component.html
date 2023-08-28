@@ -114,7 +114,7 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="propertyAdviser">Seleccionar asesor</nz-form-label>
             <nz-form-control [nzErrorTip]="propertyAdviserErrTemp">
-              <nz-select nzShowSearch nzAllowClear formControlName="propertyAdviser" style="width: 100%">
+              <nz-select nzShowSearch nzAllowClear formControlName="propertyAdviser" style="width: 100%" (ngModelChange)="handleSelectAdviser($event, 'property')">
                 <nz-option
                   *ngFor="let adviser of advisers"
                   [nzValue]="adviser.id"
@@ -146,7 +146,7 @@
           <nz-divider></nz-divider>
 
           <h4>Monto final de punta</h4>
-          <h2>{{propertyAdviserFinalCommission?.value || 0 | currency}}</h2>
+          <h2>{{propertyAdviserCommissionResult || 0 | currency}}</h2>
         </div>
         <div nz-col [nzSpan]="12" *ngIf="status === 'Cerrado por Vision doble punta' ">
           <div style="display: flex; align-items: center; margin-bottom: 1rem">
@@ -162,7 +162,7 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="clientAdviser">Seleccionar asesor</nz-form-label>
             <nz-form-control [nzErrorTip]="clientAdviserErrTemp">
-              <nz-select nzShowSearch nzAllowClear formControlName="clientAdviser" style="width: 100%">
+              <nz-select nzShowSearch nzAllowClear formControlName="clientAdviser" style="width: 100%" (ngModelChange)="handleSelectAdviser($event, 'client')">
                 <nz-option
                   *ngFor="let adviser of advisers"
                   [nzValue]="adviser.id"
@@ -194,8 +194,15 @@
           <br>
           <nz-divider></nz-divider>
           <h4>Monto final de punta</h4>
-          <h2>{{clientAdviserFinalCommission?.value || 0 | currency}}</h2>
+          <h2>{{clientAdviserCommissionResult || 0 | currency}}</h2>
         </div>
+      </div>
+
+      <nz-divider style="margin-top: 0"></nz-divider>
+
+      <div style="display: flex; justify-content: center; flex-direction: column; align-items: center">
+        <h3>Monto derivado a vision</h3>
+        <h1>{{getGains()|| 0 | currency}}</h1>
       </div>
     </form>
   </ng-container>

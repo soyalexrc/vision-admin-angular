@@ -62,7 +62,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getOwners() {
     this.loading = true;
-    this.ownerService.getAll(1, 10).subscribe(data => {
+    this.ownerService.getAllPaginated(1, 10).subscribe(data => {
       console.log(data);
         this.data = data.rows.map(element => ({
           id: element.id,
