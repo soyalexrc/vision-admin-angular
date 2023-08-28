@@ -35,6 +35,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   currentProperty!: PropertyReview;
   pageIndex = 1;
   pageSize = 10;
+  user: Partial<User> = {};
 
   constructor(
     private router: Router,
@@ -46,7 +47,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
 
   ngOnInit() {
-
+    this.user = this.userService.currentUser.value;
   }
 
   ngAfterViewInit() {
@@ -96,58 +97,114 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getPropertiesPreview() {
     this.loading = true;
-    this.propertyService.getPreviews(this.pageSize, this.pageIndex).subscribe(data => {
-        this.data = data.rows.map(element => ({
-          id: element.id,
-          code: element.code,
-          created_date: moment(element.createdAt).calendar(),
-          propertyType: element.propertyType,
-          customLocation: `${element.country} - ${element.city} - ${element.state} - ${element.municipality}`,
-          price: element.price,
-          minimumNegotiation: element.minimumNegotiation,
-          owner: element.owner_id,
-          operationType: element.operationType,
-          ally: element.ally_id,
-          user: element.user_id,
-          externalCapacitor: element.externalCapacitor,
-          operationReason: 'colocar data aca',
-          status: element.status,
-          documentStatus: 'colocar data aca',
-          nomenclature: element.nomenclature,
-          footageGround: element.footageGround,
-          footageBuilding: element.footageBuilding,
-          distributionComments: element.distributionComments
-        }));
-        const headers = setHeaders([
-          {key: 'code', displayName: 'Codigo'},
-          {key: 'created_date', displayName: 'Fecha de registro '},
-          {key: 'propertyType', displayName: 'Inmueble '},
-          {key: 'customLocation', displayName: 'Ubicacion'},
-          {key: 'price', displayName: 'Precio'},
-          {key: 'minimumNegotiation', displayName: 'Negociacion'},
-          {key: 'owner', displayName: 'Propietario'},
-          {key: 'operationType', displayName: 'Tipo de operacion'},
-          {key: 'ally', displayName: 'Aliado'},
-          {key: 'adviser', displayName: 'Asesor'},
-          {key: 'externalCapacitor', displayName: 'Capacitador externo'},
-          {key: 'operationReason', displayName: 'Motivo de operacion'},
-          {key: 'status', displayName: 'Estatus'},
-          {key: 'documentStatus', displayName: 'Estatus de documentos'},
-          {key: 'nomenclature', displayName: 'Nomenclatura'},
-          {key: 'footageGround', displayName: 'Metraje de terreno'},
-          {key: 'footageBuilding', displayName: 'Metraje de construccion'},
-          {key: 'distributionComments', displayName: 'Comentarios de distribucion'},
-        ]);
+    if (this.user.userType === 'Administrador') {
+      this.propertyService.getPreviewsPaginated(this.pageSize, this.pageIndex).subscribe(data => {
+          this.data = data.rows.map(element => ({
+            id: element.id,
+            code: element.code,
+            created_date: moment(element.createdAt).calendar(),
+            propertyType: element.propertyType,
+            customLocation: `${element.country} - ${element.city} - ${element.state} - ${element.municipality}`,
+            price: element.price,
+            minimumNegotiation: element.minimumNegotiation,
+            owner: element.owner_id,
+            operationType: element.operationType,
+            ally: element.ally_id,
+            user: element.user_id,
+            externalCapacitor: element.externalCapacitor,
+            operationReason: 'colocar data aca',
+            status: element.status,
+            documentStatus: 'colocar data aca',
+            nomenclature: element.nomenclature,
+            footageGround: element.footageGround,
+            footageBuilding: element.footageBuilding,
+            distributionComments: element.distributionComments
+          }));
+          const headers = setHeaders([
+            {key: 'code', displayName: 'Codigo'},
+            {key: 'created_date', displayName: 'Fecha de registro '},
+            {key: 'propertyType', displayName: 'Inmueble '},
+            {key: 'customLocation', displayName: 'Ubicacion'},
+            {key: 'price', displayName: 'Precio'},
+            {key: 'minimumNegotiation', displayName: 'Negociacion'},
+            {key: 'owner', displayName: 'Propietario'},
+            {key: 'operationType', displayName: 'Tipo de operacion'},
+            {key: 'ally', displayName: 'Aliado'},
+            {key: 'adviser', displayName: 'Asesor'},
+            {key: 'externalCapacitor', displayName: 'Capacitador externo'},
+            {key: 'operationReason', displayName: 'Motivo de operacion'},
+            {key: 'status', displayName: 'Estatus'},
+            {key: 'documentStatus', displayName: 'Estatus de documentos'},
+            {key: 'nomenclature', displayName: 'Nomenclatura'},
+            {key: 'footageGround', displayName: 'Metraje de terreno'},
+            {key: 'footageBuilding', displayName: 'Metraje de construccion'},
+            {key: 'distributionComments', displayName: 'Comentarios de distribucion'},
+          ]);
 
-        this.dataTable.render(headers, this.data);
-      },
-      () => {
-        this.loading = false
-      },
-      () => {
-        this.loading = false
-      }
-    )
+          this.dataTable.render(headers, this.data);
+        },
+        () => {
+          this.loading = false
+        },
+        () => {
+          this.loading = false
+        }
+      )
+    } else {
+      this.propertyService.getPreviewsByUserId(this.pageSize, this.pageIndex, this.user.id!).subscribe(data => {
+          this.data = data.rows.map(element => ({
+            id: element.id,
+            code: element.code,
+            created_date: moment(element.createdAt).calendar(),
+            propertyType: element.propertyType,
+            customLocation: `${element.country} - ${element.city} - ${element.state} - ${element.municipality}`,
+            price: element.price,
+            minimumNegotiation: element.minimumNegotiation,
+            owner: element.owner_id,
+            operationType: element.operationType,
+            ally: element.ally_id,
+            user: element.user_id,
+            externalCapacitor: element.externalCapacitor,
+            operationReason: 'colocar data aca',
+            status: element.status,
+            documentStatus: 'colocar data aca',
+            nomenclature: element.nomenclature,
+            footageGround: element.footageGround,
+            footageBuilding: element.footageBuilding,
+            distributionComments: element.distributionComments
+          }));
+          const headers = setHeaders([
+            {key: 'code', displayName: 'Codigo'},
+            {key: 'created_date', displayName: 'Fecha de registro '},
+            {key: 'propertyType', displayName: 'Inmueble '},
+            {key: 'customLocation', displayName: 'Ubicacion'},
+            {key: 'price', displayName: 'Precio'},
+            {key: 'minimumNegotiation', displayName: 'Negociacion'},
+            {key: 'owner', displayName: 'Propietario'},
+            {key: 'operationType', displayName: 'Tipo de operacion'},
+            {key: 'ally', displayName: 'Aliado'},
+            {key: 'adviser', displayName: 'Asesor'},
+            {key: 'externalCapacitor', displayName: 'Capacitador externo'},
+            {key: 'operationReason', displayName: 'Motivo de operacion'},
+            {key: 'status', displayName: 'Estatus'},
+            {key: 'documentStatus', displayName: 'Estatus de documentos'},
+            {key: 'nomenclature', displayName: 'Nomenclatura'},
+            {key: 'footageGround', displayName: 'Metraje de terreno'},
+            {key: 'footageBuilding', displayName: 'Metraje de construccion'},
+            {key: 'distributionComments', displayName: 'Comentarios de distribucion'},
+          ]);
+
+          this.dataTable.render(headers, this.data);
+        },
+        () => {
+          this.loading = false
+        },
+        () => {
+          this.loading = false
+        }
+      )
+    }
+
   }
 
   handleHistory(property: Partial<PropertyReview>) {
@@ -235,5 +292,9 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   handleSetCommission() {
     this.showSetCommissionModal = false;
+  }
+
+  isAdmin() {
+    return this.user.userType === 'Administrador';
   }
 }

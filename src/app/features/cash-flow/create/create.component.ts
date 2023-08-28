@@ -249,4 +249,34 @@ export class CreateComponent implements OnInit {
       this.paymentDetailForm.get('observations')?.patchValue(result.observations);
     })
   }
+
+  goPrev() {
+    this.index -= 1;
+  }
+
+  goNext() {
+    this.index += 1;
+  }
+
+  handleGoNextButtonDisabled(): boolean {
+
+    let bool = true;
+
+    if (this.index === 0) {
+      bool = this.generalForm.invalid
+    }
+
+
+
+    if (this.index === 1 ) {
+      bool = this.serviceForm.invalid
+    }
+
+    if (this.index === 2 ) {
+      bool = this.paymentDetailForm.invalid
+    }
+
+
+    return bool;
+  }
 }

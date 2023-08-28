@@ -31,8 +31,16 @@ export class PropertyService {
 
   // TODO types de filtros
 
-  getPreviews(pageSize: number, pageIndex: number): Observable<GetAllPreviews> {
-    return this.http.get<GetAllPreviews>(`property/previews?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+  getPreviews(): Observable<GetAllPreviews> {
+    return this.http.get<GetAllPreviews>(`property/previews`)
+  }
+
+  getPreviewsPaginated(pageSize: number, pageIndex: number): Observable<GetAllPreviews> {
+    return this.http.get<GetAllPreviews>(`property/previews/paginated?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+  }
+
+  getPreviewsByUserId(pageSize: number, pageIndex: number, userId: number): Observable<GetAllPreviews> {
+    return this.http.get<GetAllPreviews>(`property/previews/byUserId/${userId}?pageSize=${pageSize}&pageIndex=${pageIndex}`)
   }
 
   getAllPreviews(): Observable<GetAllPreviews> {

@@ -12,9 +12,10 @@
 <app-generic-table #dataTable
                    xScroll="4000px"
                    [actionsFixed]="true"
-                   [changeAction]="true"
+                   [changeAction]="isAdmin()"
                    [linkAction]="true"
-                   [historyAction]="true"
+                   [historyAction]="isAdmin()"
+                   [canDelete]="isAdmin()"
                    changeActionTitle="Cambiar estatus"
                    linkActionTitle="Ver vista previa"
                    historyActionTitle="Ver historial de status"

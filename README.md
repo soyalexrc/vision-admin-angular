@@ -31,7 +31,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 build image
 
-docker build -t pruebacontainerluighi2693/vision-admin-angular-frontend:latest .
+docker build --platform linux/amd64 -t pruebacontainerluighi2693/vision-admin-angular-frontend:latest .
 
 push dockerhub
 

@@ -182,18 +182,18 @@ export class CreateComponent implements OnInit, OnDestroy {
       price: ['', Validators.required],
       owner: ['', Validators.required],
       attorneyPhone: ['', Validators.required],
-      attorneyEmail: ['', Validators.required],
+      attorneyEmail: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       attorneyFirstName: ['', Validators.required],
       attorneyLastName: ['', Validators.required],
       contactPhone: ['', Validators.required],
-      contactEmail: ['', Validators.required],
+      contactEmail: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       contactFirstName: ['', Validators.required],
       contactLastName: ['', Validators.required],
       minimumNegotiation: [''],
       reasonToSellOrRent: [''],
       externalCapacitor: [''],
       ally: [''],
-      partOfPayment: ['', Validators.required],
+      partOfPayment: [''],
     })
 
     this.documentsForm = this.fb.group({
@@ -655,7 +655,7 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   getOwners() {
     this.ownersLoading = true;
-    this.ownerService.getAll(1, 1).subscribe(result => {
+    this.ownerService.getAll().subscribe(result => {
       this.owners = result.rows;
     }, () => {
       this.ownersLoading = false;
