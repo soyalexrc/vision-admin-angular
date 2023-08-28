@@ -6,7 +6,7 @@ import {BehaviorSubject, Subscription} from "rxjs";
 import {formatCurrency} from "@angular/common";
 import {UserService} from "../../../core/services/user.service";
 import {User} from "../../../core/interfaces/user";
-import {SERVICE_OPTIONS} from "../../../shared/utils/services";
+import {minusPercent} from "../../../shared/utils/minusPercent";
 
 type AllowedSelection = 'Percentage' | 'Amount'
 
@@ -37,6 +37,11 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
   allowedEditionSubscription = new Subscription();
   allowedEdition: BehaviorSubject<AllowedSelection> = new BehaviorSubject<AllowedSelection>('Percentage')
   typeOFAllowedEdition = false;
+  propertyAdviserCommission = 0;
+  clientAdviserCommission = 0
+
+  propertyAdviserCommissionResult = 0;
+  clientAdviserCommissionResult = 0;
 
   form!: FormGroup;
   advisers: User[] = [];
@@ -85,8 +90,12 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
     // })
 
     this.getCommissionAmount?.valueChanges.subscribe(value => {
-      this.propertyAdviserFinalCommission?.patchValue(value / 2);
-      this.clientAdviserFinalCommission?.patchValue(value / 2);
+      const valueByTwo = value * 0.5;
+      this.propertyAdviserFinalCommission?.patchValue(valueByTwo);
+      this.clientAdviserFinalCommission?.patchValue(valueByTwo);
+
+      this.propertyAdviserCommissionResult = minusPercent(valueByTwo, this.propertyAdviserCommission)
+      this.clientAdviserCommissionResult = minusPercent(valueByTwo, this.clientAdviserCommission)
 
       if (value === 0) {
         this.form.get('propertyAdviserAttention')?.patchValue(true)
@@ -151,7 +160,7 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
   }
 
   getAdvisers() {
-    this.userService.getAll(1, 1).subscribe(result => {
+    this.userService.getAdvisers().subscribe(result => {
       this.advisers = result.rows;
     })
   }
@@ -202,6 +211,10 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
   get propertyAdviserFinalCommission() {return this.form.get('propertyAdviserFinalCommission');}
   get clientAdviserFinalCommission() {return this.form.get('clientAdviserFinalCommission');}
 
+  get clientAdviser() {return this.form.get('clientAdviser');}
+
+  get propertyAdviser() {return this.form.get('propertyAdviser');}
+
   calculateBothCommissions() {
     this.calculateCommissionByPercentage();
     this.calculateCommissionByAmount();
@@ -231,26 +244,52 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
     const half= (Number(this.getCommissionAmount?.value) / 2);
     if (type === 'client') {
       if (event) {
-        if (Number(this.clientAdviserFinalCommission?.value) >= half)  {
-          this.clientAdviserFinalCommission?.patchValue(half);
-          return
+        // if (Number(this.clientAdviserFinalCommission?.value) >= half)  {
+        //   this.clientAdviserFinalCommission?.patchValue(half);
+        //   return
+        // }
+        if (this.clientAdviserCommissionResult >= half) {
+          this.clientAdviserCommissionResult = half;
+          return;
         }
-        this.clientAdviserFinalCommission?.patchValue(this.clientAdviserFinalCommission?.value + quarter);
+        // this.clientAdviserFinalCommission?.patchValue(this.clientAdviserFinalCommission?.value + quarter);
+        this.clientAdviserCommissionResult += quarter;
       } else {
-        this.clientAdviserFinalCommission?.patchValue(this.clientAdviserFinalCommission?.value - quarter);
-        this.propertyAdviserFinalCommission?.patchValue(this.propertyAdviserFinalCommission?.value + quarter);
+        this.clientAdviserCommissionResult -= quarter;
+        if (this.propertyAdviserCommissionResult >= half) {
+          this.propertyAdviserCommissionResult = half;
+          return;
+        } else {
+          this.propertyAdviserCommissionResult += quarter;
+        }
+        // this.clientAdviserFinalCommission?.patchValue(this.clientAdviserFinalCommission?.value - quarter);
+        // this.propertyAdviserFinalCommission?.patchValue(this.propertyAdviserFinalCommission?.value + quarter);
       }
     } else {
       if (event) {
-        if (Number(this.propertyAdviserFinalCommission?.value) >= half)  {
-          this.propertyAdviserFinalCommission?.patchValue(half);
-          return
+        // if (Number(this.propertyAdviserFinalCommission?.value) >= half)  {
+        //   this.propertyAdviserFinalCommission?.patchValue(half);
+        //   return
+        // }
+        if (this.propertyAdviserCommissionResult >= half) {
+          this.propertyAdviserCommissionResult = half;
+          return;
         }
-        this.propertyAdviserFinalCommission?.patchValue(this.propertyAdviserFinalCommission?.value + quarter);
+        // this.propertyAdviserFinalCommission?.patchValue(this.propertyAdviserFinalCommission?.value + quarter);
+        this.propertyAdviserCommissionResult += quarter;
       } else {
-        this.propertyAdviserFinalCommission?.patchValue(this.propertyAdviserFinalCommission?.value - quarter);
+        this.propertyAdviserCommissionResult -= quarter;
+
+        // this.propertyAdviserFinalCommission?.patchValue(this.propertyAdviserFinalCommission?.value - quarter);
         if (this.status === 'Cerrado por Vision doble punta') {
-          this.clientAdviserFinalCommission?.patchValue(this.clientAdviserFinalCommission?.value + quarter);
+          if (this.clientAdviserCommissionResult >= half) {
+            this.clientAdviserCommissionResult = half;
+            return;
+          } else {
+            this.clientAdviserCommissionResult += quarter;
+          }
+
+          // this.clientAdviserFinalCommission?.patchValue(this.clientAdviserFinalCommission?.value + quarter);
         }
       }
     }
@@ -277,5 +316,26 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
         this.getCommissionAmount?.patchValue((finalPrice * 2) - operationExpense)
       }
     }
+  }
+
+  handleSelectAdviser(value: number, type: string) {
+    console.log('here');
+
+    if (type === 'property') {
+      this.propertyAdviserCommission = Number(this.getUserById(value)?.userCommission)
+      this.propertyAdviserCommissionResult = minusPercent(this.propertyAdviserFinalCommission?.value, this.propertyAdviserCommission)
+    } else {
+      this.clientAdviserCommission = Number(this.getUserById(value)?.userCommission);
+      this.clientAdviserCommissionResult = minusPercent(this.clientAdviserFinalCommission?.value, this.clientAdviserCommission)
+
+    }
+  }
+
+  getUserById(id: number) {
+    return this.advisers.find(adviser => adviser.id === id);
+  }
+
+  getGains() {
+    return Math.abs((this.clientAdviserCommissionResult + this.propertyAdviserCommissionResult) - this.getCommissionAmount?.value)
   }
 }

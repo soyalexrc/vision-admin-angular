@@ -44,10 +44,10 @@ export class StatusHistoryComponent implements OnInit, AfterViewInit{
   getPropertyHistory() {
     this.loading = true;
     this.propertyService.getPropertyStatusHistory(this.id).subscribe(result => {
-      this.data = result.map(element => ({
+      this.data = result.rows.map(element => ({
         id: element.id,
         username: element.username,
-        date: moment(element.created_date).calendar(),
+        date: moment(element.createdAt).calendar(),
         status: element.status,
         comments: element.comments
       }))

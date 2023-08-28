@@ -9,7 +9,7 @@ import {
   PropertyStatusItem,
   PropertyReview,
   GetAllPreviews,
-  PropertyFull, CreateEditPropertyResponse
+  PropertyFull, CreateEditPropertyResponse, PropertyStatusResponse, PropertyHistoryElement
 } from "../interfaces/property";
 import {DeleteResult} from "../interfaces/generics";
 
@@ -67,15 +67,15 @@ export class PropertyService {
     return this.http.get<Attribute[]>(`attribute/getByPropertyType?propertyType=${propertyType}`)
   }
 
-  updateStatus(id: string | number, status: PropertyStatus): Observable<CreateEditPropertyResponse> {
-    return this.http.put<CreateEditPropertyResponse>(`property/updateStatus`, {id, property_status: status})
+  updateStatus(data: PropertyHistoryElement): Observable<CreateEditPropertyResponse> {
+    return this.http.post<CreateEditPropertyResponse>(`property/changeStatus`, data)
   }
 
   updateHistory(payload: UpdatePropertyHistoryPayload): Observable<any> {
     return this.http.post(`property/addHistoric`, payload)
   }
 
-  getPropertyStatusHistory(id: string | number) : Observable<PropertyStatusItem[]> {
-    return this.http.get<PropertyStatusItem[]>(`property/getHistoricByPropertyId?property_id=${id}`)
+  getPropertyStatusHistory(id: string | number) : Observable<PropertyStatusResponse> {
+    return this.http.get<PropertyStatusResponse>(`property/propertyStatus/${id}`)
   }
 }

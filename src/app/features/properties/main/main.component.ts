@@ -7,7 +7,7 @@ import {UserService} from "../../../core/services/user.service";
 import {UiService} from "../../../core/services/ui.service";
 import {setHeaders} from "../../../shared/utils/generic-table";
 import {
-  PropertyFull,
+  PropertyFull, PropertyHistoryElement,
   PropertyReview,
   PropertyStatus,
   UpdatePropertyHistoryPayload
@@ -23,7 +23,7 @@ import * as moment from 'moment';
 export class MainComponent implements OnInit, AfterViewInit {
   loading = true;
   @ViewChild('dataTable') dataTable!: GenericTableComponent;
-  data: Partial<PropertyReview>[]  = [];
+  data: Partial<PropertyReview>[] = [];
   headers: any[] = [];
   showChangeStatusModal = false;
   changeStatusLoading = false;
@@ -43,7 +43,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     private propertyService: PropertyService,
     private uiService: UiService,
     private userService: UserService
-  ) {}
+  ) {
+  }
 
 
   ngOnInit() {
@@ -224,6 +225,12 @@ export class MainComponent implements OnInit, AfterViewInit {
       this.showSetCommissionModal = true;
       return;
     }
+    if (this.selectedStatus === this.currentStatus) {
+      this.changeStatusLoading = false;
+      this.showChangeStatusModal = false;
+      this.uiService.createMessage('warning', 'Estas intentando actualizar el estatus de la propiedad con el mismo valor que tenia antes, selecciona otro valor.')
+      return;
+    };
     this.changeStatusProperty();
   }
 
@@ -264,22 +271,18 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   changeStatusProperty() {
-    this.propertyService.updateStatus(this.currentId, this.selectedStatus!).subscribe(result => {
+    const payload: PropertyHistoryElement = {
+      comments: this.comments,
+      status: this.selectedStatus!,
+      property_id: this.currentId,
+      username: this.userService.currentUser?.value?.username!
+    };
+    this.propertyService.updateStatus(payload).subscribe(result => {
       this.showChangeStatusModal = false;
-      this.uiService.createMessage('success', 'Se edito el estatus de la propiedad con exito!');
-      const payload: UpdatePropertyHistoryPayload = {
-        comments: this.comments,
-        status: this.selectedStatus!,
-        property_id: this.currentId,
-        user_id: this.userService.currentUser?.value?.id!,
-        username: this.userService.currentUser?.value?.username!
-
-      };
-      this.propertyService.updateHistory(payload).subscribe(res => {
-        this.uiService.createMessage('success', 'Se actualizo el hostorial de la propiedad!');
-      })
+      this.uiService.createMessage('success', result.message);
       this.getPropertiesPreview();
-    }, () => {
+    }, (error) => {
+      this.uiService.createMessage('error', error.error.message);
       this.changeStatusLoading = false;
     }, () => {
       this.changeStatusLoading = false;
