@@ -133,7 +133,7 @@ showPreview(image: string) {
       height: '600px',
       alt: image
     }]
-    if (img[0].src.includes('pdf')) {
+    if (img[0].src.includes('pdf') || this.isDocument(image) || this.isSpreadSheet(image) || this.isOtherFileType(image)) {
       window.open(img[0].src, '_blank')
     } else {
       this.nzImageService.preview(img, {nzZoom: 1, nzRotate: 0});

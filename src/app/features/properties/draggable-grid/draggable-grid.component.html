@@ -39,9 +39,13 @@
         <span nz-icon nzType="file" [nzTheme]="'twotone'" nzTheme="outline" style="position: absolute; top: 50%; left: 50%; font-size: 30px"></span>
       </div>
       <div class="img-overlay">
-        <button nz-tooltip="true" (click)="showPreview(file)" nzTooltipTitle="Ver en pantalla completa" nz-button
+        <button nz-tooltip="true" *ngIf="isImage(file)" (click)="showPreview(file)" nzTooltipTitle="Ver en pantalla completa" nz-button
                 nzShape="circle" type="button" nzType="primary">
           <span nz-icon nzType="fullscreen"></span>
+        </button>
+        <button nz-tooltip="true" *ngIf="isOtherFileType(file) || isDocument(file) || isSpreadSheet(file) || file.includes('pdf')" (click)="showPreview(file)" nzTooltipTitle="Descargar documento" nz-button
+                nzShape="circle" type="button" nzType="primary">
+          <span nz-icon nzType="download" nzTheme="outline"></span>
         </button>
         <button nz-tooltip="true" (click)="onDeleteElement.emit(file)" nzTooltipTitle="Eliminar filen" nz-button
                 nzShape="circle" type="button" nzType="primary" nzDanger>
