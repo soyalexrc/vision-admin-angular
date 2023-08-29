@@ -3,6 +3,7 @@ import {AbstractControl, Form, FormArray, FormBuilder, FormGroup, Validators} fr
 import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ClientService} from "../../../core/services/client.service";
+import {UserService} from "../../../core/services/user.service";
 
 interface Steps {
   first: string,
@@ -29,6 +30,7 @@ export class CreateComponent implements OnInit{
     private clientService: ClientService,
     private uiService: UiService,
     private router: Router,
+    private userService: UserService,
     private route: ActivatedRoute
   ) {
 
@@ -47,7 +49,48 @@ export class CreateComponent implements OnInit{
   }
 
   getClient(id: number | string) {
+    this.clientService.getById(id).subscribe(result => {
+      this.generalForm.get('name')?.patchValue(result.name);
+      this.generalForm.get('phone')?.patchValue(result.phone);
+      this.generalForm.get('contactFrom')?.patchValue(result.contactFrom);
+      this.generalForm.get('isPotentialInvestor')?.patchValue(result.isPotentialInvestor);
+      this.generalForm.get('service')?.patchValue(result.service);
+      this.generalForm.get('referrer')?.patchValue(result.referrer);
 
+      this.operationForm.get('operationType')?.patchValue(result.operationType);
+      this.operationForm.get('propertyOfInterest')?.patchValue(result.propertyOfInterest);
+      this.operationForm.get('propertyLocation')?.patchValue(result.propertyLocation);
+      this.operationForm.get('typeOfCapture')?.patchValue(result.typeOfCapture);
+      this.operationForm.get('aspiredPrice')?.patchValue(result.aspiredPrice);
+      this.operationForm.get('typeOfBusiness')?.patchValue(result.typeOfBusiness);
+      this.operationForm.get('note')?.patchValue(result.note);
+      this.operationForm.get('amountOfPeople')?.patchValue(result.amountOfPeople);
+      this.operationForm.get('amountOfNights')?.patchValue(result.amountOfNights);
+      this.operationForm.get('amountOfPets')?.patchValue(result.amountOfPets);
+      this.operationForm.get('amountOfYounger')?.patchValue(result.amountOfYounger);
+      this.operationForm.get('arrivingDate')?.patchValue(result.arrivingDate);
+      this.operationForm.get('checkoutDate')?.patchValue(result.checkoutDate);
+      this.operationForm.get('reasonOfStay')?.patchValue(result.reasonOfStay);
+      this.operationForm.get('requirementStatus')?.patchValue(result.requirementStatus);
+      this.operationForm.get('usageProperty')?.patchValue(result.usageProperty);
+      this.operationForm.get('typeOfPerson')?.patchValue(result.typeOfPerson);
+      this.operationForm.get('personEntry')?.patchValue(result.personEntry);
+      this.operationForm.get('personLocation')?.patchValue(result.personLocation);
+      this.operationForm.get('personHeadquarters')?.patchValue(result.personHeadquarters);
+
+      result.zonesOfInterest.forEach(zone => {
+        this.zonesOfInterest.push(this.fb.group({
+          value: [zone, Validators.required]
+        }))
+      })
+
+      result.essentialFeatures.forEach(feature => {
+        this.essentialFeatures.push(this.fb.group({
+          value: [feature, Validators.required]
+        }))
+      })
+
+    })
   }
 
   buildForms() {
@@ -72,8 +115,8 @@ export class CreateComponent implements OnInit{
       amountOfPeople: [null],
       amountOfPets: [null],
       amountOfYounger: [null],
-      arrivingDate: [''],
-      checkoutDate: [''],
+      arrivingDate: [null],
+      checkoutDate: [null],
       amountOfNights: [null],
       reasonOfStay: [''],
       usageProperty: [''],
@@ -155,6 +198,8 @@ export class CreateComponent implements OnInit{
       const data = {...this.generalForm.value, ...this.operationForm.value};
       data.zonesOfInterest = data.zonesOfInterest.map((zone: {value: string}) => zone.value);
       data.essentialFeatures = data.essentialFeatures.map((feature: {value: string}) => feature.value);
+      data.user_id = this.userService.currentUser?.value.id;
+      data.requirementStatus = true;
 
       if (this.isEditing) {
 
@@ -165,6 +210,7 @@ export class CreateComponent implements OnInit{
 
         }, (error) => {
           this.uiService.createMessage('error', error.error.message)
+          this.loading = false;
         }, () => {
           this.loading = false;
         })

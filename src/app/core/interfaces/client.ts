@@ -19,16 +19,18 @@ export interface Client {
   amountOfPeople: null;
   amountOfPets: null;
   amountOfYounger: null;
-  arrivingDate: null;
-  checkoutDate: null;
+  arrivingDate: null | Date;
+  checkoutDate: null | Date;
   amountOfNights: null;
   reasonOfStay: null;
-  usageOfProperty: null;
   typeOfPerson: null;
   personEntry: null;
   personHeadquarters: null;
   personLocation: null;
   createdAt: Date;
+  service: string;
+  referrer: string;
+  usageProperty: string;
 }
 
 export interface GetAllClients {

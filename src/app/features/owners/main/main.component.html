@@ -11,6 +11,7 @@
   (onNewElement)="handleNewOwner()"
 ></app-section-title>
 <app-generic-table #dataTable
+                   [canDelete]="true"
                    [loading]="loading"
                    (onEdit)="handleEdit($event)"
                    (onDelete)="handleDelete($event)"
