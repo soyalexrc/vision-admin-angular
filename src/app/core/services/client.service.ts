@@ -25,8 +25,8 @@ export class ClientService {
 
   }
 
-  findById(id: number) {
-
+  getById(id: number | string): Observable<Client> {
+    return this.http.get<Client>(`client/${id}`);
   }
 
   createOne(data: Client): Observable<CreateEditClientResponse> {

@@ -38,7 +38,7 @@ export class MainComponent implements OnInit, AfterViewInit{
   }
 
   handleEdit(id: number) {
-    this.router.navigate([`/aliados/${id}`])
+    this.router.navigate([`/clientes/editar/${id}`])
   }
 
   handleDelete(id: number) {

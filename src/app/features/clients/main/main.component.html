@@ -13,6 +13,7 @@
 <app-generic-table #dataTable
                    [loading]="loading"
                    (onEdit)="handleEdit($event)"
+                   [canDelete]="true"
                    (onDelete)="handleDelete($event)"
                    [pageIndex]="pageIndex"
                    [totalItems]="totalItems"

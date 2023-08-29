@@ -10,7 +10,7 @@
 
 <div class="form mt-3">
   <div class="content">
-    <nz-steps [nzCurrent]="index">
+    <nz-steps [nzCurrent]="index" (nzIndexChange)="isEditing ? index = $event : null">
       <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
       <nz-step nzTitle="Servicio" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
     </nz-steps>
@@ -177,7 +177,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="aspiredPrice">Precio aspirado</nz-form-label>
               <nz-form-control [nzErrorTip]="aspiredPriceErrTemp">
-                <input type="text" style="width: 100%" nz-input formControlName="aspiredPrice"
+                <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="aspiredPrice"
                        placeholder="Precio aspirado"/>
                 <ng-template #aspiredPriceErrTemp let-control>
                   <ng-container *ngIf="control.hasError('required')">Debes ingresar un precio!</ng-container>
@@ -191,7 +191,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="amountOfPeople">Cantidad de personas a habitar</nz-form-label>
               <nz-form-control [nzErrorTip]="amountOfPeopleErrTemp">
-                <input type="text" style="width: 100%" nz-input formControlName="amountOfPeople"
+                <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="amountOfPeople"
                        placeholder="Cantidad de personas a habitar"/>
                 <ng-template #amountOfPeopleErrTemp let-control>
                   <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
@@ -203,7 +203,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="amountOfYounger">Cantidad de menores de edad</nz-form-label>
               <nz-form-control [nzErrorTip]="amountOfYoungerErrTemp">
-                <input type="text" style="width: 100%" nz-input formControlName="amountOfYounger"
+                <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="amountOfYounger"
                        placeholder="Cantidad de menores de edad"/>
                 <ng-template #amountOfYoungerErrTemp let-control>
                   <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
@@ -215,7 +215,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="amountOfPets">Cantidad de mascotas</nz-form-label>
               <nz-form-control [nzErrorTip]="amountOfPetsErrTemp">
-                <input type="text" style="width: 100%" nz-input formControlName="amountOfPets"
+                <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="amountOfPets"
                        placeholder="Cantidad de mascotas"/>
                 <ng-template #amountOfPetsErrTemp let-control>
                   <ng-container *ngIf="control.hasError('required')">Debes ingresar un valor!</ng-container>
