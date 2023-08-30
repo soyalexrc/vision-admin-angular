@@ -54,6 +54,10 @@
         <span nz-icon nzType="table" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Calculo de comisiones</span>
       </li>
+      <li nz-menu-item nzMatchRouter routerLink="/gestion-de-archivos" *ngIf="validateAccess('gestion-de-archivos')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="file-done" nzTheme="outline" style="margin-right: .5rem"></span>
+        <span style="width: 135px">Gestion de archivos</span>
+      </li>
 
       <li nz-menu-item nzMatchRouter style="position: absolute; bottom: 10px" (click)="logout()">
         <span nz-icon nzType="export" nzTheme="outline" style="margin-right: .5rem"></span>
@@ -152,6 +156,10 @@
         <li nz-menu-item nzMatchRouter routerLink="/calculo-de-comisiones" *ngIf="validateAccess('calculo-de-comisiones')" >
           <span nz-icon nzType="table" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Calculo de comisiones</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/gestion-de-archivos" *ngIf="validateAccess('gestion-de-archivos')" >
+          <span nz-icon nzType="file-done" nzTheme="outline" style="margin-right: .5rem"></span>
+          <span style="width: 135px">Gestion de archivos</span>
         </li>
 
 

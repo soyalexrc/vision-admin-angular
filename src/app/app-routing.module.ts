@@ -70,6 +70,12 @@ const routes: Routes = [
         component: MainLayoutComponent,
         loadChildren: () => import('./features/owners/owners.module').then(m => m.OwnersModule)
       },
+      {
+        path: 'gestion-de-archivos',
+        canActivate: [RoleBasedGuard],
+        component: MainLayoutComponent,
+        loadChildren: () => import('./features/files-management/files-management.module').then(m => m.FilesManagementModule)
+      },
     ]
   },
   {

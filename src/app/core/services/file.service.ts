@@ -9,6 +9,17 @@ interface UploadFileResult {
   secureUrl: string;
 }
 
+export interface FilesResult {
+  file: string;
+  type: FileType;
+}
+
+export interface FolderResult {
+  message: string;
+}
+
+type FileType = 'dir' | 'file'
+
 @Injectable({
   providedIn: 'root'
 })
@@ -117,5 +128,28 @@ export class FileService {
     })
   }
 
+  getElementsByPath(path: string): Observable<FilesResult[]> {
+    const actualPath = !path ? 'root' : path;
+    return this.http.get<FilesResult[]>(`files/getElementsByPath/${actualPath}`);
+  }
+
+  getGenericStaticFile(path: string): Observable<UploadFileResult> {
+    return this.http.post<UploadFileResult>(`files/genericStaticFile`, {path});
+  }
+
+  uploadGenericStaticFile(file: File, path: string): Observable<UploadFileResult> {
+    const data = new FormData();
+
+    data.append('file', file);
+    return this.http.post<UploadFileResult>(`files/uploadGenericStaticFile/${path}`, data);
+  }
+
+  createFolder(path: string): Observable<FolderResult> {
+    return this.http.post<FolderResult>(`files/uploadFolder/${path}`, {});
+  }
+
+  deleteFolderOrFile(path: string): Observable<DeleteResult> {
+    return this.http.delete<DeleteResult>(`files/deleteFolderOrFile/${path}`)
+  }
 
 }
