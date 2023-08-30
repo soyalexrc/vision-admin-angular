@@ -1,0 +1,91 @@
+<div class="files-container">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>
+      <a (click)="goTo('root')">Vision Inmobiliaria</a>
+    </nz-breadcrumb-item>
+    <ng-container *ngFor="let pathFragment of path.split('+')">
+      <nz-breadcrumb-item *ngIf="pathFragment">
+        <a (click)="goTo(pathFragment)">{{pathFragment}}</a>
+      </nz-breadcrumb-item>
+    </ng-container>
+  </nz-breadcrumb>
+
+  <nz-space></nz-space>
+
+  <div nz-row [nzGutter]="16">
+    <div nz-col [nzSpan]="3" *ngFor="let element of elements">
+      <div class="element">
+        <span *ngIf="path" (click)="deleteFolderOrFile(element)" class="delete-icon" nz-icon nzType="delete" nzTheme="fill"></span>
+        <span (click)="handleClickElement(element)" *ngIf="element.type === 'dir' " nz-icon nzType="folder" nzTheme="outline"></span>
+        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isOtherFileType(element.file)" nz-icon nzType="file-unknown"
+              nzTheme="outline"></span>
+        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isDocument(element.file)" nz-icon nzType="file-word"
+              nzTheme="outline"></span>
+        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isSpreadSheet(element.file)" nz-icon nzType="file-excel"
+              nzTheme="outline"></span>
+        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isImage(element.file)" nz-icon nzType="file-image"
+              nzTheme="outline"></span>
+        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && element.file.includes('pdf')" nz-icon nzType="file-pdf"
+              nzTheme="outline"></span>
+        <p (click)="handleClickElement(element)">{{formatFileName(element)}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="fab-elements" *ngIf="path">
+    <button
+      (click)="showCreateNewFolderModal = true"
+      nz-tooltip="Agregar una carpeta"
+      nz-button nzType="primary"
+      nzSize="large"
+      nzShape="circle"
+    >
+      <span nz-icon nzType="folder-add"></span>
+    </button>
+    <button
+      (click)="clickInputFile()"
+      nz-tooltip="Agregar un documento"
+      nz-button nzType="primary"
+      nzSize="large"
+      nzShape="circle">
+      <span nz-icon nzType="file-add"></span>
+    </button>
+  </div>
+
+  <input style="display: none" (change)="handleUploadImage($event)" multiple type="file" #inputFile
+         accept="*">
+
+  <nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item>1st menu item</li>
+      <li nz-menu-item>2nd menu item</li>
+      <li nz-menu-divider></li>
+      <li nz-menu-item nzDisabled>disabled menu item</li>
+      <li nz-submenu nzTitle="sub menu">
+        <ul>
+          <li nz-menu-item>3rd menu item</li>
+          <li nz-menu-item>4th menu item</li>
+        </ul>
+      </li>
+      <li nz-submenu nzDisabled nzTitle="disabled sub menu">
+        <ul>
+          <li nz-menu-item>3rd menu item</li>
+          <li nz-menu-item>4th menu item</li>
+        </ul>
+      </li>
+    </ul>
+  </nz-dropdown-menu>
+
+
+</div>
+
+<nz-modal
+  [(nzVisible)]="showCreateNewFolderModal"
+  nzTitle="Crear nueva carpeta"
+  (nzOnCancel)="handleCancelCreateFolder()"
+  [nzOkDisabled]="folderName.length < 1"
+  (nzOnOk)="handleOkCreateFolder()">
+  <ng-container *nzModalContent>
+    <input nz-input placeholder="Nombre de carpeta" [(ngModel)]="folderName" />
+  </ng-container>
+</nz-modal>

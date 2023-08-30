@@ -2,7 +2,7 @@ import {AfterViewInit, Component, EventEmitter, Input, Output, ViewChild} from '
 import {NzImageService} from "ng-zorro-antd/image";
 import {CdkDrag, CdkDragMove, CdkDropList, CdkDropListGroup, moveItemInArray} from "@angular/cdk/drag-drop";
 import {ViewportRuler} from "@angular/cdk/overlay";
-import {DOCUMENT_EXTENSIONS, IMAGE_EXTENSIONS, SPREADSHEET_EXTENSIONS} from "../../../core/constants/extentions";
+import {isDocument, isImage, isOtherFileType, isSpreadSheet} from "../../../shared/utils/validateFileType";
 
 @Component({
   selector: 'app-draggable-grid',
@@ -24,7 +24,10 @@ export class DraggableGridComponent implements AfterViewInit {
   public sourceIndex!: number;
   public dragIndex!: number;
   public activeContainer: any;
-
+  protected readonly isSpreadSheet = isSpreadSheet;
+  protected readonly isDocument = isDocument;
+  protected readonly isImage = isImage;
+  protected readonly isOtherFileType = isOtherFileType;
 
   constructor(
     private nzImageService: NzImageService,
@@ -133,7 +136,7 @@ showPreview(image: string) {
       height: '600px',
       alt: image
     }]
-    if (img[0].src.includes('pdf') || this.isDocument(image) || this.isSpreadSheet(image) || this.isOtherFileType(image)) {
+    if (img[0].src.includes('pdf') || isDocument(image) || isSpreadSheet(image) || isOtherFileType(image)) {
       window.open(img[0].src, '_blank')
     } else {
       this.nzImageService.preview(img, {nzZoom: 1, nzRotate: 0});
@@ -157,25 +160,5 @@ showPreview(image: string) {
       isInsideDropListClientRect(dropList: CdkDropList, x: number, y: number) {
       const {top, bottom, left, right} = dropList.element.nativeElement.getBoundingClientRect();
       return y >= top && y <= bottom && x >= left && x <= right;
-  }
-
-  isSpreadSheet(file: string) {
-    const fileExtension = file.split('.').pop();
-    return SPREADSHEET_EXTENSIONS.some(extension => extension === fileExtension);
-  }
-
-  isDocument(file: string) {
-    const fileExtension = file.split('.').pop();
-    return DOCUMENT_EXTENSIONS.some(extension => extension === fileExtension);
-  }
-
-  isImage(file: string) {
-    const fileExtension = file.split('.').pop();
-    return IMAGE_EXTENSIONS.some(extension => extension === fileExtension);
-  }
-
-
-  isOtherFileType(file: string) {
-    return (!this.isDocument(file) && !this.isSpreadSheet(file) && !this.isImage(file) && !file.includes('pdf'))
   }
 }
