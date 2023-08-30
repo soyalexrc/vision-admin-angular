@@ -135,7 +135,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   handleOkCreateFolder() {
-    const path = `${this.path.substring(1)}+${this.folderName}`
+    const path = `${this.path.substring(1)}+${this.folderName.replaceAll(' ', '-')}`
     this.fileService.createFolder(path).subscribe(result => {
       this.folderName = ''
       this.showCreateNewFolderModal = false;
