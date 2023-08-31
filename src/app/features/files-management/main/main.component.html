@@ -13,7 +13,7 @@
   <nz-space></nz-space>
 
   <div nz-row [nzGutter]="16">
-    <div nz-col [nzSpan]="3" *ngFor="let element of elements">
+    <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="4" nzXl="3" *ngFor="let element of elements">
       <div class="element">
         <span *ngIf="path" (click)="deleteFolderOrFile(element)" class="delete-icon" nz-icon nzType="delete" nzTheme="fill"></span>
         <span (click)="handleClickElement(element)" *ngIf="element.type === 'dir' " nz-icon nzType="folder" nzTheme="outline"></span>

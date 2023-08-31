@@ -1,12 +1,11 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UiService} from "../../../core/services/ui.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, NavigationStart, Router, RouterEvent} from "@angular/router";
 import {PropertyService} from "../../../core/services/property.service";
-import {v4 as uuidv4} from 'uuid';
 import {FileService} from "../../../core/services/file.service";
 import {PropertyFull, PropertyType} from "../../../core/interfaces/property";
-import {Subscription} from "rxjs";
+import {filter, Subscription} from "rxjs";
 import {Ally} from "../../../core/interfaces/ally";
 import {AllyService} from "../../../core/services/ally.service";
 import {Owner} from "../../../core/interfaces/owner";
@@ -45,6 +44,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   id: any;
   index = 0;
   imagesSubscription = new Subscription();
+  routerSubscription = new Subscription();
   documentsSubscription = new Subscription();
   images: string[] = [];
   documents: string[] = [];
@@ -63,11 +63,6 @@ export class CreateComponent implements OnInit, OnDestroy {
   @ViewChild('documentInputFile') documentInputFile!: ElementRef<HTMLInputElement>
   visitedImages = false;
 
-  @HostListener('window:popstate', ['$event'])
-  onPopState(event: any) {
-    this.saveTemporalChanges()
-  }
-
   constructor(
     private fb: FormBuilder,
     private propertyService: PropertyService,
@@ -84,6 +79,11 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.routerSubscription = this.router.events
+      .pipe(filter((event: RouterEvent | any) => event instanceof NavigationStart))
+      .subscribe((event: NavigationStart) => {
+        this.saveTemporalChanges()
+      });
     this.documentsSubscription = this.fileService.currentDocuments.subscribe(documents => {
       this.documents = documents;
     })
@@ -130,6 +130,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.fileService.cleanFiles();
     this.imagesSubscription.unsubscribe();
     this.documentsSubscription.unsubscribe();
+    this.routerSubscription.unsubscribe();
   }
 
   private buildForms() {
@@ -487,7 +488,6 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
 
 
-    // There are errors
 
     if (this.generalForm.dirty && this.generalForm.invalid) steps.first = 'error'
     if (this.locationForm.dirty && this.locationForm.invalid) steps.second = 'error'
@@ -726,6 +726,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       attributes: this.attributes.value
     };
     if (!this.isEditing && (this.generalForm.touched || this.locationForm.touched || this.negotiationForm.touched || this.publicationSourceForm.touched || this.attributesForm.touched)) {
+      console.log('here');
       localStorage.setItem('property_create_temporal', JSON.stringify(data));
     }
   }
