@@ -6,6 +6,7 @@ import {Router} from "@angular/router";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {Login} from "../interfaces/login";
 import {locale} from "moment/moment";
+import {DeleteResult} from "../interfaces/generics";
 
 
 @Injectable({
@@ -34,6 +35,10 @@ export class AuthService {
 
   login(email: string, password: string, remember: boolean): Observable<Login> {
     return this.http.post<Login>('auth/login', {email, password})
+  }
+
+  forgotPassword(email: string,): Observable<DeleteResult> {
+    return this.http.post<DeleteResult>('auth/forgotPassword', {email})
   }
   logout(){
     this.router.navigate(['/']);

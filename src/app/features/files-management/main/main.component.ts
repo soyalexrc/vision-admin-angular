@@ -4,6 +4,7 @@ import {isDocument, isImage, isOtherFileType, isSpreadSheet} from "../../../shar
 import {NzImageService} from "ng-zorro-antd/image";
 import {UiService} from "../../../core/services/ui.service";
 import {NzModalService} from "ng-zorro-antd/modal";
+import {UserService} from "../../../core/services/user.service";
 
 @Component({
   selector: 'app-main',
@@ -28,7 +29,8 @@ export class MainComponent implements OnInit, OnDestroy {
     private fileService: FileService,
     private nzImageService: NzImageService,
     private uiService: UiService,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private userService: UserService,
   ) {
   }
 
@@ -47,7 +49,11 @@ export class MainComponent implements OnInit, OnDestroy {
 
   handleClickElement(element: FilesResult) {
     if (element.type === 'dir') {
-      this.path += `+${element.file}`
+      this.path += `+${element.file}`;
+
+      if (this.path.charAt(0) === '+') {
+        this.path = this.path.substring(1);
+      }
       this.getElementsByPath();
     } else {
       const path = `${this.path}+${element.file}`.substring(1)
@@ -69,6 +75,9 @@ export class MainComponent implements OnInit, OnDestroy {
     } else {
       const newPath = this.path.split(pathFragment)[0];
       this.path = `${newPath}+${pathFragment}`;
+      if (this.path.charAt(0) === '+') {
+        this.path = this.path.substring(1);
+      }
       this.getElementsByPath();
     }
 
@@ -162,5 +171,13 @@ export class MainComponent implements OnInit, OnDestroy {
         })
       })
     });
+  }
+
+  checkIfCanDelete() {
+    return this.userService.onlyIfIsAdmin();
+  }
+
+  safeLevelForDelete() {
+    return this.path.split('+').length > 1;
   }
 }

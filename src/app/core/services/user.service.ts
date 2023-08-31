@@ -61,4 +61,8 @@ export class UserService {
   checkAllowedRouteByUserRole(route: string) {
     return this.currentUser.value?.allowedRoutes?.some(r => r === route)
   }
+
+  onlyIfIsAdmin() {
+    return this.currentUser.value?.userType === 'Administrador';
+  }
 }

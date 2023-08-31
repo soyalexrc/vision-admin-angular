@@ -183,6 +183,10 @@ export interface PropertyStatusResponse {
   count: number;
 }
 
+export interface PropertyAutomaticCodeResponse {
+  code: string;
+}
+
 export interface PropertyHistoryElement {
   id?: number;
   username: string;

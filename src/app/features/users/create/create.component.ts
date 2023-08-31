@@ -83,6 +83,7 @@ export class CreateComponent implements OnInit {
       const data = {...this.generalForm.value, ...this.socialForm.value, ...this.personalForm.value};
       data.birthDate = moment(data.birthday).format('YYYY-MM-DD');
       data.userCommission = data.userLevel === 'Asesor Diamante' ? 80 : data.userLevel === 'Asesor Estrella' ? 70 : data.userLevel === 'Asesor Destacado' ? 60 : data.userLevel === 'Asesor Emprendedor' ? 50 : 0;
+      data.userLevel = this.generalForm.get('userLevel')?.value || '';
       if (this.isEditing) {
         this.userService.update(data).subscribe(result => {
           this.uiService.createMessage('success', result.message)
@@ -123,6 +124,7 @@ export class CreateComponent implements OnInit {
       this.generalForm.get('mainPhone')?.patchValue(result.mainPhone)
       this.generalForm.get('secondaryPhone')?.patchValue(result.secondaryPhone)
       this.generalForm.get('userType')?.patchValue(result.userType)
+      this.generalForm.get('userLevel')?.patchValue(result.userLevel)
       this.generalForm.get('isActive')?.patchValue(result.isActive)
       this.personalForm.get('birthDate')?.patchValue(result.birthDate)
       this.personalForm.get('profession')?.patchValue(result.profession)

@@ -1,12 +1,11 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UiService} from "../../../core/services/ui.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, NavigationStart, Router, RouterEvent} from "@angular/router";
 import {PropertyService} from "../../../core/services/property.service";
-import {v4 as uuidv4} from 'uuid';
 import {FileService} from "../../../core/services/file.service";
 import {PropertyFull, PropertyType} from "../../../core/interfaces/property";
-import {Subscription} from "rxjs";
+import {filter, Subscription} from "rxjs";
 import {Ally} from "../../../core/interfaces/ally";
 import {AllyService} from "../../../core/services/ally.service";
 import {Owner} from "../../../core/interfaces/owner";
@@ -25,6 +24,8 @@ interface Steps {
   sixth: string,
   last: string
 }
+
+type TypeOptions = 'imagenes' | 'documentos'
 
 @Component({
   selector: 'app-create',
@@ -45,6 +46,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   id: any;
   index = 0;
   imagesSubscription = new Subscription();
+  routerSubscription = new Subscription();
   documentsSubscription = new Subscription();
   images: string[] = [];
   documents: string[] = [];
@@ -62,11 +64,6 @@ export class CreateComponent implements OnInit, OnDestroy {
   @ViewChild('imageInputFile') imageInputFile!: ElementRef<HTMLInputElement>
   @ViewChild('documentInputFile') documentInputFile!: ElementRef<HTMLInputElement>
   visitedImages = false;
-
-  @HostListener('window:popstate', ['$event'])
-  onPopState(event: any) {
-    this.saveTemporalChanges()
-  }
 
   constructor(
     private fb: FormBuilder,
@@ -101,9 +98,15 @@ export class CreateComponent implements OnInit, OnDestroy {
     if (!this.router.url.includes('crear')) {
       this.isEditing = true;
       this.id = this.route.snapshot.paramMap.get('id')!;
-      this.getUserById(this.id)
+      this.getPropertyById(this.id)
       this.firstRender = true;
     } else {
+      this.routerSubscription = this.router.events
+        .pipe(filter((event: RouterEvent | any) => event instanceof NavigationStart))
+        .subscribe((event: NavigationStart) => {
+          this.saveTemporalChanges()
+        });
+      this.getAutomaticPropertyCode();
       if (localStorage.getItem('property_create_temporal')) {
         this.modal.confirm({
           nzClosable: false,
@@ -130,6 +133,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.fileService.cleanFiles();
     this.imagesSubscription.unsubscribe();
     this.documentsSubscription.unsubscribe();
+    this.routerSubscription.unsubscribe();
   }
 
   private buildForms() {
@@ -143,7 +147,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     })
 
     this.generalForm = this.fb.group({
-      code: ['', Validators.required],
+      code: [{value: '', disabled: true}],
       description: ['', Validators.required],
       distributionComments: [''],
       footageBuilding: [''],
@@ -215,7 +219,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.loading = true;
       const data = {
         id: this.id,
-        generalInformation: this.generalForm.value,
+        generalInformation: {...this.generalForm.value, code: this.generalForm.get('code')?.value},
         locationInformation: this.locationForm.value,
         negotiationInformation: this.negotiationForm.value,
         images: this.images,
@@ -253,7 +257,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
 
-  getUserById(id: string) {
+  getPropertyById(id: string) {
     this.propertyService.getById(id).subscribe(result => {
       this.generalForm.get('code')?.patchValue(result.generalInformation.code);
       this.generalForm.get('nomenclature')?.patchValue(result.generalInformation.nomenclature);
@@ -323,7 +327,6 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.publicationSourceForm.get('tiktok')?.patchValue(result.publicationSource.tiktok)
       this.publicationSourceForm.get('mercadolibre')?.patchValue(result.publicationSource.mercadolibre)
       this.publicationSourceForm.get('whatsapp')?.patchValue(result.publicationSource.whatsapp)
-
     })
   }
 
@@ -398,6 +401,8 @@ export class CreateComponent implements OnInit, OnDestroy {
         value: [attr.value],
       }))
     })
+
+    this.getAutomaticPropertyCode();
 
   }
 
@@ -487,7 +492,6 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
 
 
-    // There are errors
 
     if (this.generalForm.dirty && this.generalForm.invalid) steps.first = 'error'
     if (this.locationForm.dirty && this.locationForm.invalid) steps.second = 'error'
@@ -524,7 +528,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     return this.attributesForm.controls["attributes"] as FormArray;
   }
 
-  async handleUploadImage(event: any) {
+  async handleUploadFile(event: any, type: TypeOptions) {
     this.loadingImage = true;
 
     const {files} = event.target;
@@ -535,8 +539,13 @@ export class CreateComponent implements OnInit, OnDestroy {
           const reader = new FileReader();
           reader.readAsDataURL(files[i]);
           reader.onload = async () => {
-            this.fileService.uploadPropertyImage(files[i], this.generalForm.get('code')?.value).subscribe(result => {
-                this.fileService.storeImage(result.secureUrl)
+            const path = `servicio-inmobiliario+propiedades+${this.generalForm.get('code')?.value}+${type}`
+            this.fileService.uploadGenericStaticFile(files[i], path).subscribe(result => {
+                if (type === 'imagenes') {
+                  this.fileService.storeImage(result.secureUrl)
+                } else {
+                  this.fileService.storeDocument(result.secureUrl)
+                }
               },
               () => {
                 this.loadingImage = false;
@@ -556,37 +565,6 @@ export class CreateComponent implements OnInit, OnDestroy {
     await forLoop();
   }
 
-  async handleUploadFile(event: any) {
-    this.loadingImage = true;
-
-    const {files} = event.target;
-
-    const forLoop = async () => {
-      for (let i = 0; i < files.length; i++) {
-        try {
-          const reader = new FileReader();
-          reader.readAsDataURL(files[i]);
-          reader.onload = async () => {
-            this.fileService.uploadPropertyFile(files[i], this.generalForm.get('code')?.value).subscribe(result => {
-                this.fileService.storeDocument(result.secureUrl)
-              },
-              () => {
-                this.loadingImage = false;
-                this.uiService.createMessage('error', 'No se logro subir la imagen, ocurrio un error. Intenalo de nuevo')
-              },
-              () => {
-                if (i === files.length - 1) {
-                  this.loadingImage = false;
-                }
-              }
-            )
-          }
-        } catch (e) {
-        }
-      }
-    }
-    await forLoop();
-  }
 
   handleDeleteImage(image: string, type: string) {
     if (type === 'image') {
@@ -726,6 +704,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       attributes: this.attributes.value
     };
     if (!this.isEditing && (this.generalForm.touched || this.locationForm.touched || this.negotiationForm.touched || this.publicationSourceForm.touched || this.attributesForm.touched)) {
+      console.log('here');
       localStorage.setItem('property_create_temporal', JSON.stringify(data));
     }
   }
@@ -734,5 +713,13 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.fileService.deleteTemporalImages();
     this.fileService.deleteTemporalFiles();
     localStorage.removeItem('property_create_temporal')
+  }
+
+  private getAutomaticPropertyCode() {
+    this.propertyService.getAutomaticPropertyCode().subscribe(result => {
+      this.generalForm.get('code')?.patchValue(result.code);
+    }, (error) => {
+      this.uiService.createMessage('error', error.error.message);
+    }, () => {})
   }
 }

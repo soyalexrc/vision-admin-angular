@@ -9,7 +9,11 @@ import {
   PropertyStatusItem,
   PropertyReview,
   GetAllPreviews,
-  PropertyFull, CreateEditPropertyResponse, PropertyStatusResponse, PropertyHistoryElement
+  PropertyFull,
+  CreateEditPropertyResponse,
+  PropertyStatusResponse,
+  PropertyHistoryElement,
+  PropertyAutomaticCodeResponse
 } from "../interfaces/property";
 import {DeleteResult} from "../interfaces/generics";
 
@@ -77,5 +81,9 @@ export class PropertyService {
 
   getPropertyStatusHistory(id: string | number) : Observable<PropertyStatusResponse> {
     return this.http.get<PropertyStatusResponse>(`property/propertyStatus/${id}`)
+  }
+
+  getAutomaticPropertyCode(): Observable<PropertyAutomaticCodeResponse> {
+    return this.http.get<PropertyAutomaticCodeResponse>('property/getAutomaticCode');
   }
 }
