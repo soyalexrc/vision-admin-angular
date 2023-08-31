@@ -24,6 +24,7 @@ export class MainComponent implements OnInit, OnDestroy {
   @ViewChild('inputFile') inputFile!: ElementRef<HTMLInputElement>
   loading = false;
   folderName = '';
+  loadingFiles = false;
 
   constructor(
     private fileService: FileService,
@@ -42,8 +43,14 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   getElementsByPath() {
+    this.loadingFiles = true;
     this.fileService.getElementsByPath(this.path).subscribe(result => {
       this.elements = result;
+    }, (error) => {
+      this.loadingFiles = false;
+      this.uiService.createMessage('error', error.error.message)
+    }, () => {
+      this.loadingFiles = false;
     })
   }
 
