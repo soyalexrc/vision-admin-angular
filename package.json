@@ -9,7 +9,9 @@
     "build:dev": "ng build --configuration=development",
     "build:prod": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "docker:build": "docker build --platform linux/amd64 -t pruebacontainerluighi2693/vision-admin-angular-frontend:latest .",
+    "docker:push": "docker push pruebacontainerluighi2693/vision-admin-angular-frontend:latest"
   },
   "private": true,
   "dependencies": {

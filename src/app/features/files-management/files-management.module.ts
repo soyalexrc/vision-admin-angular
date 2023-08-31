@@ -12,6 +12,7 @@ import {NzDropDownModule} from "ng-zorro-antd/dropdown";
 import {NzModalModule} from "ng-zorro-antd/modal";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {FormsModule} from "@angular/forms";
+import {NzSpinModule} from "ng-zorro-antd/spin";
 
 
 
@@ -19,19 +20,20 @@ import {FormsModule} from "@angular/forms";
   declarations: [
     MainComponent
   ],
-  imports: [
-    CommonModule,
-    FilesManagementRoutingModule,
-    NzGridModule,
-    NzIconModule,
-    NzBreadCrumbModule,
-    NzSpaceModule,
-    NzButtonModule,
-    NzToolTipModule,
-    NzDropDownModule,
-    NzModalModule,
-    NzInputModule,
-    FormsModule
-  ]
+    imports: [
+        CommonModule,
+        FilesManagementRoutingModule,
+        NzGridModule,
+        NzIconModule,
+        NzBreadCrumbModule,
+        NzSpaceModule,
+        NzButtonModule,
+        NzToolTipModule,
+        NzDropDownModule,
+        NzModalModule,
+        NzInputModule,
+        FormsModule,
+        NzSpinModule
+    ]
 })
 export class FilesManagementModule { }
