@@ -151,7 +151,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   handleOkCreateFolder() {
-    const path = `${this.path.substring(1)}+${this.folderName.replaceAll(' ', '-')}`
+    const path = `${this.path}+${this.folderName.replaceAll(' ', '-')}`
     this.fileService.createFolder(path).subscribe(result => {
       this.folderName = ''
       this.showCreateNewFolderModal = false;
@@ -162,7 +162,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   deleteFolderOrFile(element: FilesResult) {
     const message = element.type === 'dir' ? 'la carpeta, y todos los documentos dentro de ella' : 'el documento'
-    const path = `${this.path.substring(1)}+${element.file}`
+    const path = `${this.path}+${element.file}`
     this.modal.confirm({
       nzTitle: 'Atencion',
       nzContent: `Se eliminara ${message}, quieres continuar?`,
