@@ -40,6 +40,11 @@ export class AuthService {
   forgotPassword(email: string,): Observable<DeleteResult> {
     return this.http.post<DeleteResult>('auth/forgotPassword', {email})
   }
+
+  recoverPassword(email: string, password: string, code: string): Observable<DeleteResult> {
+    return this.http.post<DeleteResult>('auth/recoverPassword', {email, password, code})
+  }
+
   logout(){
     this.router.navigate(['/']);
     localStorage.removeItem('vi-token');
