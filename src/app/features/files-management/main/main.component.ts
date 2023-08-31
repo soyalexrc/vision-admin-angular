@@ -55,6 +55,8 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   handleClickElement(element: FilesResult) {
+    console.log(this.path)
+    console.log(element);
     if (element.type === 'dir') {
       this.path += `+${element.file}`;
 
@@ -63,9 +65,10 @@ export class MainComponent implements OnInit, OnDestroy {
       }
       this.getElementsByPath();
     } else {
-      const path = `${this.path}+${element.file}`.substring(1)
+      const path = `${this.path}+${element.file}`
 
       this.fileService.getGenericStaticFile(path).subscribe(result => {
+        console.log(result);
         if (isImage(element.file)) {
           this.showPreview(result.secureUrl);
         } else {
