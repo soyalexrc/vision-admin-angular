@@ -17,12 +17,15 @@
         />
       </nz-input-group>
 
-      <label style="margin-bottom: 1rem" nz-checkbox (nzCheckedChange)="handleRememberChange($event)" [(ngModel)]="remember">Recuerdame</label>
+      <div class="external-actions">
+        <label style="margin-bottom: 1rem" nz-checkbox (nzCheckedChange)="handleRememberChange($event)" [(ngModel)]="remember">Recuerdame</label>
+        <a nz-button routerLink="/autenticacion/recuperar-acceso" nzSize="small" nzType="link">Olvidaste tu contrasena?</a>
+      </div>
       <br>
 
       <div class="login-button-container">
-        <button class="login-button" nz-button nzType="primary" nzSize="large" (click)="login()">
-          Ingresar
+        <button class="login-button" nz-button nzType="primary" nzSize="large" (click)="login()" [nzLoading]="loading">
+          {{loading ? 'Ingresando...' : 'Ingresar'}}
         </button>
       </div>
 

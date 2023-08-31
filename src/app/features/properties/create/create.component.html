@@ -36,13 +36,10 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="7">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="code">codigo</nz-form-label>
-            <nz-form-control [nzErrorTip]="codeErrTemp">
+            <nz-form-label nzFor="code">codigo</nz-form-label>
+            <nz-form-control>
               <input type="text" style="width: 100%" nz-input formControlName="code"
                      placeholder="codigo"/>
-              <ng-template #codeErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar un codigo!</ng-container>
-              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -418,7 +415,7 @@
           </ng-template>
         </nz-empty>
       </div>
-      <input style="display: none" (change)="handleUploadImage($event)" multiple type="file" #imageInputFile
+      <input style="display: none" (change)="handleUploadFile($event, 'imagenes')" multiple type="file" #imageInputFile
              accept="image/*">
 
       <app-draggable-grid
@@ -726,7 +723,7 @@
           </ng-template>
         </nz-empty>
       </div>
-      <input style="display: none" (change)="handleUploadFile($event)" multiple type="file" #documentInputFile
+      <input style="display: none" (change)="handleUploadFile($event, 'documentos')" multiple type="file" #documentInputFile
              accept="/*">
 
 

@@ -15,17 +15,17 @@
   <div nz-row [nzGutter]="16">
     <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="4" nzXl="3" *ngFor="let element of elements">
       <div class="element">
-        <span *ngIf="path" (click)="deleteFolderOrFile(element)" class="delete-icon" nz-icon nzType="delete" nzTheme="fill"></span>
+        <span *ngIf="path && checkIfCanDelete() && safeLevelForDelete()" (click)="deleteFolderOrFile(element)" class="delete-icon" nz-icon nzType="delete" nzTheme="fill"></span>
         <span (click)="handleClickElement(element)" *ngIf="element.type === 'dir' " nz-icon nzType="folder" nzTheme="outline"></span>
-        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isOtherFileType(element.file)" nz-icon nzType="file-unknown"
+        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isOtherFileType(element.file)" nz-tooltip="Tipo de archivo poco comun" nz-icon nzType="file-unknown"
               nzTheme="outline"></span>
-        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isDocument(element.file)" nz-icon nzType="file-word"
+        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isDocument(element.file)" nz-tooltip="Tipo de archivo de texto" nz-icon nzType="file-word"
               nzTheme="outline"></span>
-        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isSpreadSheet(element.file)" nz-icon nzType="file-excel"
+        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isSpreadSheet(element.file)" nz-tooltip="Tipo de archivo de hoja de calculo" nz-icon nzType="file-excel"
               nzTheme="outline"></span>
-        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isImage(element.file)" nz-icon nzType="file-image"
+        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isImage(element.file)" nz-tooltip="Tipo de archivo de imagen" nz-icon nzType="file-image"
               nzTheme="outline"></span>
-        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && element.file.includes('pdf')" nz-icon nzType="file-pdf"
+        <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && element.file.includes('pdf')" nz-tooltip="Tipo de archivo PDF" nz-icon nzType="file-pdf"
               nzTheme="outline"></span>
         <p (click)="handleClickElement(element)">{{formatFileName(element)}}</p>
       </div>
@@ -54,27 +54,6 @@
 
   <input style="display: none" (change)="handleUploadImage($event)" multiple type="file" #inputFile
          accept="*">
-
-  <nz-dropdown-menu #menu="nzDropdownMenu">
-    <ul nz-menu>
-      <li nz-menu-item>1st menu item</li>
-      <li nz-menu-item>2nd menu item</li>
-      <li nz-menu-divider></li>
-      <li nz-menu-item nzDisabled>disabled menu item</li>
-      <li nz-submenu nzTitle="sub menu">
-        <ul>
-          <li nz-menu-item>3rd menu item</li>
-          <li nz-menu-item>4th menu item</li>
-        </ul>
-      </li>
-      <li nz-submenu nzDisabled nzTitle="disabled sub menu">
-        <ul>
-          <li nz-menu-item>3rd menu item</li>
-          <li nz-menu-item>4th menu item</li>
-        </ul>
-      </li>
-    </ul>
-  </nz-dropdown-menu>
 
 
 </div>

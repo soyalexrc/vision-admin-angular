@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   password: any;
   email: any;
   remember= false
+  loading = false;
 
   constructor(
     private router: Router,
@@ -40,15 +41,22 @@ export class LoginComponent implements OnInit {
       this.uiService.createMessage('error', 'ingresa una contrasena')
       return;
     }
+    this.loading = true;
 
     this.auth.login(this.email, this.password, this.remember).subscribe(data => {
+      if (this.remember) {
+        this.handleRememberChange(true);
+      }
       this.userService.updateCurrentUser(data.userData as Partial<User>, data.token);
       this.router.navigate(['/'])
       this.uiService.createMessage('success', `Bienvenid@, ${this.email}`)
 
     }, (error) => {
       if (error.status !== 403)
+        this.loading = false;
       this.uiService.createMessage('error', error.error.message)
+    }, () => {
+      this.loading = false;
     })
   }
 
