@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FileService, FilesResult} from "../../../core/services/file.service";
+import {DeleteRequest, FileService, FilesResult} from "../../../core/services/file.service";
 import {isDocument, isImage, isOtherFileType, isSpreadSheet} from "../../../shared/utils/validateFileType";
 import {NzImageService} from "ng-zorro-antd/image";
 import {UiService} from "../../../core/services/ui.service";
@@ -24,7 +24,11 @@ export class MainComponent implements OnInit, OnDestroy {
   @ViewChild('inputFile') inputFile!: ElementRef<HTMLInputElement>
   loading = false;
   folderName = '';
+  folderNameModalTitle = '';
   loadingFiles = false;
+  currentElementToEdit: FilesResult = {file: '', type: null};
+  deleteRequests: DeleteRequest[] = [];
+  deleteRequestsAmount = 0;
 
   constructor(
     private fileService: FileService,
@@ -37,6 +41,9 @@ export class MainComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getElementsByPath();
+    if (this.checkIfCanDelete()) {
+      this.getDeleteRequests();
+    }
   }
 
   ngOnDestroy() {
@@ -63,7 +70,7 @@ export class MainComponent implements OnInit, OnDestroy {
       }
       this.getElementsByPath();
     } else {
-      const path = `${this.path}+${element.file}`.substring(1)
+      const path = `${this.path}+${element.file}`
 
       this.fileService.getGenericStaticFile(path).subscribe(result => {
         if (isImage(element.file)) {
@@ -103,9 +110,9 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   formatFileName(filename: FilesResult) {
-    const filenameFormatted = filename.file.replaceAll('-', ' ');
-    if (filename.type === 'dir') return filenameFormatted;
-    return filenameFormatted.substring(0, 30).concat('...').concat(filename.file.split('.')[1])
+    // const filenameFormatted = filename.file.replaceAll('-', ' ');
+    if (filename.type === 'dir') return filename.file;
+    return filename.file.substring(0, 30).concat('...').concat(filename.file.split('.')[1])
   }
 
   clickInputFile() {
@@ -146,36 +153,71 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   handleCancelCreateFolder() {
+    this.currentElementToEdit = {file: '', type: null};
     this.showCreateNewFolderModal = false;
     this.folderName = ''
   }
 
   handleOkCreateFolder() {
-    const path = `${this.path.substring(1)}+${this.folderName.replaceAll(' ', '-')}`
-    this.fileService.createFolder(path).subscribe(result => {
-      this.folderName = ''
-      this.showCreateNewFolderModal = false;
-      this.uiService.createMessage('success', result.message);
-      this.getElementsByPath();
-    })
+    let path = `${this.path}+${this.currentElementToEdit.file.replaceAll(' ', '-')}`
+    if (this.currentElementToEdit.type !== null) {
+
+      const fileExtension = this.currentElementToEdit.file.split('-VINM')[1];
+      const newNameFile = `${this.path}+${this.folderName.concat('-VINM').concat(fileExtension).replaceAll(' ', '-')}`;
+      const newNameDir = `${this.path}+${this.folderName.replaceAll(' ', '-')}`;
+      if (this.currentElementToEdit.type === 'dir') {
+        this.fileService.changeName(path, newNameDir, false).subscribe(result => {
+          this.folderName = '';
+          this.currentElementToEdit = {file: '', type: null};
+          this.showCreateNewFolderModal = false;
+          this.uiService.createMessage('success', result.message);
+          this.getElementsByPath();
+        })
+      } else {
+        this.fileService.changeName(path, newNameFile, true).subscribe(result => {
+          this.folderName = '';
+          this.currentElementToEdit = {file: '', type: null};
+          this.showCreateNewFolderModal = false;
+          this.uiService.createMessage('success', result.message);
+          this.getElementsByPath();
+        })
+      }
+    } else {
+      this.fileService.createFolder(path).subscribe(result => {
+        this.folderName = '';
+        this.showCreateNewFolderModal = false;
+        this.uiService.createMessage('success', result.message);
+        this.getElementsByPath();
+      })
+    }
   }
 
   deleteFolderOrFile(element: FilesResult) {
     const message = element.type === 'dir' ? 'la carpeta, y todos los documentos dentro de ella' : 'el documento'
-    const path = `${this.path.substring(1)}+${element.file}`
+    const path = `${this.path}+${element.file}`
     this.modal.confirm({
       nzTitle: 'Atencion',
       nzContent: `Se eliminara ${message}, quieres continuar?`,
       nzCancelText: 'Cancelar',
       nzOkText: 'Aceptar',
       nzOnOk: () => new Promise((resolve, reject) => {
-        this.fileService.deleteFolderOrFile(path).subscribe(result => {
-          this.uiService.createMessage('success', result.message)
-          this.getElementsByPath()
-          setTimeout(() => resolve(), 500);
-        }, (error) => {
-          this.uiService.createMessage('error', error.error.message);
-        })
+        if (this.checkIfCanDelete()) {
+          this.fileService.deleteFolderOrFile(path).subscribe(result => {
+            this.uiService.createMessage('success', result.message)
+            this.getElementsByPath()
+            setTimeout(() => resolve(), 500);
+          }, (error) => {
+            this.uiService.createMessage('error', error.error.message);
+          })
+        } else {
+          this.fileService.requestDelete(path, this.userService.currentUser.value.id!).subscribe(result => {
+            this.uiService.createMessage('success', result.message)
+            this.getElementsByPath()
+            setTimeout(() => resolve(), 500);
+          }, (error) => {
+            this.uiService.createMessage('error', error.error.message);
+          })
+        }
       })
     });
   }
@@ -185,6 +227,35 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   safeLevelForDelete() {
-    return this.path.split('+').length > 1;
+    const isAdmin = this.checkIfCanDelete();
+    return this.path.split('+').length > (isAdmin ? 0 : 1);
+  }
+
+  handleCreateOrEditName(file?: FilesResult) {
+    this.showCreateNewFolderModal = true;
+    if (file) {
+      this.folderName = file.file.split('-VINM')[0];
+      this.currentElementToEdit = file;
+      if (file.type === 'dir') {
+        this.folderNameModalTitle = 'Cambiar nombre de carpeta'
+      } else {
+        this.folderNameModalTitle = 'Cambiar nombre de archivo'
+      }
+    } else {
+      this.folderNameModalTitle = 'Crear nueva carpeta'
+    }
+
+  }
+
+  getDeleteRequests() {
+    this.fileService.getDeleteFileRequests().subscribe(result => {
+      this.deleteRequests = result.rows;
+      this.deleteRequestsAmount = result.count;
+      if (result.count > 0) {
+        this.uiService.createMessage('info', `Tienes ${result.count} solicitudes de eliminacion pendientes!`);
+      }
+    }, (error) => {
+        this.uiService.createMessage('error', error.error.message )
+    }, () => {})
   }
 }

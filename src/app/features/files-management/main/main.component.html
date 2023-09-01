@@ -16,7 +16,8 @@
   <div nz-row [nzGutter]="16">
     <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="4" nzXl="3" *ngFor="let element of elements">
       <div class="element">
-        <span *ngIf="path && checkIfCanDelete() && safeLevelForDelete()" (click)="deleteFolderOrFile(element)" class="delete-icon" nz-icon nzType="delete" nzTheme="fill"></span>
+        <span *ngIf="path && safeLevelForDelete()" (click)="deleteFolderOrFile(element)" class="delete-icon" nz-tooltip="Eliminar" nz-icon nzType="delete" nzTheme="fill"></span>
+        <span *ngIf="path && safeLevelForDelete()" (click)="handleCreateOrEditName(element)" class="edit-icon" nz-tooltip="Cambiar nombre" nz-icon nzType="edit" nzTheme="fill"></span>
         <span (click)="handleClickElement(element)" *ngIf="element.type === 'dir' " nz-icon nzType="folder" nzTheme="outline"></span>
         <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isOtherFileType(element.file)" nz-tooltip="Tipo de archivo poco comun" nz-icon nzType="file-unknown"
               nzTheme="outline"></span>
@@ -33,9 +34,10 @@
     </div>
   </div>
 
-  <div class="fab-elements" *ngIf="path">
+  <div class="fab-elements" >
     <button
-      (click)="showCreateNewFolderModal = true"
+      *ngIf="path"
+      (click)="handleCreateOrEditName()"
       nz-tooltip="Agregar una carpeta"
       nz-button nzType="primary"
       nzSize="large"
@@ -44,6 +46,7 @@
       <span nz-icon nzType="folder-add"></span>
     </button>
     <button
+      *ngIf="path"
       (click)="clickInputFile()"
       nz-tooltip="Agregar un documento"
       nz-button nzType="primary"
@@ -51,6 +54,17 @@
       nzShape="circle">
       <span nz-icon nzType="file-add"></span>
     </button>
+    <nz-badge [nzCount]="deleteRequestsAmount" [nzOverflowCount]="99" [nzOffset]="[-10, 0]">
+    <button
+      *ngIf="checkIfCanDelete()"
+      routerLink="/gestion-de-archivos/solicitudes-de-eliminacion"
+      nz-tooltip="Solicitudes de eliminacion"
+      nz-button nzType="primary"
+      nzSize="large"
+      nzShape="circle">
+      <span nz-icon nzType="bell"></span>
+    </button>
+    </nz-badge>
   </div>
 
   <input style="display: none" (change)="handleUploadImage($event)" multiple type="file" #inputFile
@@ -62,7 +76,7 @@
 
 <nz-modal
   [(nzVisible)]="showCreateNewFolderModal"
-  nzTitle="Crear nueva carpeta"
+  [nzTitle]="folderNameModalTitle"
   (nzOnCancel)="handleCancelCreateFolder()"
   [nzOkDisabled]="folderName.length < 1"
   (nzOnOk)="handleOkCreateFolder()">
