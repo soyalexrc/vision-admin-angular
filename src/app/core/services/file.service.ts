@@ -11,11 +11,24 @@ interface UploadFileResult {
 
 export interface FilesResult {
   file: string;
-  type: FileType;
+  type: FileType | null;
 }
 
 export interface FolderResult {
   message: string;
+}
+
+export interface GetDeleteRequests {
+  rows: DeleteRequest[],
+  count: number,
+}
+
+export interface DeleteRequest {
+  id: number;
+  type: string;
+  user: string;
+  path: string;
+  createdAt?: Date;
 }
 
 type FileType = 'dir' | 'file'
@@ -148,8 +161,28 @@ export class FileService {
     return this.http.post<FolderResult>(`files/uploadFolder/${path}`, {});
   }
 
+  changeName(path: string, newName: string, isFile: boolean): Observable<FolderResult> {
+    return this.http.post<FolderResult>(`files/changeName/${path}`, {newName, isFile});
+  }
+
   deleteFolderOrFile(path: string): Observable<DeleteResult> {
     return this.http.delete<DeleteResult>(`files/deleteFolderOrFile/${path}`)
+  }
+
+  requestDelete(path: string, userId: string | number): Observable<DeleteResult> {
+    return this.http.post<DeleteResult>(`files/requestDeleteFolderOrFile/${path}/${userId}`, {})
+  }
+
+  getDeleteFileRequests(): Observable<GetDeleteRequests> {
+    return this.http.get<GetDeleteRequests>('files/requestDeleteFolderOrFile')
+  }
+
+  cancelDeleteRequest(id: number): Observable<DeleteResult> {
+    return this.http.delete<DeleteResult>(`files/cancelDeleteRequest/${id}` )
+  }
+
+  acceptDeleteRequest(id: number): Observable<DeleteResult> {
+    return this.http.post<DeleteResult>(`files/acceptDeleteRequest/${id}`, {} )
   }
 
 }

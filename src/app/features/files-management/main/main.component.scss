@@ -39,11 +39,20 @@
     display: none;
   }
 
+  & .edit-icon {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    font-size: 14px !important;
+    color:  #1890ff !important;
+    display: none;
+  }
+
   &:hover {
     color: #1890ff;
     transition: color 200ms ease-in-out;
 
-    .delete-icon {
+    .delete-icon, .edit-icon {
       display: block;
     }
   }

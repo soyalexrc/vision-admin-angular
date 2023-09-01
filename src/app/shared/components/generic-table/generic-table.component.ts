@@ -20,10 +20,12 @@ export class GenericTableComponent implements OnInit {
   @Input() totalItems: number = 1;
   @Input() pageSize: number = 10;
   @Input() historyActionTitle: string = '';
+  @Input() approveTitle: string = '';
   @Input() actionsFixed: boolean = false;
   @Input() hasEdit: boolean = true;
   @Input() hasDelete: boolean = true;
   @Input() changeAction: boolean = false;
+  @Input() hasApprove: boolean = false;
   @Input() linkAction: boolean = false;
   @Input() canDelete: boolean = false;
   @Input() historyAction: boolean = false;
@@ -34,6 +36,7 @@ export class GenericTableComponent implements OnInit {
   @Output() onEdit: EventEmitter<number> = new EventEmitter<number>()
   @Output() onPageIndexChange: EventEmitter<number> = new EventEmitter<number>()
   @Output() onChangeUserStatus: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onApprove: EventEmitter<any> = new EventEmitter<any>()
 
   listOfData: any[] = [];
 

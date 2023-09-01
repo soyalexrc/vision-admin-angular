@@ -1,0 +1,21 @@
+
+<nz-breadcrumb>
+  <nz-breadcrumb-item>
+    <a routerLink="/gestion-de-archivos">Gestion de archivos</a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>Solicitudes de eliminacion</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<app-section-title
+  [title]="'Propietarios'"
+  (onRefresh)="getDeleteRequests()"
+></app-section-title>
+<app-generic-table #dataTable
+                   [canDelete]="true"
+                   [loading]="loading"
+                   [hasApprove]="true"
+                   approveTitle="Aprobar solicitud (eliminar documento / carpeta)"
+                   [hasEdit]="false"
+                   (onApprove)="handleAcceptDeleteRequest($event)"
+                   (onDelete)="handleDelete($event)"
+></app-generic-table>
