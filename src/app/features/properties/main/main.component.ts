@@ -14,6 +14,7 @@ import {
 } from "../../../core/interfaces/property";
 import {PropertyService} from "../../../core/services/property.service";
 import * as moment from 'moment';
+import {FileService} from "../../../core/services/file.service";
 
 @Component({
   selector: 'app-main',
@@ -42,7 +43,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     private modal: NzModalService,
     private propertyService: PropertyService,
     private uiService: UiService,
-    private userService: UserService
+    private userService: UserService,
+    private fileService: FileService,
   ) {
   }
 
@@ -72,16 +74,26 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.currentId = property.id;
   }
 
-  handleDelete(id: number) {
+  handleDelete(property: PropertyReview) {
     this.modal.confirm({
       nzTitle: 'Atencion',
       nzContent: 'Eliminar el elemento ?',
       nzCancelText: 'Cancelar',
       nzOkText: 'Aceptar',
       nzOnOk: () => new Promise((resolve, reject) => {
-        this.propertyService.deleteOne(id).subscribe(result => {
+        this.propertyService.deleteOne(property.id).subscribe(result => {
           this.uiService.createMessage('success', result.message)
           this.getPropertiesPreview()
+          // property.images.forEach((image) => {
+          //   this.fileService.deleteFolderOrFile(image.split('genericStaticFileAsset/')[1]).subscribe(result => {
+          //     this.uiService.createMessage('success', result.message)
+          //   })
+          // });
+          // property.files.forEach((file) => {
+          //   this.fileService.deleteFolderOrFile(file.split('genericStaticFileAsset/')[1]).subscribe(result => {
+          //     this.uiService.createMessage('success', result.message)
+          //   })
+          // });
           setTimeout(() => resolve(), 500);
         }, (error) => {
           this.uiService.createMessage('error', error.error.message)

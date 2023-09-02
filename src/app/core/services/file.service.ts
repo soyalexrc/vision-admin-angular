@@ -118,9 +118,7 @@ export class FileService {
   deleteTemporalImages() {
     const data = JSON.parse(localStorage.getItem('property_create_temporal')!)
     data.images.forEach((image: string) => {
-      const imageCode = image.split('properties')[1].split('/')[1];
-      const fileName = image.split('properties')[1].split('/')[3]
-      this.removePropertyImage(imageCode, fileName).subscribe(res => {
+      this.deleteFolderOrFile(image.split('genericStaticFileAsset/')[1]).subscribe(res => {
         this.uiService.createMessage('success', res.message)
       }, (error) => {
         this.uiService.createMessage('error', error.error.message)
@@ -131,9 +129,7 @@ export class FileService {
   deleteTemporalFiles() {
     const data = JSON.parse(localStorage.getItem('property_create_temporal')!)
     data.files.forEach((file: string) => {
-      const fileCode = file.split('properties')[1].split('/')[1];
-      const fileName = file.split('properties')[1].split('/')[3]
-      this.removePropertyFile(fileCode, fileName).subscribe(res => {
+      this.deleteFolderOrFile(file.split('genericStaticFileAsset/')[1]).subscribe(res => {
         this.uiService.createMessage('success', res.message)
       }, (error) => {
         this.uiService.createMessage('error', error.error.message)

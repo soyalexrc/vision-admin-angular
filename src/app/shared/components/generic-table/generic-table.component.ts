@@ -22,6 +22,7 @@ export class GenericTableComponent implements OnInit {
   @Input() historyActionTitle: string = '';
   @Input() approveTitle: string = '';
   @Input() actionsFixed: boolean = false;
+  @Input() exposeFullObjOnDelete: boolean = false;
   @Input() hasEdit: boolean = true;
   @Input() hasDelete: boolean = true;
   @Input() changeAction: boolean = false;
