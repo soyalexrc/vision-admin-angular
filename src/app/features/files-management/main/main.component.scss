@@ -5,6 +5,12 @@
   position: relative;
 }
 
+.toggle-button {
+  gap: .5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .fab-elements {
   position: absolute;
   right: 0;
@@ -19,6 +25,48 @@
     span {
       font-size: 25px;
     }
+  }
+}
+
+.element-list {
+  color: black;
+
+  .ant-list-item {
+    cursor: pointer;
+
+    &:hover {
+      color: #1890ff;
+      transition: color 200ms ease-in-out;
+
+      .delete-icon, .edit-icon {
+        display: block;
+      }
+    }
+  }
+
+  & .delete-icon {
+    font-size: 16px !important;
+    color: red !important;
+    display: none;
+  }
+
+  & .edit-icon {
+    font-size: 16px !important;
+    color:  #1890ff !important;
+    display: none;
+  }
+
+
+
+  span {
+    cursor: pointer;
+    font-size: 30px;
+  }
+
+  p {
+    cursor: pointer;
+    text-align: center;
+    margin-top: .5rem;
   }
 }
 

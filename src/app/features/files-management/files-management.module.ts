@@ -16,30 +16,34 @@ import {NzSpinModule} from "ng-zorro-antd/spin";
 import {NzBadgeModule} from "ng-zorro-antd/badge";
 import { DeleteRequestsComponent } from './delete-requests/delete-requests.component';
 import {SharedModule} from "../../shared/shared.module";
+import {NzListModule} from "ng-zorro-antd/list";
+import { MoveModalComponent } from './move-modal/move-modal.component';
 
 
 
 @NgModule({
   declarations: [
     MainComponent,
-    DeleteRequestsComponent
+    DeleteRequestsComponent,
+    MoveModalComponent
   ],
-  imports: [
-    CommonModule,
-    FilesManagementRoutingModule,
-    NzGridModule,
-    NzIconModule,
-    NzBreadCrumbModule,
-    NzSpaceModule,
-    NzButtonModule,
-    NzToolTipModule,
-    NzDropDownModule,
-    NzModalModule,
-    NzInputModule,
-    FormsModule,
-    NzSpinModule,
-    NzBadgeModule,
-    SharedModule
-  ]
+    imports: [
+        CommonModule,
+        FilesManagementRoutingModule,
+        NzGridModule,
+        NzIconModule,
+        NzBreadCrumbModule,
+        NzSpaceModule,
+        NzButtonModule,
+        NzToolTipModule,
+        NzDropDownModule,
+        NzModalModule,
+        NzInputModule,
+        FormsModule,
+        NzSpinModule,
+        NzBadgeModule,
+        SharedModule,
+        NzListModule
+    ]
 })
 export class FilesManagementModule { }

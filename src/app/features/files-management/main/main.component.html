@@ -1,5 +1,11 @@
 <nz-spin nzTip="Loading..." [nzSpinning]="loadingFiles">
 <div class="files-container">
+
+  <div class="toggle-button">
+    <button nz-button (click)="changeViewType('list')" [nzType]="viewType === 'list' ? 'primary' : 'default' " ><span nz-icon nzType="unordered-list"></span></button>
+    <button nz-button (click)="changeViewType('grid')" [nzType]="viewType === 'grid' ? 'primary' : 'default' "><span nz-icon nzType="appstore"></span></button>
+  </div>
+
   <nz-breadcrumb>
     <nz-breadcrumb-item>
       <a (click)="goTo('root')">Vision Inmobiliaria</a>
@@ -13,7 +19,45 @@
 
   <nz-space></nz-space>
 
-  <div nz-row [nzGutter]="16">
+  <nz-list nzItemLayout="horizontal" *ngIf="viewType === 'list' " class="element-list">
+    <nz-list-item *ngFor="let element of elements">
+      <nz-list-item-meta (click)="handleClickElement(element)">
+        <nz-list-item-meta-avatar>
+          <span (click)="handleClickElement(element)" *ngIf="element.type === 'dir' " nz-icon nzType="folder" nzTheme="outline"></span>
+          <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isOtherFileType(element.file)" nz-tooltip="Tipo de archivo poco comun" nz-icon nzType="file-unknown"
+                nzTheme="outline"></span>
+          <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isDocument(element.file)" nz-tooltip="Tipo de archivo de texto" nz-icon nzType="file-word"
+                nzTheme="outline"></span>
+          <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isSpreadSheet(element.file)" nz-tooltip="Tipo de archivo de hoja de calculo" nz-icon nzType="file-excel"
+                nzTheme="outline"></span>
+          <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isImage(element.file)" nz-tooltip="Tipo de archivo de imagen" nz-icon nzType="file-image"
+                nzTheme="outline"></span>
+          <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && element.file.includes('pdf')" nz-tooltip="Tipo de archivo PDF" nz-icon nzType="file-pdf"
+                nzTheme="outline"></span>
+        </nz-list-item-meta-avatar>
+        <nz-list-item-meta-title>
+          <a >{{formatFileName(element)}}</a>
+        </nz-list-item-meta-title>
+      </nz-list-item-meta>
+      <ul nz-list-item-actions>
+        <nz-list-item-action  *ngIf="path && safeLevelForDelete()">
+          <span (click)="handleCreateOrEditName(element)" class="edit-icon" nz-tooltip="Cambiar nombre" nz-icon nzType="edit" nzTheme="fill"></span>
+        </nz-list-item-action>
+        <nz-list-item-action  *ngIf="path && safeLevelForDelete()">
+          <span (click)="handleMoveElement(element)" class="edit-icon" nz-tooltip="Mover" nz-icon nzType="send" nzTheme="outline"></span>
+        </nz-list-item-action>
+        <nz-list-item-action *ngIf="path && safeLevelForDelete()" >
+          <span (click)="deleteFolderOrFile(element)" class="delete-icon" nz-tooltip="Eliminar" nz-icon nzType="delete" nzTheme="fill"></span>
+        </nz-list-item-action>
+
+
+
+      </ul>
+    </nz-list-item>
+    <nz-list-empty *ngIf="elements.length === 0"></nz-list-empty>
+  </nz-list>
+
+  <div nz-row [nzGutter]="16" *ngIf="viewType === 'grid' ">
     <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="4" nzXl="3" *ngFor="let element of elements">
       <div class="element">
         <span *ngIf="path && safeLevelForDelete()" (click)="deleteFolderOrFile(element)" class="delete-icon" nz-tooltip="Eliminar" nz-icon nzType="delete" nzTheme="fill"></span>
@@ -48,11 +92,20 @@
     <button
       *ngIf="path"
       (click)="clickInputFile()"
-      nz-tooltip="Agregar un documento"
+      nz-tooltip="Cargar un documento"
       nz-button nzType="primary"
       nzSize="large"
       nzShape="circle">
       <span nz-icon nzType="file-add"></span>
+    </button>
+    <button
+      *ngIf="path"
+      (click)="clickInputFile('folder')"
+      nz-tooltip="Cargar una carpeta"
+      nz-button nzType="primary"
+      nzSize="large"
+      nzShape="circle">
+      <span nz-icon nzType="folder-open"></span>
     </button>
     <nz-badge [nzCount]="deleteRequestsAmount" [nzOverflowCount]="99" [nzOffset]="[-10, 0]">
     <button
@@ -70,6 +123,9 @@
   <input style="display: none" (change)="handleUploadImage($event)" multiple type="file" #inputFile
          accept="*">
 
+  <input style="display: none" (change)="handleUploadImage($event)" webkitdirectory directory multiple type="file" #inputFolder
+         accept="*">
+
 
 </div>
 </nz-spin>
@@ -81,6 +137,8 @@
   [nzOkDisabled]="folderName.length < 1"
   (nzOnOk)="handleOkCreateFolder()">
   <ng-container *nzModalContent>
-    <input nz-input placeholder="Nombre de carpeta" [(ngModel)]="folderName" />
+    <input nz-input (keydown.enter)="handleOkCreateFolder()" placeholder="Nombre de carpeta" [(ngModel)]="folderName" />
   </ng-container>
 </nz-modal>
+
+<app-move-modal [moveFromPath]="moveFromPath" [show]="showMoveModal"  (onCancel)="showMoveModal = false" (onSuccess)="handleMovedElement()"></app-move-modal>
