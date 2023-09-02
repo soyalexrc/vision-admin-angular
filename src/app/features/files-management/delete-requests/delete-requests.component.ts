@@ -67,7 +67,7 @@ export class DeleteRequestsComponent {
           id: element.id,
           user: element.user,
           type: element.type,
-          path: element.path,
+          path: element.path.split('/static/')[1],
           date: moment(element.createdAt).calendar(),
         }));
         const headers = setHeaders([
