@@ -62,6 +62,8 @@
       <div class="element">
         <span *ngIf="path && safeLevelForDelete()" (click)="deleteFolderOrFile(element)" class="delete-icon" nz-tooltip="Eliminar" nz-icon nzType="delete" nzTheme="fill"></span>
         <span *ngIf="path && safeLevelForDelete()" (click)="handleCreateOrEditName(element)" class="edit-icon" nz-tooltip="Cambiar nombre" nz-icon nzType="edit" nzTheme="fill"></span>
+        <span *ngIf="path && safeLevelForDelete()" (click)="handleMoveElement(element)" class="move-icon" nz-tooltip="Mover" nz-icon nzType="send" nzTheme="outline"></span>
+
         <span (click)="handleClickElement(element)" *ngIf="element.type === 'dir' " nz-icon nzType="folder" nzTheme="outline"></span>
         <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isOtherFileType(element.file)" nz-tooltip="Tipo de archivo poco comun" nz-icon nzType="file-unknown"
               nzTheme="outline"></span>
