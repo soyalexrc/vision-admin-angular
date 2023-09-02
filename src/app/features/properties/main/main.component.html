@@ -20,6 +20,7 @@
                    linkActionTitle="Ver vista previa"
                    historyActionTitle="Ver historial de status"
                    [loading]="loading"
+                   [exposeFullObjOnDelete]="true"
                    (onEdit)="handleEdit($event)"
                    (onDelete)="handleDelete($event)"
                    (onChange)="handleChangeStatus($event)"
