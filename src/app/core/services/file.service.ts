@@ -185,4 +185,8 @@ export class FileService {
     return this.http.post<DeleteResult>(`files/acceptDeleteRequest/${id}`, {} )
   }
 
+  moveFileOrFolder(pathFrom: string, pathTo: string): Observable<DeleteResult> {
+    return this.http.post<DeleteResult>(`files/moveFileOrFolder`, {pathFrom, pathTo} )
+  }
+
 }

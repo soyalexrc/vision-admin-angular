@@ -6,6 +6,8 @@ import {UiService} from "../../../core/services/ui.service";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {UserService} from "../../../core/services/user.service";
 
+type ViewType = 'list' | 'grid';
+
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
@@ -20,8 +22,10 @@ export class MainComponent implements OnInit, OnDestroy {
   protected readonly isSpreadSheet = isSpreadSheet;
   protected readonly isImage = isImage;
   showCreateNewFolderModal = false;
+  viewType: ViewType = 'list';
 
   @ViewChild('inputFile') inputFile!: ElementRef<HTMLInputElement>
+  @ViewChild('inputFolder') inputFolder!: ElementRef<HTMLInputElement>
   loading = false;
   folderName = '';
   folderNameModalTitle = '';
@@ -29,6 +33,8 @@ export class MainComponent implements OnInit, OnDestroy {
   currentElementToEdit: FilesResult = {file: '', type: null};
   deleteRequests: DeleteRequest[] = [];
   deleteRequestsAmount = 0;
+  showMoveModal = false;
+  moveFromPath = '';
 
   constructor(
     private fileService: FileService,
@@ -115,14 +121,23 @@ export class MainComponent implements OnInit, OnDestroy {
     return filename.file.substring(0, 30).concat('...').concat(filename.file.split('.')[1])
   }
 
-  clickInputFile() {
+  clickInputFile(type = 'file') {
+    if (type === 'folder') {
+      this.inputFolder?.nativeElement.click();
+    } else {
       this.inputFile?.nativeElement.click();
+    }
   }
 
   async handleUploadImage(event: any) {
     this.loading = true;
 
+
     const {files} = event.target;
+
+    console.log(files);
+
+
 
     const forLoop = async () => {
       for (let i = 0; i < files.length; i++) {
@@ -159,12 +174,11 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   handleOkCreateFolder() {
-    let path = `${this.path}+${this.currentElementToEdit.file.replaceAll(' ', '-')}`
     if (this.currentElementToEdit.type !== null) {
-
-      const fileExtension = this.currentElementToEdit.file.split('-VINM')[1];
-      const newNameFile = `${this.path}+${this.folderName.concat('-VINM').concat(fileExtension).replaceAll(' ', '-')}`;
-      const newNameDir = `${this.path}+${this.folderName.replaceAll(' ', '-')}`;
+      let path = `${this.path}+${this.currentElementToEdit.file}`
+      const fileExtension = this.currentElementToEdit.file.split('_VINM')[1];
+      const newNameFile = `${this.path}+${this.folderName.concat('_VINM').concat(fileExtension)}`;
+      const newNameDir = `${this.path}+${this.folderName.replaceAll(' ', '_')}`;
       if (this.currentElementToEdit.type === 'dir') {
         this.fileService.changeName(path, newNameDir, false).subscribe(result => {
           this.folderName = '';
@@ -183,7 +197,8 @@ export class MainComponent implements OnInit, OnDestroy {
         })
       }
     } else {
-      this.fileService.createFolder(path).subscribe(result => {
+      const newNameDir = `${this.path}+${this.folderName.replaceAll(' ', '_')}`;
+      this.fileService.createFolder(newNameDir).subscribe(result => {
         this.folderName = '';
         this.showCreateNewFolderModal = false;
         this.uiService.createMessage('success', result.message);
@@ -197,6 +212,7 @@ export class MainComponent implements OnInit, OnDestroy {
     const path = `${this.path}+${element.file}`
     this.modal.confirm({
       nzTitle: 'Atencion',
+      nzAutofocus: 'ok',
       nzContent: `Se eliminara ${message}, quieres continuar?`,
       nzCancelText: 'Cancelar',
       nzOkText: 'Aceptar',
@@ -257,5 +273,19 @@ export class MainComponent implements OnInit, OnDestroy {
     }, (error) => {
         this.uiService.createMessage('error', error.error.message )
     }, () => {})
+  }
+
+  changeViewType(viewType: ViewType) {
+    this.viewType = viewType;
+  }
+
+  handleMoveElement(element: FilesResult) {
+    this.moveFromPath = `${this.path}+${element.file}`;
+    this.showMoveModal = true;
+  }
+
+  handleMovedElement() {
+    this.showMoveModal = false;
+    this.getElementsByPath();
   }
 }
