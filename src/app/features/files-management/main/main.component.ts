@@ -178,7 +178,7 @@ export class MainComponent implements OnInit, OnDestroy {
       let path = `${this.path}+${this.currentElementToEdit.file}`
       const fileExtension = this.currentElementToEdit.file.split('_VINM')[1];
       const newNameFile = `${this.path}+${this.folderName.concat('_VINM').concat(fileExtension)}`;
-      const newNameDir = `${this.path}+${this.folderName.replaceAll(' ', '_')}`;
+      const newNameDir = `${this.path}+${this.folderName}`;
       if (this.currentElementToEdit.type === 'dir') {
         this.fileService.changeName(path, newNameDir, false).subscribe(result => {
           this.folderName = '';
@@ -197,7 +197,7 @@ export class MainComponent implements OnInit, OnDestroy {
         })
       }
     } else {
-      const newNameDir = `${this.path}+${this.folderName.replaceAll(' ', '_')}`;
+      const newNameDir = `${this.path}+${this.folderName}`;
       this.fileService.createFolder(newNameDir).subscribe(result => {
         this.folderName = '';
         this.showCreateNewFolderModal = false;
