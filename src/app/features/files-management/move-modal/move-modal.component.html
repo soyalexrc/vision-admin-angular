@@ -6,31 +6,32 @@
   [nzOkDisabled]=""
   (nzOnOk)="handleOk()">
   <ng-container *nzModalContent>
-    <nz-breadcrumb>
-      <nz-breadcrumb-item>
-        <a (click)="goTo('root')">Vision Inmobiliaria</a>
-      </nz-breadcrumb-item>
-      <ng-container *ngFor="let pathFragment of path.split('+')">
-        <nz-breadcrumb-item *ngIf="pathFragment">
-          <a (click)="goTo(pathFragment)">{{pathFragment}}</a>
+    <nz-spin nzTip="Cargando..." [nzSpinning]="loadingFiles">
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>
+          <a (click)="goTo('root')">Vision Inmobiliaria</a>
         </nz-breadcrumb-item>
-      </ng-container>
-    </nz-breadcrumb>
+        <ng-container *ngFor="let pathFragment of path.split('+')">
+          <nz-breadcrumb-item *ngIf="pathFragment">
+            <a (click)="goTo(pathFragment)">{{pathFragment}}</a>
+          </nz-breadcrumb-item>
+        </ng-container>
+      </nz-breadcrumb>
 
-    <nz-space></nz-space>
+      <nz-space></nz-space>
 
-    <nz-list nzItemLayout="horizontal"  class="element-list">
-      <nz-list-item *ngFor="let element of elements">
-        <nz-list-item-meta *ngIf="element.type === 'dir' " (click)="handleClickElement(element)">
-          <nz-list-item-meta-avatar>
-            <span (click)="handleClickElement(element)" *ngIf="element.type === 'dir' " nz-icon nzType="folder" nzTheme="outline"></span>
-          </nz-list-item-meta-avatar>
-          <nz-list-item-meta-title>
-            <a >{{element.file}}</a>
-          </nz-list-item-meta-title>
-        </nz-list-item-meta>
-      </nz-list-item>
-    </nz-list>
-
+      <nz-list nzItemLayout="horizontal"  class="element-list">
+        <nz-list-item *ngFor="let element of elements">
+          <nz-list-item-meta *ngIf="element.type === 'dir' " (click)="handleClickElement(element)">
+            <nz-list-item-meta-avatar>
+              <span (click)="handleClickElement(element)" *ngIf="element.type === 'dir' " nz-icon nzType="folder" nzTheme="outline"></span>
+            </nz-list-item-meta-avatar>
+            <nz-list-item-meta-title>
+              <a >{{element.file}}</a>
+            </nz-list-item-meta-title>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </nz-list>
+    </nz-spin>
   </ng-container>
 </nz-modal>
