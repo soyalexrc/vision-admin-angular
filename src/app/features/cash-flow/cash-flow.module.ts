@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, CurrencyPipe} from '@angular/common';
 import { MainComponent } from './main/main.component';
 import {CashFlowRoutingModule} from "./cash-flow-routing.module";
 import {NzBreadCrumbModule} from "ng-zorro-antd/breadcrumb";
@@ -18,6 +18,7 @@ import { CreateComponent } from './create/create.component';
 import {NzStepsModule} from "ng-zorro-antd/steps";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
 import {NzSkeletonModule} from "ng-zorro-antd/skeleton";
+import { RegisterPersonModalComponent } from './register-person-modal/register-person-modal.component';
 
 
 
@@ -25,7 +26,8 @@ import {NzSkeletonModule} from "ng-zorro-antd/skeleton";
   declarations: [
     MainComponent,
     OperationsResumeComponent,
-    CreateComponent
+    CreateComponent,
+    RegisterPersonModalComponent
   ],
     imports: [
         CommonModule,
@@ -45,6 +47,7 @@ import {NzSkeletonModule} from "ng-zorro-antd/skeleton";
         NzStepsModule,
         NzDatePickerModule,
         NzSkeletonModule
-    ]
+    ],
+  providers: [CurrencyPipe]
 })
 export class CashFlowModule { }

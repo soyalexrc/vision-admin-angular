@@ -13,6 +13,7 @@ import {Form, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {User} from "../../../core/interfaces/user";
 import {UserService} from "../../../core/services/user.service";
 import {formatCurrency} from "@angular/common";
+import * as moment from "moment";
 
 @Component({
   selector: 'app-main',
@@ -103,9 +104,9 @@ export class MainComponent implements OnInit, AfterViewInit {
             .filter(x => x.transactionType === 'Ingreso' && !x.isTemporalTransaction)
             .map(element => ({
               id: element.id,
-              date: element.date,
-              customProperty: `${element.propertyJson?.code} - ${element.propertyJson?.propertyType} - ${element.propertyJson?.operationType}`,
-              client: element.client,
+              date: moment(element.date).calendar(),
+              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
+              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
               amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
               reason: element.reason,
               pendingToCollect: `${formatCurrency(Number(element.pendingToCollect), 'en', `${element.currency} `)}`,
@@ -114,11 +115,11 @@ export class MainComponent implements OnInit, AfterViewInit {
           headers = setHeaders([
             {key: 'date', displayName: 'Fecha'},
             {key: 'customProperty', displayName: 'Inmueble'},
-            {key: 'client', displayName: 'Persona / Cliente'},
+            {key: 'person', displayName: 'Persona'},
             {key: 'amount', displayName: 'Monto'},
             {key: 'reason', displayName: 'Concepto'},
-            {key: 'totalDue', displayName: 'Por cobrar'},
-            {key: 'pendingToCollect', displayName: 'Por pagar'},
+            {key: 'pendingToCollect', displayName: 'Por cobrar'},
+            {key: 'totalDue', displayName: 'Por pagar'},
           ]);
         }
         if (this.sourceSelection === 'Egreso') {

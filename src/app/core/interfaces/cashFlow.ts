@@ -1,4 +1,4 @@
-import { PropertyReview} from "./property";
+import {PropertyFull, PropertyReview} from "./property";
 
 export interface CustomProperty extends PropertyReview {
   property_type: string;
@@ -7,13 +7,19 @@ export interface CustomProperty extends PropertyReview {
 
 export interface CashFlowRegister {
   id: number;
+  client_id: number | null;
+  owner_id: number | null;
+  cashflow_person_id: number | null;
+  person: any;
+  property_id: number | null;
   canon?: string;
   guarantee?:  string;
+  internalProperty?:  string;
   contract?:  string;
   taxPayer?: string;
   month: string;
-  date: Date;
-  property?: number;
+  date: Date | string;
+  property?: Partial<PropertyFull>;
   propertyJson?: Partial<PropertyReview>
   location?: string;
   client?: string;
@@ -115,6 +121,17 @@ export interface CashFlowTotal {
   bs: number | null;
   usd: number | null;
   eur: number | null;
+}
+
+export interface CashFlowPerson {
+  id: number;
+  name: string;
+  type: string;
+}
+
+export interface CreateEditCashFlowPeople {
+  message: string;
+  data: CashFlowPerson
 }
 
 
