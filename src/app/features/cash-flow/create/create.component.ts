@@ -8,6 +8,9 @@ import * as moment from "moment/moment";
 import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MONTHS} from "../../../shared/utils/months";
+import {CurrencyPipe} from "@angular/common";
+import {Subscription} from "rxjs";
+import {CashFlowPerson} from "../../../core/interfaces/cashFlow";
 
 interface Steps {
   first: string,
@@ -28,10 +31,14 @@ export class CreateComponent implements OnInit {
   loading = false;
   id: any;
   index = 0;
+  paymentDetailFormSubscription = new Subscription();
 
   properties: PropertyReview[] = []
+  people: CashFlowPerson[] = [];
   serviceOptions: string[] = SERVICE_OPTIONS;
   serviceTypeOptions: string[] = [];
+  showRegisterPersonModal = false;
+  peopleLoading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -40,6 +47,7 @@ export class CreateComponent implements OnInit {
     private uiService: UiService,
     private router: Router,
     private route: ActivatedRoute,
+    private currencyPipe: CurrencyPipe,
   ) {
   }
 
@@ -55,6 +63,24 @@ export class CreateComponent implements OnInit {
       this.id = this.route.snapshot.paramMap.get('id')!;
       this.getCashFlowRegisterById(this.id)
     }
+
+    this.paymentDetailFormSubscription = this.paymentDetailForm.valueChanges.subscribe(form => {
+      if (form.amount) {
+        this.paymentDetailForm.patchValue({
+          amount: this.currencyPipe.transform(form.amount.replace(/\D/g, '').replace(/^0+/, ''), this.paymentDetailForm.get('currency')?.value, 'code', '1.0-0')
+        }, {emitEvent: false})
+      }
+      if (form.pendingToCollect) {
+        this.paymentDetailForm.patchValue({
+          pendingToCollect: this.currencyPipe.transform(form.pendingToCollect.replace(/\D/g, '').replace(/^0+/, ''), this.paymentDetailForm.get('currency')?.value, 'code', '1.0-0')
+        }, {emitEvent: false})
+      }
+      if (form.totalDue) {
+        this.paymentDetailForm.patchValue({
+          totalDue: this.currencyPipe.transform(form.totalDue.replace(/\D/g, '').replace(/^0+/, ''), this.paymentDetailForm.get('currency')?.value, 'code', '1.0-0')
+        }, {emitEvent: false})
+      }
+    })
   }
 
   onIndexChange(index: number): void {
@@ -123,10 +149,14 @@ export class CreateComponent implements OnInit {
 
   private buildForms() {
     this.generalForm = this.fb.group({
-      client: [''],
+      client_id: [null],
+      owner_id: [null],
+      cashflow_person_id: [null],
+      property_id: [null],
+      internalProperty: [''],
+      person: [null],
       date: [new Date(), Validators.required],
       month: [''],
-      property: [null],
       location: [''],
       isTemporalTransaction: [false],
       id: [null]
@@ -193,7 +223,13 @@ export class CreateComponent implements OnInit {
       ...this.serviceForm.value,
       ...this.paymentDetailForm.value
     }
-    data.date = moment(data.birthday).format('YYYY-MM-DD');
+    data.client_id = data.person.includes('Cliente') ? data.person.split('-')[0] : null;
+    data.owner_id = data.person.includes('Propietario') ? data.person.split('-')[0] : null;
+    data.cashflow_person_id = data.person.includes('Administracion interna') ? data.person.split('-')[0] : null;
+    data.amount = !data.amount ? '0' : data.amount.replace(/\D/g, '');
+    data.pendingToCollect = !data.pendingToCollect ? '0' : data.pendingToCollect.replace(/\D/g, '');
+    data.totalDue = !data.totalDue ? '0' : data.totalDue.replace(/\D/g, '');
+    data.date = moment(data.date).format('YYYY-MM-DD');
     const month = new Date(data.date).getMonth()
     data.month = MONTHS[month];
     if (this.isEditing) {
@@ -224,10 +260,13 @@ export class CreateComponent implements OnInit {
 
   getCashFlowRegisterById(id: string) {
     this.cashFlowService.getById(id).subscribe(result => {
-      this.generalForm.get('client')?.patchValue(result.client);
+      this.generalForm.get('person')?.patchValue(result.person);
+      this.generalForm.get('client_id')?.patchValue(result.client_id);
+      this.generalForm.get('owner_id')?.patchValue(result.owner_id);
+      this.generalForm.get('internalProperty')?.patchValue(result.internalProperty);
       this.generalForm.get('date')?.patchValue(result.date);
       this.generalForm.get('month')?.patchValue(result.month);
-      this.generalForm.get('property')?.patchValue(result.property);
+      this.generalForm.get('property_id')?.patchValue(result.property_id);
       this.generalForm.get('location')?.patchValue(result.location);
       this.generalForm.get('id')?.patchValue(this.id);
 
@@ -278,5 +317,25 @@ export class CreateComponent implements OnInit {
 
 
     return bool;
+  }
+
+  handleChangeSample($event: any) {
+    console.log($event)
+    console.log($event === this.generalForm.get('person')?.value);
+  }
+
+  getValueFromPeople(person: CashFlowPerson) {
+    return `${person.id}-${person.name}-${person.type}`;
+  }
+
+  getPeople() {
+    this.peopleLoading = true;
+    this.cashFlowService.getPeople().subscribe(result => {
+      this.people = result;
+    }, error => {
+      this.peopleLoading = false;
+    }, () => {
+      this.peopleLoading = false;
+    })
   }
 }

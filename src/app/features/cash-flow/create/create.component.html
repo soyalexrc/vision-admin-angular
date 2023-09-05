@@ -9,10 +9,9 @@
 <h2>Datos de registro</h2>
 
 
-
 <div class="form mt-3">
   <div class="content">
-    <nz-steps [nzCurrent]="index"  (nzIndexChange)=" isEditing ? onIndexChange($event) : null">
+    <nz-steps [nzCurrent]="index" (nzIndexChange)=" isEditing ? onIndexChange($event) : null">
       <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
       <nz-step nzTitle="Servicio" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
       <nz-step nzTitle="Informacion de pago" [nzStatus]="getStatusBasedOnIndex(index).last"></nz-step>
@@ -21,7 +20,7 @@
 </div>
 
 <ng-container *ngIf="index === 0">
-  <form class="form mt-3"  nz-form nzLayout="vertical" [formGroup]="generalForm" >
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="generalForm">
     <div class="content">
 
       <div nz-row class="row" [nzGutter]="16">
@@ -29,7 +28,7 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="date">Fecha</nz-form-label>
             <nz-form-control [nzErrorTip]="dateErrTip">
-              <nz-date-picker style="width: 100%" formControlName="date" ></nz-date-picker>
+              <nz-date-picker style="width: 100%" formControlName="date"></nz-date-picker>
               <ng-template #dateErrTip let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar una fecha!</ng-container>
               </ng-template>
@@ -37,37 +36,60 @@
           </nz-form-item>
         </div>
 
-        <div nz-col [nzSpan]="18">
+        <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="lastName">Cliente</nz-form-label>
+            <nz-form-label nzFor="person">Persona</nz-form-label>
             <nz-form-control>
-              <input type="text" style="width: 100%" nz-input formControlName="client"
-                     placeholder="Cliente"/>
+              <nz-select [nzLoading]="peopleLoading" formControlName="person" style="width: 100%" (ngModelChange)="handleChangeSample($event)">
+                <nz-option
+                  *ngFor="let person of people"
+                  [nzValue]="getValueFromPeople(person)"
+                  [nzLabel]="person.name + ' - ' + person.type">
+                </nz-option>
+              </nz-select>
             </nz-form-control>
           </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6" style="display: flex; justify-content: center; align-items: center">
+          <button nz-button nzType="link" (click)="showRegisterPersonModal = true">
+            <span nz-icon nzType="plus" nzTheme="outline"></span>
+            Ingresar nueva persona
+          </button>
         </div>
 
 
       </div>
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="24">
-          <nz-form-item>
-            <nz-form-label  nzFor="property">Propiedad</nz-form-label>
+          <nz-form-item
+            *ngIf="!generalForm.get('person')?.value?.includes('Administracion interna'); else internalAdministration">
+            <nz-form-label nzFor="property">Propiedad</nz-form-label>
             <nz-form-control>
-              <nz-select formControlName="property" style="width: 100%">
+              <nz-select formControlName="property_id" style="width: 100%">
                 <nz-option
                   *ngFor="let property of properties"
-                  [nzValue]="property"
+                  [nzValue]="property.id"
                   [nzLabel]="getPropertyLabel(property)">
                 </nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
+          <ng-template #internalAdministration>
+            <nz-form-item>
+              <nz-form-label nzFor="internalProperty">Propiedad de administracion interna</nz-form-label>
+              <nz-form-control>
+                <nz-select formControlName="internalProperty" style="width: 100%">
+                  <nz-option nzValue="Oficina paseo la granja" nzLabel="Oficina paseo la granja"></nz-option>
+                  <nz-option nzValue="Oficina san carlos" nzLabel="Oficina san carlos"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </ng-template>
         </div>
         <div nz-col [nzSpan]="24">
           <nz-form-item>
             <nz-form-label nzFor="location">Ubicacion</nz-form-label>
-            <nz-form-control >
+            <nz-form-control>
               <textarea type="text" style="width: 100%" nz-input formControlName="location"
                         placeholder="Ubicacion"> </textarea>
             </nz-form-control>
@@ -79,14 +101,15 @@
 </ng-container>
 
 <ng-container *ngIf="index === 1">
-  <form class="form mt-3"  nz-form nzLayout="vertical" [formGroup]="serviceForm" >
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="serviceForm">
     <div class="content">
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
             <nz-form-label nzRequired nzFor="service">Servicio</nz-form-label>
             <nz-form-control [nzErrorTip]="serviceErrTemp">
-              <nz-select nzShowSearch nzAllowClear formControlName="service" (ngModelChange)="handleChangeService($event)" style="width: 100%">
+              <nz-select nzShowSearch nzAllowClear formControlName="service"
+                         (ngModelChange)="handleChangeService($event)" style="width: 100%">
                 <nz-option
                   *ngFor="let service of serviceOptions"
                   [nzValue]="service"
@@ -120,11 +143,12 @@
 
 
       </div>
-      <div nz-row class="row" [nzGutter]="16" *ngIf="serviceForm.value.service === 'Administración Inmuebles Alquilados' ">
+      <div nz-row class="row" [nzGutter]="16"
+           *ngIf="serviceForm.value.service === 'Administración Inmuebles Alquilados' ">
         <div nz-col [nzSpan]="8">
           <nz-form-item>
-            <nz-form-label  nzFor="canon">Canon</nz-form-label>
-            <nz-form-control >
+            <nz-form-label nzFor="canon">Canon</nz-form-label>
+            <nz-form-control>
               <input type="text" style="width: 100%" nz-input formControlName="canon"
                      placeholder="Canon"/>
             </nz-form-control>
@@ -132,8 +156,8 @@
         </div>
         <div nz-col [nzSpan]="8">
           <nz-form-item>
-            <nz-form-label  nzFor="guarantee">Garantia</nz-form-label>
-            <nz-form-control >
+            <nz-form-label nzFor="guarantee">Garantia</nz-form-label>
+            <nz-form-control>
               <input type="text" style="width: 100%" nz-input formControlName="guarantee"
                      placeholder="Garantia"/>
             </nz-form-control>
@@ -141,8 +165,8 @@
         </div>
         <div nz-col [nzSpan]="8">
           <nz-form-item>
-            <nz-form-label  nzFor="contract">Contrato</nz-form-label>
-            <nz-form-control >
+            <nz-form-label nzFor="contract">Contrato</nz-form-label>
+            <nz-form-control>
               <input type="text" style="width: 100%" nz-input formControlName="contract"
                      placeholder="Contrato"/>
             </nz-form-control>
@@ -152,8 +176,8 @@
       <div nz-row class="row" [nzGutter]="16" *ngIf="serviceForm.value.service === 'Contabilidad' ">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label  nzFor="taxPayer">Contribuyente</nz-form-label>
-            <nz-form-control >
+            <nz-form-label nzFor="taxPayer">Contribuyente</nz-form-label>
+            <nz-form-control>
               <nz-select formControlName="taxPayer" style="width: 100%">
                 <nz-option nzValue="Ordinario Natural" nzLabel="Ordinario Natural"></nz-option>
                 <nz-option nzValue="Ordinario Jurídico" nzLabel="Ordinario Jurídico"></nz-option>
@@ -183,7 +207,7 @@
 </ng-container>
 
 <ng-container *ngIf="index === 2">
-  <form class="form mt-3"  nz-form nzLayout="vertical" [formGroup]="paymentDetailForm" >
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="paymentDetailForm">
     <div class="content">
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="24">
@@ -246,7 +270,8 @@
             <nz-form-label nzRequired nzFor="entity">Entidad</nz-form-label>
             <nz-form-control [nzErrorTip]="entityErrTip">
               <nz-select nzShowSearch nzAllowClear formControlName="originEntity">
-                <nz-option nzValue="Banco Nacional de Crédito (BNC)" nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>
+                <nz-option nzValue="Banco Nacional de Crédito (BNC)"
+                           nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>
                 <nz-option nzValue="Banesco Panamá" nzLabel="Banesco Panamá"></nz-option>
                 <nz-option nzValue="Banesco Venezuela" nzLabel="Banesco Venezuela"></nz-option>
                 <nz-option nzValue="Banco Nacional de Terceros" nzLabel="Banco Nacional de Terceros"></nz-option>
@@ -263,31 +288,34 @@
         <div nz-col [nzSpan]="6" *ngIf="showAmountField()">
           <nz-form-item>
             <nz-form-label nzFor="amount">Monto</nz-form-label>
-            <nz-form-control >
-              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="amount" placeholder="Monto"/>
+            <nz-form-control>
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="amount"
+                     placeholder="Monto"/>
             </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="6" *ngIf="showTotalDueField()">
           <nz-form-item>
             <nz-form-label nzFor="totalDue">Por pagar</nz-form-label>
-            <nz-form-control >
-              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="totalDue" placeholder="Por pagar"/>
+            <nz-form-control>
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="totalDue"
+                     placeholder="Por pagar"/>
             </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="6" *ngIf="showPendingToCollectField()">
           <nz-form-item>
             <nz-form-label nzFor="pendingToCollect">Por cobrar</nz-form-label>
-            <nz-form-control >
-              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="pendingToCollect" placeholder="Por cobrar"/>
+            <nz-form-control>
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="pendingToCollect"
+                     placeholder="Por cobrar"/>
             </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="24">
           <nz-form-item>
             <nz-form-label nzFor="observation">Observacion</nz-form-label>
-            <nz-form-control >
+            <nz-form-control>
               <textarea type="text" style="width: 100%" nz-input formControlName="observation"
                         placeholder="Observacion"> </textarea>
             </nz-form-control>
@@ -330,3 +358,5 @@
   </div>
 </div>
 
+
+<app-register-person-modal (onClose)="showRegisterPersonModal = false" (onFinished)="getPeople()" (onCancel)="showRegisterPersonModal = $event" [showModal]="showRegisterPersonModal"></app-register-person-modal>
