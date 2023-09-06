@@ -58,6 +58,8 @@ export class CreateComponent implements OnInit {
       this.properties = result.rows;
     })
 
+    this.getPeople();
+
     if (!this.router.url.includes('crear')) {
       this.isEditing = true;
       this.id = this.route.snapshot.paramMap.get('id')!;
