@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {CommonModule, CurrencyPipe, NgOptimizedImage} from '@angular/common';
 import { MainComponent } from './main/main.component';
 import {PropertiesRoutingModule} from "./properties-routing.module";
 import {NzBreadCrumbModule} from "ng-zorro-antd/breadcrumb";
@@ -66,6 +66,7 @@ import {NzSwitchModule} from "ng-zorro-antd/switch";
         FormsModule,
         NzTagModule,
         NzSwitchModule
-    ]
+    ],
+  providers: [CurrencyPipe]
 })
 export class PropertiesModule { }
