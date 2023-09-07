@@ -160,8 +160,8 @@ export class CommissionConfigModalComponent implements OnInit, OnDestroy {
   }
 
   getAdvisers() {
-    this.userService.getAdvisers().subscribe(result => {
-      this.advisers = result.rows;
+    this.userService.getAdvisers('vision').subscribe(result => {
+      this.advisers = result;
     })
   }
 

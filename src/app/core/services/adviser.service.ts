@@ -19,8 +19,15 @@ export class AdviserService {
     private  http: HttpClient
   ) { }
 
-  getAll(pageIndex: number, pageSize: number): Observable<GetAllAdvisers> {
-    return this.http.get<GetAllAdvisers>(`external-adviser?pageIndex=${pageIndex}&pageSize=${pageSize}`)
+  getAllPaginated(pageIndex: number, pageSize: number): Observable<GetAllAdvisers> {
+    return this.http.get<GetAllAdvisers>(`external-adviser/paginated?pageIndex=${pageIndex}&pageSize=${pageSize}`)
+  }
+  getAll(): Observable<Adviser[]> {
+    return this.http.get<Adviser[]>(`external-adviser`)
+  }
+
+  getAllWithRoleAdviser(): Observable<Adviser[]> {
+    return this.http.get<Adviser[]>('')
   }
 
   createOne(owner: Adviser): Observable<CreateEditAdviserResponse> {

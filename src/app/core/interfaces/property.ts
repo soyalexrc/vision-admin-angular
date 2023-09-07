@@ -17,7 +17,7 @@ export interface PropertyReview {
   createdAt: Date;
   minimumNegotiation: string;
   user_id: number;
-  externalCapacitor: string;
+  externalAdviser: string;
   reasonToSellOrRent: string;
   status: string;
   files: string[];
@@ -42,7 +42,8 @@ export interface PropertyFull {
   id?: number;
   user_id: number;
   ally_id: null | number;
-  owner_id: number;
+  external_adviser_id: null | number;
+  owner_id: null | number;
   files: string[];
   images: string[];
   attributes: Attribute[];
@@ -135,7 +136,7 @@ export interface NegotiationInformation {
   price: string;
   minimumNegotiation: string;
   client: string;
-  externalCapacitor: string;
+  externalAdviser: string;
   reasonToSellOrRent: string;
   contactFirstName: string;
   contactLastName: string;

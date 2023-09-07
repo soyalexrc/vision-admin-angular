@@ -66,7 +66,7 @@ export class MainComponent implements OnInit, AfterViewInit{
 
   getAdvisers() {
     this.loading = true;
-    this.adviserService.getAll(this.pageIndex, this.pageSize).subscribe(data => {
+    this.adviserService.getAllPaginated(this.pageIndex, this.pageSize).subscribe(data => {
       this.totalItems = data.count;
         this.data = data.rows.map(element => ({
           id: element.id,
