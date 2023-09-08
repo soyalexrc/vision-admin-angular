@@ -227,14 +227,12 @@ export class CreateComponent implements OnInit {
     data.client_id = data.person && data.person.includes('Cliente') ? data.person.split('-')[0] : null;
     data.owner_id = data.person && data.person.includes('Propietario') ? data.person.split('-')[0] : null;
     data.cashflow_person_id = data.person && data.person.includes('Administracion interna') ? data.person.split('-')[0] : null;
-    data.amount = !data.amount ? '0' : data.amount.replace(/[^\w\s.,]/gi, '').trim();
-    data.pendingToCollect = !data.pendingToCollect ? '0' : data.pendingToCollect.replace(/[^\w\s.,]/gi, '').trim();
-    data.totalDue = !data.totalDue ? '0' : data.totalDue.replace(/[^\w\s.,]/gi, '').trim();
+    data.amount = !data.amount ? '0' : data.amount.replace(/[^\w\s.]/gi, '').trim();
+    data.pendingToCollect = !data.pendingToCollect ? '0' : data.pendingToCollect.replace(/[^\w\s.]/gi, '').trim();
+    data.totalDue = !data.totalDue ? '0' : data.totalDue.replace(/[^\w\s.]/gi, '').trim();
     data.date = moment(data.date).format('YYYY-MM-DD');
     const month = new Date(data.date).getMonth()
     data.month = MONTHS[month];
-    console.log(data);
-    return;
     if (this.isEditing) {
       this.cashFlowService.update(data).subscribe(result => {
           this.uiService.createMessage('success', result.message);

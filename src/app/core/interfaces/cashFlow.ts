@@ -137,7 +137,7 @@ export interface CreateEditCashFlowPeople {
 }
 
 
-export type TransactionType = "Cuenta por pagar" | "Ingreso" | "Egreso" | "Cuenta por cobrar";
+export type TransactionType = "Cuenta por pagar" | "Ingreso" | "Egreso" | "Cuenta por cobrar" | "Ingreso a cuenta de terceros" | "Interbancaria";
 
 export type WayToPay = "Efectivo" | "Transferencia" | "Zelle" | "Pago Movil";
 export type Currency = "$" | "Bs" | "€";

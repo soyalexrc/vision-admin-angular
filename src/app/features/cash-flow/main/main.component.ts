@@ -128,15 +128,15 @@ export class MainComponent implements OnInit, AfterViewInit {
             .map(element => ({
               id: element.id,
               date: element.date,
-              customProperty: `${element.propertyJson?.code} - ${element.propertyJson?.propertyType} - ${element.propertyJson?.operationType}`,
-              client: element.client,
+              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
+              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
               amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
               reason: element.reason
             }));
           headers = setHeaders([
             {key: 'date', displayName: 'Fecha'},
             {key: 'customProperty', displayName: 'Inmueble'},
-            {key: 'client', displayName: 'Persona / Cliente'},
+            {key: 'person', displayName: 'Persona / Cliente'},
             {key: 'amount', displayName: 'Monto'},
             {key: 'reason', displayName: 'Concepto'},
           ]);
@@ -147,15 +147,15 @@ export class MainComponent implements OnInit, AfterViewInit {
             .map(element => ({
               id: element.id,
               date: element.date,
-              customProperty: `${element.propertyJson?.code} - ${element.propertyJson?.propertyType} - ${element.propertyJson?.operationType}`,
-              client: element.client,
+              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
+              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
               reason: element.reason,
               totalDue: `${formatCurrency(Number(element.totalDue), 'en', `${element.currency} `)}`
             }));
           headers = setHeaders([
             {key: 'date', displayName: 'Fecha'},
             {key: 'customProperty', displayName: 'Inmueble'},
-            {key: 'client', displayName: 'Persona / Cliente'},
+            {key: 'person', displayName: 'Persona / Cliente'},
             {key: 'reason', displayName: 'Concepto'},
             {key: 'totalDue', displayName: 'Por Pagar'},
           ]);
@@ -166,17 +166,61 @@ export class MainComponent implements OnInit, AfterViewInit {
             .map(element => ({
               id: element.id,
               date: element.date,
-              customProperty: `${element.propertyJson?.code} - ${element.propertyJson?.propertyType} - ${element.propertyJson?.operationType}`,
-              client: element.client,
+              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
+              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
               reason: element.reason,
               pendingToCollect: `${formatCurrency(Number(element.pendingToCollect), 'en', `${element.currency} `)}`,
             }));
           headers = setHeaders([
             {key: 'date', displayName: 'Fecha'},
             {key: 'customProperty', displayName: 'Inmueble'},
-            {key: 'client', displayName: 'Persona / Cliente'},
+            {key: 'person', displayName: 'Persona / Cliente'},
             {key: 'reason', displayName: 'Concepto'},
             {key: 'pendingToCollect', displayName: 'Por Cobrar'},
+          ]);
+        }
+
+        if (this.sourceSelection === 'Ingreso a cuenta de terceros') {
+          this.data = data.rows
+            .filter(x => x.transactionType === 'Ingreso a cuenta de terceros' && !x.isTemporalTransaction)
+            .map(element => ({
+              id: element.id,
+              date: moment(element.date).calendar(),
+              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
+              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
+              amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
+              reason: element.reason,
+              pendingToCollect: `${formatCurrency(Number(element.pendingToCollect), 'en', `${element.currency} `)}`,
+              totalDue: `${formatCurrency(Number(element.totalDue), 'en', `${element.currency} `)}`
+            }));
+          headers = setHeaders([
+            {key: 'date', displayName: 'Fecha'},
+            {key: 'customProperty', displayName: 'Inmueble'},
+            {key: 'person', displayName: 'Persona'},
+            {key: 'amount', displayName: 'Monto'},
+            {key: 'reason', displayName: 'Concepto'},
+            {key: 'pendingToCollect', displayName: 'Por cobrar'},
+            {key: 'totalDue', displayName: 'Por pagar'},
+          ]);
+        }
+
+        if (this.sourceSelection === 'Interbancaria') {
+          this.data = data.rows
+            .filter(x => x.transactionType === 'Interbancaria' && !x.isTemporalTransaction)
+            .map(element => ({
+              id: element.id,
+              date: element.date,
+              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
+              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
+              amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
+              reason: element.reason
+            }));
+          headers = setHeaders([
+            {key: 'date', displayName: 'Fecha'},
+            {key: 'customProperty', displayName: 'Inmueble'},
+            {key: 'person', displayName: 'Persona / Cliente'},
+            {key: 'amount', displayName: 'Monto'},
+            {key: 'reason', displayName: 'Concepto'},
           ]);
         }
 
