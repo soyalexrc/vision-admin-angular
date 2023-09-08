@@ -14,9 +14,9 @@ import {Adviser} from "../../../core/interfaces/adviser";
 import {AdviserService} from "../../../core/services/adviser.service";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {UserService} from "../../../core/services/user.service";
-import {PROPERTY_TYPES} from "../../../shared/utils/property-types";
 import {CurrencyPipe} from "@angular/common";
 import {User} from "../../../core/interfaces/user";
+import {PROPERTY_TYPES} from "../../../shared/utils/property-types";
 
 interface Steps {
   first: string,

@@ -18,19 +18,72 @@
 
 
 <div class="stats">
-  <div class="main-stat">
-    <div class="icon">
-      <img src="/assets/icons/utility-2.svg" width="25px" height="25px" alt="">
-    </div>
-    <h1>Utilidad estimada</h1>
-    <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
-    <div class="stat-content" *ngIf="!loadingStats">
-      <h2> {{statsData.utilidad.usd ?? 0 | currency}}</h2>
-      <h4> {{statsData.utilidad.bs ?? 0 | currency: 'Bs. '}}</h4>
-      <h4> {{statsData.utilidad.eur ?? 0 | currency: '€ '}}</h4>
-    </div>
-  </div>
+<!--  <div class="main-stat">-->
+<!--    <div class="icon">-->
+<!--      <img src="/assets/icons/utility-2.svg" width="25px" height="25px" alt="">-->
+<!--    </div>-->
+<!--    <h1>Utilidad estimada</h1>-->
+<!--    <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>-->
+<!--    <div class="stat-content" *ngIf="!loadingStats">-->
+<!--      <h2> {{statsData.utilidad.usd ?? 0 | currency}}</h2>-->
+<!--      <h4> {{statsData.utilidad.bs ?? 0 | currency: 'Bs. '}}</h4>-->
+<!--      <h4> {{statsData.utilidad.eur ?? 0 | currency: '€ '}}</h4>-->
+<!--    </div>-->
+<!--  </div>-->
   <div class="other-stats">
+    <div class="stats-row">
+      <div class="stat">
+        <div class="icon">
+          <img src="/assets/icons/utility-2.svg" width="25px" height="25px" alt="">
+        </div>
+        <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
+        <div class="stat-content" *ngIf="!loadingStats">
+          <h3>Utilidad estimada</h3>
+          <h2> {{statsData.utilidad.usd ?? 0 | currency}}</h2>
+          <h4> {{statsData.utilidad.bs ?? 0 | currency: 'Bs. '}}</h4>
+          <h4> {{statsData.utilidad.eur ?? 0 | currency: '€ '}}</h4>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="icon">
+          <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+        </div>
+        <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
+        <div class="stat-content" *ngIf="!loadingStats">
+          <h3>Total disponible</h3>
+          <h2> {{statsData.totalDisponible.usd ?? 0 | currency}}</h2>
+          <h4> {{statsData.totalDisponible.bs ?? 0  | currency: 'Bs. '}}</h4>
+          <h4> {{statsData.totalDisponible.eur ?? 0  | currency: '€ '}}</h4>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="icon">
+          <img src="/assets/icons/income.svg" width="25px" height="25px" alt="">
+        </div>
+        <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
+        <div class="stat-content" *ngIf="!loadingStats">
+          <h3>Total de ingresos</h3>
+          <h2> {{statsData.ingreso.usd ?? 0 | currency}}</h2>
+          <h4> {{statsData.ingreso.bs ?? 0  | currency: 'Bs. '}}</h4>
+          <h4> {{statsData.ingreso.eur ?? 0  | currency: '€ '}}</h4>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="icon">
+          <img src="/assets/icons/expense.svg" width="25px" height="25px" alt="">
+        </div>
+        <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
+        <div class="stat-content" *ngIf="!loadingStats">
+          <h3>Total de egresos</h3>
+          <h2> {{statsData.egreso.usd ?? 0  | currency}}</h2>
+          <h4> {{statsData.egreso.bs ?? 0 | currency: 'Bs. '}}</h4>
+          <h4> {{statsData.egreso.eur ?? 0 | currency: '€ '}}</h4>
+        </div>
+      </div>
+
+
+
+    </div>
     <div class="stats-row">
       <div class="stat">
         <div class="icon">
@@ -56,30 +109,16 @@
           <h4> {{statsData.cuentasPorCobrar.eur ?? 0  | currency: '€ '}}</h4>
         </div>
       </div>
-    </div>
-    <div class="stats-row">
       <div class="stat">
         <div class="icon">
-          <img src="/assets/icons/income.svg" width="25px" height="25px" alt="">
+          <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
         </div>
         <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
         <div class="stat-content" *ngIf="!loadingStats">
-          <h3>Total de ingresos</h3>
-          <h2> {{statsData.ingreso.usd ?? 0 | currency}}</h2>
-          <h4> {{statsData.ingreso.bs ?? 0  | currency: 'Bs. '}}</h4>
-          <h4> {{statsData.ingreso.eur ?? 0  | currency: '€ '}}</h4>
-        </div>
-      </div>
-      <div class="stat">
-        <div class="icon">
-          <img src="/assets/icons/expense.svg" width="25px" height="25px" alt="">
-        </div>
-        <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
-        <div class="stat-content" *ngIf="!loadingStats">
-          <h3>Total de egresos</h3>
-          <h2> {{statsData.egreso.usd ?? 0  | currency}}</h2>
-          <h4> {{statsData.egreso.bs ?? 0 | currency: 'Bs. '}}</h4>
-          <h4> {{statsData.egreso.eur ?? 0 | currency: '€ '}}</h4>
+          <h3>Total ingreso cuenta de terceros</h3>
+          <h2> {{statsData.ingresoCuentaTerceros.usd ?? 0 | currency}}</h2>
+          <h4> {{statsData.ingresoCuentaTerceros.bs ?? 0  | currency: 'Bs. '}}</h4>
+          <h4> {{statsData.ingresoCuentaTerceros.eur ?? 0  | currency: '€ '}}</h4>
         </div>
       </div>
     </div>

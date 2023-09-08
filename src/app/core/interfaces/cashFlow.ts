@@ -115,6 +115,8 @@ export interface CashFlowTotals {
   cuentasPorCobrar: CashFlowTotal;
   cuentasPorPagar: CashFlowTotal;
   utilidad: CashFlowTotal;
+  totalDisponible: CashFlowTotal
+  ingresoCuentaTerceros: CashFlowTotal
 }
 
 export interface CashFlowTotal {

@@ -227,6 +227,11 @@ export class MainComponent implements OnInit, AfterViewInit {
           usd: (result?.ingreso?.usd ?? 0) - (result?.cuentasPorCobrar?.usd ?? 0),
           bs: (result?.ingreso?.bs ?? 0) - (result?.cuentasPorCobrar?.bs ?? 0),
           eur: (result?.ingreso?.eur ?? 0) - (result?.cuentasPorCobrar?.eur ?? 0)
+        },
+        totalDisponible: {
+          usd: (result?.ingreso?.usd ?? 0) - (result?.egreso?.usd ?? 0),
+          bs: (result?.ingreso?.bs ?? 0) - (result?.egreso?.bs ?? 0),
+          eur: (result?.ingreso?.eur ?? 0) - (result?.egreso?.eur ?? 0)
         }
       };
       this.statsData = data;

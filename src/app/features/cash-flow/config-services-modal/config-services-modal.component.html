@@ -1,0 +1,92 @@
+<nz-modal
+  [nzStyle]="{width: '500px'}"
+  [(nzVisible)]="showModal"
+  nzTitle="Configuracion de servicios"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOkModal()"
+  nzOkText="Guardar cambios"
+  [nzOkLoading]="loading"
+  nzCancelText="Cancelar"
+  [nzOkDisabled]="form.invalid"
+>
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="form" nzLayout="vertical">
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="24">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="serviceId">Seleccionar servicio</nz-form-label>
+            <nz-form-control [nzErrorTip]="serviceErrTemp">
+              <nz-select formControlName="serviceId" [nzLoading]="servicesLoading"
+                         (ngModelChange)="handleSelectService($event)" style="width: 100%">
+                <nz-option nzLabel="Nuevo servicio" [nzValue]="0"></nz-option>
+                <nz-option
+                  *ngFor="let service of services"
+                  [nzValue]="service.id"
+                  [nzLabel]="service.title">
+                </nz-option>
+              </nz-select>
+              <ng-template #serviceErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes seleccionar un servicio!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <ng-container *ngIf="showTitleAndSubServices">
+        <div nz-row class="row" [nzGutter]="16">
+          <div nz-col [nzSpan]="18">
+            <nz-form-item>
+              <nz-form-label *ngIf="serviceId; else newServiceTitle" nzRequired nzFor="serviceTitle">Cambiar nombre de servicio {{ serviceTitle | textShortener: 20 }}</nz-form-label>
+              <ng-template #newServiceTitle>
+                <nz-form-label nzRequired nzFor="serviceTitle">Nuevo nombre de servicio</nz-form-label>
+              </ng-template>
+              <nz-form-control [nzErrorTip]="serviceTitleErrTemp">
+                <input type="text" style="width: 100%" nz-input formControlName="serviceTitle"
+                       placeholder="Nombre de servicio"/>
+                <ng-template #serviceTitleErrTemp let-control>
+                  <ng-container *ngIf="control.hasError('required')">Debes ingresar un nombre de servicio!</ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+        <nz-divider></nz-divider>
+        <h3>Opciones de servicio</h3>
+        <nz-spin nzTip="Cargando informacion..." [nzSpinning]="loadingSubServices">
+          <ng-container formArrayName="subServices">
+            <div *ngFor="let subService of subServices.controls; index as i">
+              <div style="display: flex;">
+                <nz-form-item style="flex: 1" [formGroupName]="i">
+                  <nz-form-control>
+                    <input
+                      type="text"
+                      style="width: 100%"
+                      nz-input
+                      formControlName="title"
+                      placeholder="Nombre de opcion de servicio"/>
+                  </nz-form-control>
+                </nz-form-item>
+                <button
+                  style="margin-left: 1rem;"
+                  (click)="deleteSubService(i)"
+                  nz-button
+                  nzType="default"
+                  nzShape="circle">
+                    <span
+                      [nzTheme]="'twotone'"
+                      [nzTwotoneColor]="'#ff4d4f'"
+                      nz-icon
+                      nzType="delete">
+                    </span>
+                </button>
+
+              </div>
+            </div>
+          </ng-container>
+        </nz-spin>
+        <button nz-button nzBlock nzType="default" (click)="addSubService()">Agrear opcion de  servicio</button>
+
+      </ng-container>
+    </form>
+  </ng-container>
+</nz-modal>
