@@ -14,6 +14,9 @@ import {Adviser} from "../../../core/interfaces/adviser";
 import {AdviserService} from "../../../core/services/adviser.service";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {UserService} from "../../../core/services/user.service";
+import {CurrencyPipe} from "@angular/common";
+import {User} from "../../../core/interfaces/user";
+import {PROPERTY_TYPES} from "../../../shared/utils/property-types";
 
 interface Steps {
   first: string,
@@ -50,16 +53,19 @@ export class CreateComponent implements OnInit, OnDestroy {
   documentsSubscription = new Subscription();
   images: string[] = [];
   documents: string[] = [];
-
+  propertyTypes = PROPERTY_TYPES;
   allies: Ally[] = [];
   owners: Owner[] = [];
-  advisers: Adviser[] = [];
+  externalAdvisers: Adviser[] = [];
+  users: User[] = [];
+  advisers: any[] = [];
+
 
   showRegisterOwnersModal = false;
   ownersLoading = true;
   firstRender = false;
   creatingFromStoredData = false;
-
+  negotiationFormSubscription = new Subscription();
 
   @ViewChild('imageInputFile') imageInputFile!: ElementRef<HTMLInputElement>
   @ViewChild('documentInputFile') documentInputFile!: ElementRef<HTMLInputElement>
@@ -77,6 +83,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     private modal: NzModalService,
     private adviserService: AdviserService,
     private userService: UserService,
+    private currencyPipe: CurrencyPipe,
   ) {
   }
 
@@ -90,10 +97,10 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     this.buildForms();
 
-    this.getAdvisers();
+    this.getExternalAdvisers();
     this.getOwners();
     this.getAllies();
-
+    this.getAdvisers()
 
     if (!this.router.url.includes('crear')) {
       this.isEditing = true;
@@ -127,6 +134,31 @@ export class CreateComponent implements OnInit, OnDestroy {
         })
       }
     }
+
+    this.negotiationFormSubscription = this.negotiationForm.valueChanges.subscribe(form => {
+      if (form.price) {
+        this.negotiationForm.patchValue({
+          price: this.currencyPipe.transform(form.price.replace(/\D/g, '').replace(/^0+/, ''), '$', 'code', '1.0-0')
+        }, {emitEvent: false})
+      }
+      if (form.minimumNegotiation) {
+        this.negotiationForm.patchValue({
+          minimumNegotiation: this.currencyPipe.transform(form.minimumNegotiation.replace(/\D/g, '').replace(/^0+/, ''), '$', 'code', '1.0-0')
+        }, {emitEvent: false})
+      }
+      if (form.externalAdviser) {
+        // this.negotiationForm.get('owner')?.patchValue(null)
+      }
+    })
+
+    this.negotiationForm.get('externalAdviser')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.negotiationForm.get('owner')?.disable()
+        this.negotiationForm.get('owner')?.reset()
+      } else {
+        this.negotiationForm.get('owner')?.enable()
+      }
+    })
   }
 
   ngOnDestroy() {
@@ -184,20 +216,17 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     this.negotiationForm = this.fb.group({
       price: ['', Validators.required],
-      owner: ['', Validators.required],
-      attorneyPhone: ['', Validators.required],
-      attorneyEmail: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
-      attorneyFirstName: ['', Validators.required],
-      attorneyLastName: ['', Validators.required],
-      contactPhone: ['', Validators.required],
-      contactEmail: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
-      contactFirstName: ['', Validators.required],
-      contactLastName: ['', Validators.required],
+      owner: [{value: null, disabled: false}, Validators.required],
+      attorneyPhone: [''],
+      attorneyEmail: ['', Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)],
+      attorneyFirstName: [''],
+      attorneyLastName: [''],
       minimumNegotiation: [''],
       reasonToSellOrRent: [''],
-      externalCapacitor: [''],
-      ally: [''],
+      externalAdviser: [null],
+      ally: [null],
       partOfPayment: [''],
+      user: [this.userService.currentUser.value.id, Validators.required]
     })
 
     this.documentsForm = this.fb.group({
@@ -206,15 +235,6 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   submitForm(): void {
-    console.log({
-      property: this.generalForm.value,
-      location: this.locationForm.value,
-      clientData: this.negotiationForm.value,
-      images: this.images,
-      files: this.documents,
-      publicationSource: this.publicationSourceForm.value,
-      attributes: this.attributes.value
-    })
     if (this.generalForm.valid && this.locationForm.valid && this.negotiationForm.valid) {
       this.loading = true;
       const data = {
@@ -226,10 +246,20 @@ export class CreateComponent implements OnInit, OnDestroy {
         files: this.documents,
         publicationSource: this.publicationSourceForm.value,
         attributes: this.attributes.value,
-        user_id: this.userService.currentUser.value.id,
+        user_id: this.negotiationForm.get('user')?.value,
+        external_adviser_id: this.negotiationForm.get('externalAdviser')?.value,
         owner_id: this.negotiationForm.get('owner')?.value,
         ally_id: this.negotiationForm.get('ally')?.value === '' ? null : this.negotiationForm.get('ally')?.value,
       };
+
+      data.negotiationInformation.price = data.negotiationInformation.price.replace(/\D/g, '');
+      data.negotiationInformation.minimumNegotiation = !data.negotiationInformation.minimumNegotiation ? '0' : data.negotiationInformation.minimumNegotiation.replace(/\D/g, '');
+
+      delete data.negotiationInformation.externalAdviser;
+      delete data.negotiationInformation.owner;
+      delete data.negotiationInformation.ally;
+      delete data.negotiationInformation.user;
+
       if (this.isEditing) {
         this.propertyService.update(data as PropertyFull).subscribe(result => {
           this.uiService.createMessage('success', 'Se edito la propiedad con exito!')
@@ -260,6 +290,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   getPropertyById(id: string) {
     this.propertyService.getById(id).subscribe(result => {
       this.generalForm.get('code')?.patchValue(result.generalInformation.code);
+      this.generalForm.get('user')?.patchValue(result.user_id);
       this.generalForm.get('nomenclature')?.patchValue(result.generalInformation.nomenclature);
       this.generalForm.get('footageBuilding')?.patchValue(result.generalInformation.footageBuilding);
       this.generalForm.get('footageGround')?.patchValue(result.generalInformation.footageGround);
@@ -306,12 +337,8 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.negotiationForm.get('minimumNegotiation')?.patchValue(result.negotiationInformation.minimumNegotiation);
       this.negotiationForm.get('reasonToSellOrRent')?.patchValue(result.negotiationInformation.reasonToSellOrRent);
       this.negotiationForm.get('ally')?.patchValue(result.ally_id);
-      this.negotiationForm.get('externalCapacitor')?.patchValue(result.negotiationInformation.externalCapacitor);
+      this.negotiationForm.get('externalAdviser')?.patchValue(result.external_adviser_id);
       this.negotiationForm.get('owner')?.patchValue(result.owner_id);
-      this.negotiationForm.get('attorneyEmail')?.patchValue(result.negotiationInformation.attorneyEmail);
-      this.negotiationForm.get('attorneyFirstName')?.patchValue(result.negotiationInformation.attorneyFirstName);
-      this.negotiationForm.get('attorneyLastName')?.patchValue(result.negotiationInformation.attorneyLastName);
-      this.negotiationForm.get('attorneyPhone')?.patchValue(result.negotiationInformation.attorneyPhone);
       this.negotiationForm.get('contactEmail')?.patchValue(result.negotiationInformation.contactEmail);
       this.negotiationForm.get('contactFirstName')?.patchValue(result.negotiationInformation.contactFirstName);
       this.negotiationForm.get('contactLastName')?.patchValue(result.negotiationInformation.contactLastName);
@@ -334,7 +361,9 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.creatingFromStoredData = true;
     const data = JSON.parse(localStorage.getItem('property_create_temporal')!);
     console.log(data);
+
     this.generalForm.get('code')?.patchValue(data.generalInformation.code);
+    this.generalForm.get('user')?.patchValue(data.user_id);
     this.generalForm.get('nomenclature')?.patchValue(data.generalInformation.nomenclature);
     this.generalForm.get('footageBuilding')?.patchValue(data.generalInformation.footageBuilding);
     this.generalForm.get('footageGround')?.patchValue(data.generalInformation.footageGround);
@@ -363,12 +392,8 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.negotiationForm.get('partOfPayment')?.patchValue(data.negotiationInformation.partOfPayment);
     this.negotiationForm.get('minimunNegotiation')?.patchValue(data.negotiationInformation.minimumNegotiation);
     this.negotiationForm.get('reasonToSellOrRent')?.patchValue(data.negotiationInformation.reasonToSellOrRent);
-    this.negotiationForm.get('externalCapacitor')?.patchValue(data.negotiationInformation.externalCapacitor);
+    this.negotiationForm.get('externalAdviser')?.patchValue(data.external_adviser_id);
     this.negotiationForm.get('owner')?.patchValue(data.negotiationInformation.owner);
-    this.negotiationForm.get('attorneyEmail')?.patchValue(data.negotiationInformation.attorneyEmail);
-    this.negotiationForm.get('attorneyFirstName')?.patchValue(data.negotiationInformation.attorneyFirstName);
-    this.negotiationForm.get('attorneyLastName')?.patchValue(data.negotiationInformation.attorneyLastName);
-    this.negotiationForm.get('attorneyPhone')?.patchValue(data.negotiationInformation.attorneyPhone);
     this.negotiationForm.get('contactEmail')?.patchValue(data.negotiationInformation.contactEmail);
     this.negotiationForm.get('contactFirstName')?.patchValue(data.negotiationInformation.contactFirstName);
     this.negotiationForm.get('contactLastName')?.patchValue(data.negotiationInformation.contactLastName);
@@ -648,9 +673,15 @@ export class CreateComponent implements OnInit, OnDestroy {
     })
   }
 
+  getExternalAdvisers() {
+    this.adviserService.getAll().subscribe(result => {
+      this.externalAdvisers = result;
+    })
+  }
+
   getAdvisers() {
-    this.adviserService.getAll(1, 1).subscribe(result => {
-      this.advisers = result.rows;
+    this.userService.getAdvisers('vision').subscribe(result => {
+      this.advisers = result;
     })
   }
 

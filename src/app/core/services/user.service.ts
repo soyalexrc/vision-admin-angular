@@ -34,8 +34,8 @@ export class UserService {
     return this.http.get<GetAllUsers>(`user?pageIndex=${pageIndex}&pageSize=${pageSize}`)
   }
 
-  getAdvisers(): Observable<GetAllUsers> {
-    return this.http.get<GetAllUsers>(`user/getAdvisers`)
+  getAdvisers(adviserType: string): Observable<User[]> {
+    return this.http.get<User[]>(`user/getAdvisers?adviserType=${adviserType}`)
   }
 
   createOne(data: User): Observable<CreateEditUserResponse> {

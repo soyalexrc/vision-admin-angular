@@ -6,7 +6,8 @@ export const SERVICE_OPTIONS = [
   'Administración Empresas',
   'Limpieza (Ama de Llaves)',
   'Remodelación/ Acondicionamiento de Espacios',
-  'Mantenimiento de Equipos Domésticos e Industriales'
+  'Mantenimiento de Equipos Domésticos e Industriales',
+  'Administracion Interna',
 ]
 
 

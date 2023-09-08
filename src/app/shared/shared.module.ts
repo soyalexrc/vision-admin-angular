@@ -18,6 +18,8 @@ import { OnlyNumbersDirective } from './directives/only-numbers.directive';
 import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
 import {NzInputModule} from "ng-zorro-antd/input";
+import { TextShortenerPipe } from './pipes/text-shortener.pipe';
+import { CurrencyInputDirective } from './directives/currency-input.directive';
 
 
 
@@ -28,13 +30,17 @@ import {NzInputModule} from "ng-zorro-antd/input";
     GenericTableComponent,
     RegisterOwnerModalComponent,
     OnlyNumbersDirective,
+    TextShortenerPipe,
+    CurrencyInputDirective,
   ],
-    exports: [
-        SectionTitleComponent,
-        GenericTableComponent,
-        RegisterOwnerModalComponent,
-        OnlyNumbersDirective,
-    ],
+  exports: [
+    SectionTitleComponent,
+    GenericTableComponent,
+    RegisterOwnerModalComponent,
+    OnlyNumbersDirective,
+    TextShortenerPipe,
+    CurrencyInputDirective,
+  ],
   imports: [
     CommonModule,
     NzTableModule,

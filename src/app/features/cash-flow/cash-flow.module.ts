@@ -19,6 +19,9 @@ import {NzStepsModule} from "ng-zorro-antd/steps";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
 import {NzSkeletonModule} from "ng-zorro-antd/skeleton";
 import { RegisterPersonModalComponent } from './register-person-modal/register-person-modal.component';
+import { ConfigServicesModalComponent } from './config-services-modal/config-services-modal.component';
+import {NzDividerModule} from "ng-zorro-antd/divider";
+import {NzSpinModule} from "ng-zorro-antd/spin";
 
 
 
@@ -27,7 +30,8 @@ import { RegisterPersonModalComponent } from './register-person-modal/register-p
     MainComponent,
     OperationsResumeComponent,
     CreateComponent,
-    RegisterPersonModalComponent
+    RegisterPersonModalComponent,
+    ConfigServicesModalComponent
   ],
     imports: [
         CommonModule,
@@ -46,7 +50,9 @@ import { RegisterPersonModalComponent } from './register-person-modal/register-p
         ReactiveFormsModule,
         NzStepsModule,
         NzDatePickerModule,
-        NzSkeletonModule
+        NzSkeletonModule,
+        NzDividerModule,
+        NzSpinModule
     ],
   providers: [CurrencyPipe]
 })

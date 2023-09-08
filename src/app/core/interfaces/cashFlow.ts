@@ -115,6 +115,8 @@ export interface CashFlowTotals {
   cuentasPorCobrar: CashFlowTotal;
   cuentasPorPagar: CashFlowTotal;
   utilidad: CashFlowTotal;
+  totalDisponible: CashFlowTotal
+  ingresoCuentaTerceros: CashFlowTotal
 }
 
 export interface CashFlowTotal {
@@ -135,7 +137,7 @@ export interface CreateEditCashFlowPeople {
 }
 
 
-export type TransactionType = "Cuenta por pagar" | "Ingreso" | "Egreso" | "Cuenta por cobrar";
+export type TransactionType = "Cuenta por pagar" | "Ingreso" | "Egreso" | "Cuenta por cobrar" | "Ingreso a cuenta de terceros" | "Interbancaria";
 
 export type WayToPay = "Efectivo" | "Transferencia" | "Zelle" | "Pago Movil";
 export type Currency = "$" | "Bs" | "€";

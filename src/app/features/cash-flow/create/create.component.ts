@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PropertyService} from "../../../core/services/property.service";
-import { PropertyReview} from "../../../core/interfaces/property";
-import {SERVICE_OPTIONS, SERVICE_TYPE_OPTIONS} from "../../../shared/utils/services";
+import {PropertyReview} from "../../../core/interfaces/property";
 import {CashFlowService} from "../../../core/services/cash-flow.service";
 import * as moment from "moment/moment";
 import {UiService} from "../../../core/services/ui.service";
@@ -11,6 +10,8 @@ import {MONTHS} from "../../../shared/utils/months";
 import {CurrencyPipe} from "@angular/common";
 import {Subscription} from "rxjs";
 import {CashFlowPerson} from "../../../core/interfaces/cashFlow";
+import {Service, SubService} from "../../../core/interfaces/service";
+import {ServicesService} from "../../../core/services/services.service";
 
 interface Steps {
   first: string,
@@ -29,25 +30,27 @@ export class CreateComponent implements OnInit {
   paymentDetailForm!: FormGroup;
   serviceForm!: FormGroup;
   loading = false;
+  servicesLoading = false;
   id: any;
   index = 0;
-  paymentDetailFormSubscription = new Subscription();
 
   properties: PropertyReview[] = []
   people: CashFlowPerson[] = [];
-  serviceOptions: string[] = SERVICE_OPTIONS;
-  serviceTypeOptions: string[] = [];
   showRegisterPersonModal = false;
+  showConfigServicesModal = false;
   peopleLoading = false;
+  services: Service[] = []
+  subServicesLoading = false;
+  subServices: SubService[] = [];
 
   constructor(
     private fb: FormBuilder,
     private propertyService: PropertyService,
     private cashFlowService: CashFlowService,
+    private servicesService: ServicesService,
     private uiService: UiService,
     private router: Router,
     private route: ActivatedRoute,
-    private currencyPipe: CurrencyPipe,
   ) {
   }
 
@@ -58,29 +61,27 @@ export class CreateComponent implements OnInit {
       this.properties = result.rows;
     })
 
+    this.getPeople();
+    this.getServices();
     if (!this.router.url.includes('crear')) {
       this.isEditing = true;
       this.id = this.route.snapshot.paramMap.get('id')!;
       this.getCashFlowRegisterById(this.id)
     }
 
-    this.paymentDetailFormSubscription = this.paymentDetailForm.valueChanges.subscribe(form => {
-      if (form.amount) {
-        this.paymentDetailForm.patchValue({
-          amount: this.currencyPipe.transform(form.amount.replace(/\D/g, '').replace(/^0+/, ''), this.paymentDetailForm.get('currency')?.value, 'code', '1.0-0')
-        }, {emitEvent: false})
-      }
-      if (form.pendingToCollect) {
-        this.paymentDetailForm.patchValue({
-          pendingToCollect: this.currencyPipe.transform(form.pendingToCollect.replace(/\D/g, '').replace(/^0+/, ''), this.paymentDetailForm.get('currency')?.value, 'code', '1.0-0')
-        }, {emitEvent: false})
-      }
-      if (form.totalDue) {
-        this.paymentDetailForm.patchValue({
-          totalDue: this.currencyPipe.transform(form.totalDue.replace(/\D/g, '').replace(/^0+/, ''), this.paymentDetailForm.get('currency')?.value, 'code', '1.0-0')
-        }, {emitEvent: false})
+    this.generalForm.get('person')?.valueChanges.subscribe(value => {
+      if (value.includes('Administracion interna')) {
+        this.serviceForm.get('service')?.reset()
+        this.serviceForm.get('typeOfService')?.reset()
+        this.serviceForm.get('service')?.patchValue(10);
+        this.serviceForm.get('service')?.disable()
+      } else {
+        this.serviceForm.get('service')?.reset()
+        this.serviceForm.get('service')?.enable()
+        this.serviceForm.get('typeOfService')?.reset()
       }
     })
+
   }
 
   onIndexChange(index: number): void {
@@ -174,9 +175,9 @@ export class CreateComponent implements OnInit {
 
     this.paymentDetailForm = this.fb.group({
       amount: [''],
-      currency: [''],
-      wayToPay: [''],
-      transactionType: [''],
+      currency: ['$'],
+      wayToPay: ['Efectivo'],
+      transactionType: ['Ingreso'],
       totalDue: [''],
       entity: [''],
       pendingToCollect: [''],
@@ -188,31 +189,31 @@ export class CreateComponent implements OnInit {
     return `${property.code} - ${property.propertyType} - ${property.operationType}`;
   }
 
-  handleChangeService(service: string) {
-    if (service === this.serviceOptions[0]) this.serviceTypeOptions = SERVICE_TYPE_OPTIONS.inmueble
-    if (service === this.serviceOptions[1]) this.serviceTypeOptions = SERVICE_TYPE_OPTIONS.legal
-    if (service === this.serviceOptions[2]) this.serviceTypeOptions = SERVICE_TYPE_OPTIONS.propertiesAdministration
-    if (service === this.serviceOptions[3]) this.serviceTypeOptions = SERVICE_TYPE_OPTIONS.accounting
-    if (service === this.serviceOptions[4]) this.serviceTypeOptions = SERVICE_TYPE_OPTIONS.companyAdministration
-    if (service === this.serviceOptions[5]) this.serviceTypeOptions = SERVICE_TYPE_OPTIONS.cleanliness
-    if (service === this.serviceOptions[6]) this.serviceTypeOptions = SERVICE_TYPE_OPTIONS.remodeling
-    if (service === this.serviceOptions[7]) this.serviceTypeOptions = SERVICE_TYPE_OPTIONS.maintenance
+  handleChangeService(serviceId: number) {
+    this.subServicesLoading = true;
+    this.servicesService.getSubServicesByServiceId(serviceId).subscribe(result => {
+        this.subServices = result;
+      }, _ => this.subServicesLoading = false,
+      () => this.subServicesLoading = false)
   }
 
   showAmountField() {
     return this.paymentDetailForm.value.transactionType === 'Ingreso'
       || this.paymentDetailForm.value.transactionType === 'Egreso'
+      || this.paymentDetailForm.value.transactionType === 'Ingreso a cuenta de terceros'
       || this.paymentDetailForm.value.transactionType === 'Interbancaria'
   }
 
   showTotalDueField() {
     return this.paymentDetailForm.value.transactionType === 'Ingreso'
-      || this.paymentDetailForm.value.transactionType === 'Cuenta por pagar'
+    || this.paymentDetailForm.value.transactionType === 'Ingreso a cuenta de terceros'
+    || this.paymentDetailForm.value.transactionType === 'Cuenta por pagar'
   }
 
   showPendingToCollectField() {
     return this.paymentDetailForm.value.transactionType === 'Ingreso'
-      || this.paymentDetailForm.value.transactionType === 'Cuenta por cobrar'
+    || this.paymentDetailForm.value.transactionType === 'Ingreso a cuenta de terceros'
+    || this.paymentDetailForm.value.transactionType === 'Cuenta por cobrar'
   }
 
 
@@ -223,12 +224,12 @@ export class CreateComponent implements OnInit {
       ...this.serviceForm.value,
       ...this.paymentDetailForm.value
     }
-    data.client_id = data.person.includes('Cliente') ? data.person.split('-')[0] : null;
-    data.owner_id = data.person.includes('Propietario') ? data.person.split('-')[0] : null;
-    data.cashflow_person_id = data.person.includes('Administracion interna') ? data.person.split('-')[0] : null;
-    data.amount = !data.amount ? '0' : data.amount.replace(/\D/g, '');
-    data.pendingToCollect = !data.pendingToCollect ? '0' : data.pendingToCollect.replace(/\D/g, '');
-    data.totalDue = !data.totalDue ? '0' : data.totalDue.replace(/\D/g, '');
+    data.client_id = data.person && data.person.includes('Cliente') ? data.person.split('-')[0] : null;
+    data.owner_id = data.person && data.person.includes('Propietario') ? data.person.split('-')[0] : null;
+    data.cashflow_person_id = data.person && data.person.includes('Administracion interna') ? data.person.split('-')[0] : null;
+    data.amount = !data.amount ? '0' : data.amount.replace(/[^\w\s.]/gi, '').trim();
+    data.pendingToCollect = !data.pendingToCollect ? '0' : data.pendingToCollect.replace(/[^\w\s.]/gi, '').trim();
+    data.totalDue = !data.totalDue ? '0' : data.totalDue.replace(/[^\w\s.]/gi, '').trim();
     data.date = moment(data.date).format('YYYY-MM-DD');
     const month = new Date(data.date).getMonth()
     data.month = MONTHS[month];
@@ -306,12 +307,11 @@ export class CreateComponent implements OnInit {
     }
 
 
-
-    if (this.index === 1 ) {
+    if (this.index === 1) {
       bool = this.serviceForm.invalid
     }
 
-    if (this.index === 2 ) {
+    if (this.index === 2) {
       bool = this.paymentDetailForm.invalid
     }
 
@@ -337,5 +337,24 @@ export class CreateComponent implements OnInit {
     }, () => {
       this.peopleLoading = false;
     })
+  }
+
+  getServices() {
+    this.servicesLoading = true;
+    this.servicesService.getAll().subscribe(result => {
+      this.services = result;
+    }, error => {
+      this.servicesLoading = false;
+    }, () => {
+      this.servicesLoading = false;
+    })
+  }
+
+  get transactionType() {
+    return this.paymentDetailForm.get('transactionType')?.value
+  }
+
+  get currency() {
+    return this.paymentDetailForm.get('currency')?.value
   }
 }
