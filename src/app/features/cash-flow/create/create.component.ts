@@ -199,6 +199,14 @@ export class CreateComponent implements OnInit {
     if (service === this.serviceOptions[5]) this.serviceTypeOptions = SERVICE_TYPE_OPTIONS.cleanliness
     if (service === this.serviceOptions[6]) this.serviceTypeOptions = SERVICE_TYPE_OPTIONS.remodeling
     if (service === this.serviceOptions[7]) this.serviceTypeOptions = SERVICE_TYPE_OPTIONS.maintenance
+
+    if  (service === this.serviceOptions[8]) {
+      this.serviceForm.get('typeOfService')?.reset();
+      this.serviceForm.get('typeOfService')?.disable();
+    } else {
+      this.serviceForm.get('typeOfService')?.reset();
+      this.serviceForm.get('typeOfService')?.enable();
+    }
   }
 
   showAmountField() {
