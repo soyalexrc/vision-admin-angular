@@ -17,6 +17,10 @@ export class ServicesService {
     return this.http.get<Service[]>('service')
   }
 
+  getAllSubService(): Observable<SubService[]> {
+    return this.http.get<SubService[]>('service/subService')
+  }
+
   createService(data: ServiceCreate): Observable<CreateEditService> {
     return this.http.post<CreateEditService>('service', data)
   }

@@ -29,7 +29,7 @@ export interface CashFlowRegister {
   pendingToCollect?: string;
   observations:  string;
   service?: string;
-  typeOfService?: string;
+  serviceType?: string;
   transactionType: TransactionType;
   currency: Currency;
   wayToPay: WayToPay;
@@ -137,7 +137,7 @@ export interface CreateEditCashFlowPeople {
 }
 
 
-export type TransactionType = "Cuenta por pagar" | "Ingreso" | "Egreso" | "Cuenta por cobrar" | "Ingreso a cuenta de terceros" | "Interbancaria";
+export type TransactionType = "Cuenta por pagar" | "Ingreso" | "Egreso" | "Cuenta por cobrar" | "Ingreso a cuenta de terceros" ;
 
 export type WayToPay = "Efectivo" | "Transferencia" | "Zelle" | "Pago Movil";
 export type Currency = "$" | "Bs" | "€";
