@@ -42,7 +42,10 @@ export class MainComponent implements OnInit, AfterViewInit {
   service = ''
   servicesLoading = false;
   services: Service[] = [];
-  date: any = '';
+  date = [
+    new Date().toISOString().split('T')[0].concat('T05:00:00.000Z'),
+    new Date().toISOString().split('T')[0].concat('T23:00:00.000Z'),
+  ];
 
   constructor(
     private router: Router,
@@ -176,7 +179,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getTotalStats() {
     this.loadingStats = true;
-    this.cashFlowService.getTotals().subscribe(result => {
+    this.cashFlowService.getTotals(this.date[0], this.date[1]).subscribe(result => {
       const data = {
         ...result,
         utilidad: {
@@ -217,14 +220,20 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   onChangeDate(date: any[]) {
     if (date.length < 1) {
-      this.date = ''
-    } else {
-      const dateFrom = new Date(date[0])
-      const dateTo = new Date(date[1])
       this.date = [
-        dateFrom.toISOString().split('T')[0].concat('T01:00:00.000Z'),
-        dateTo.toISOString().split('T')[0].concat('T23:00:00.000Z'),
+        new Date().toISOString().split('T')[0].concat('T05:00:00.000Z'),
+        new Date().toISOString().split('T')[0].concat('T23:00:00.000Z'),
+      ]
+    } else {
+      this.date = [
+        new Date(date[0]).toISOString().split('T')[0].concat('T05:00:00.000Z'),
+        new Date(date[1]).toISOString().split('T')[0].concat('T23:00:00.000Z'),
       ];
     }
+  }
+
+  getData() {
+    this.getCashFlowData()
+    this.getTotalStats();
   }
 }

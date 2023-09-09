@@ -62,8 +62,8 @@ export class CashFlowService {
     return this.http.get<GetAllTemporalTransaction>(`cashFlow/getTemporalTransactions?pageIndex=${pageIndex}&pageSize=${pageSize}`)
   }
 
-  getTotals(): Observable<CashFlowTotals> {
-    return this.http.get<CashFlowTotals>('cashFlow/getTotals')
+  getTotals(dateFrom: string, dateTo: string): Observable<CashFlowTotals> {
+    return this.http.get<CashFlowTotals>(`cashFlow/getTotals?dateFrom=${dateFrom}&dateTo=${dateTo}`)
   }
 
   getPeople(): Observable<CashFlowPerson[]> {

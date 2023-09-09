@@ -22,6 +22,7 @@ import { RegisterPersonModalComponent } from './register-person-modal/register-p
 import { ConfigServicesModalComponent } from './config-services-modal/config-services-modal.component';
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {NzSpinModule} from "ng-zorro-antd/spin";
+import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
 
 
 
@@ -52,7 +53,8 @@ import {NzSpinModule} from "ng-zorro-antd/spin";
         NzDatePickerModule,
         NzSkeletonModule,
         NzDividerModule,
-        NzSpinModule
+        NzSpinModule,
+        NzCheckboxModule
     ],
   providers: [CurrencyPipe]
 })

@@ -17,6 +17,70 @@
 </button>
 
 
+
+
+<div class="button-group">
+  <div>
+    <p>Fecha</p>
+    <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChangeDate($event)"></nz-range-picker>
+  </div>
+  <div>
+    <p>Tipo de transaccion</p>
+    <nz-select [(ngModel)]="sourceSelection" style="width: 200px">
+      <nz-option nzLabel="Todos" nzValue=""></nz-option>
+      <nz-option nzLabel="Ingreso" nzValue="Ingreso"></nz-option>
+      <nz-option nzLabel="Egreso" nzValue="Egreso"></nz-option>
+      <nz-option nzLabel="Cuentas por pagar" nzValue="Cuenta por pagar"></nz-option>
+      <nz-option nzLabel="Cuentas por cobrar" nzValue="Cuenta por cobrar"></nz-option>
+      <nz-option nzLabel="Ingreso a cuenta de terceros" nzValue="Ingreso a cuenta de terceros"></nz-option>
+    </nz-select>
+  </div>
+  <div>
+    <p>Moneda</p>
+    <nz-select [(ngModel)]="currency"  style="width: 100px">
+      <nz-option nzLabel="Todas" nzValue=""></nz-option>
+      <nz-option nzLabel="$ Dolar" nzValue="$"></nz-option>
+      <nz-option nzLabel="Bs. Bolivar " nzValue="Bs"></nz-option>
+      <nz-option nzLabel="€ Euro" nzValue="€"></nz-option>
+    </nz-select>
+  </div>
+  <div>
+    <p>Forma de pago</p>
+    <nz-select [(ngModel)]="wayToPay"  style="width: 150px">
+      <nz-option nzLabel="Todas" nzValue=""></nz-option>
+      <nz-option nzLabel="Efectivo" nzValue="Efectivo"></nz-option>
+      <nz-option nzLabel="Transferencia" nzValue="Transferencia"></nz-option>
+      <nz-option nzLabel="Pago Movil" nzValue="Pago Movil"></nz-option>
+      <nz-option nzLabel="Zelle" nzValue="Zelle"></nz-option>
+    </nz-select>
+  </div>
+  <div>
+    <p>Entidad</p>
+    <nz-select [(ngModel)]="entity"  style="width: 200px">
+      <nz-option nzLabel="Todas" nzValue=""></nz-option>
+      <nz-option nzValue="Banco Nacional de Crédito (BNC)" nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>
+      <nz-option nzValue="Banesco Panamá" nzLabel="Banesco Panamá"></nz-option>
+      <nz-option nzValue="Banesco Venezuela" nzLabel="Banesco Venezuela"></nz-option>
+      <nz-option nzValue="Banco Nacional de Terceros" nzLabel="Banco Nacional de Terceros"></nz-option>
+      <nz-option nzValue="Oficina Paseo La Granja" nzLabel="Oficina Paseo La Granja"></nz-option>
+      <nz-option nzValue="Tesorería" nzLabel="Tesorería"></nz-option>
+      <nz-option nzValue="Oficina San Carlos" nzLabel="Oficina San Carlos"></nz-option>
+      <nz-option nzValue="Banco internacional de terceros" nzLabel="Banco internacional de terceros"></nz-option>
+    </nz-select>
+  </div>
+  <div>
+    <p>Servicio</p>
+    <nz-select [(ngModel)]="service"  style="width: 200px" [nzLoading]="servicesLoading">
+      <nz-option nzLabel="Todas" nzValue=""></nz-option>
+      <nz-option *ngFor="let service of services" [nzLabel]="service.title" [nzValue]="service.id"></nz-option>
+    </nz-select>
+  </div>
+
+  <button nz-button nzType="primary" (click)="getData()"> Buscar</button>
+</div>
+
+<nz-divider></nz-divider>
+
 <div class="stats">
   <!--  <div class="main-stat">-->
   <!--    <div class="icon">-->
@@ -124,76 +188,7 @@
   </div>
 </div>
 
-<div class="button-group">
-  <div>
-    <p>Fecha</p>
-    <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChangeDate($event)"></nz-range-picker>
-  </div>
-  <div>
-    <p>Tipo de transaccion</p>
-    <nz-select [(ngModel)]="sourceSelection" style="width: 200px">
-      <nz-option nzLabel="Todos" nzValue=""></nz-option>
-      <nz-option nzLabel="Ingreso" nzValue="Ingreso"></nz-option>
-      <nz-option nzLabel="Egreso" nzValue="Egreso"></nz-option>
-      <nz-option nzLabel="Cuentas por pagar" nzValue="Cuenta por pagar"></nz-option>
-      <nz-option nzLabel="Cuentas por cobrar" nzValue="Cuenta por cobrar"></nz-option>
-      <nz-option nzLabel="Interbancaria" nzValue="Interbancaria"></nz-option>
-      <nz-option nzLabel="Ingreso a cuenta de terceros" nzValue="Ingreso a cuenta de terceros"></nz-option>
-    </nz-select>
-  </div>
-  <div>
-    <p>Moneda</p>
-    <nz-select [(ngModel)]="currency"  style="width: 100px">
-      <nz-option nzLabel="Todas" nzValue=""></nz-option>
-      <nz-option nzLabel="$ Dolar" nzValue="$"></nz-option>
-      <nz-option nzLabel="Bs. Bolivar " nzValue="Bs"></nz-option>
-      <nz-option nzLabel="€ Euro" nzValue="€"></nz-option>
-    </nz-select>
-  </div>
-  <div>
-    <p>Forma de pago</p>
-    <nz-select [(ngModel)]="wayToPay"  style="width: 150px">
-      <nz-option nzLabel="Todas" nzValue=""></nz-option>
-      <nz-option nzLabel="Efectivo" nzValue="Efectivo"></nz-option>
-      <nz-option nzLabel="Transferencia" nzValue="Transferencia"></nz-option>
-      <nz-option nzLabel="Pago Movil" nzValue="Pago Movil"></nz-option>
-      <nz-option nzLabel="Zelle" nzValue="Zelle"></nz-option>
-    </nz-select>
-  </div>
-  <div>
-    <p>Entidad</p>
-    <nz-select [(ngModel)]="entity"  style="width: 200px">
-      <nz-option nzLabel="Todas" nzValue=""></nz-option>
-      <nz-option nzValue="Banco Nacional de Crédito (BNC)" nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>
-      <nz-option nzValue="Banesco Panamá" nzLabel="Banesco Panamá"></nz-option>
-      <nz-option nzValue="Banesco Venezuela" nzLabel="Banesco Venezuela"></nz-option>
-      <nz-option nzValue="Banco Nacional de Terceros" nzLabel="Banco Nacional de Terceros"></nz-option>
-      <nz-option nzValue="Oficina Paseo La Granja" nzLabel="Oficina Paseo La Granja"></nz-option>
-      <nz-option nzValue="Tesorería" nzLabel="Tesorería"></nz-option>
-      <nz-option nzValue="Oficina San Carlos" nzLabel="Oficina San Carlos"></nz-option>
-      <nz-option nzValue="Banco internacional de terceros" nzLabel="Banco internacional de terceros"></nz-option>
-    </nz-select>
-  </div>
-  <div>
-    <p>Servicio</p>
-    <nz-select [(ngModel)]="service"  style="width: 200px" [nzLoading]="servicesLoading">
-      <nz-option nzLabel="Todas" nzValue=""></nz-option>
-      <nz-option *ngFor="let service of services" [nzLabel]="service.title" [nzValue]="service.id"></nz-option>
-    </nz-select>
-  </div>
-
-  <button nz-button nzType="primary" (click)="getCashFlowData()"> Buscar</button>
-
-
-  <!--  <nz-radio-group [(ngModel)]="sourceSelection" (ngModelChange)="handleChangeSelection($event)" nzButtonStyle="solid">-->
-  <!--    <label nz-radio-button nzValue="Ingreso">Ingresos</label>-->
-  <!--    <label nz-radio-button nzValue="Egreso">Egresos</label>-->
-  <!--    <label nz-radio-button nzValue="Cuenta por pagar">Cuentas por pagar</label>-->
-  <!--    <label nz-radio-button nzValue="Cuenta por cobrar">Cuentas por cobrar</label>-->
-  <!--    <label nz-radio-button nzValue="Interbancaria">InzLnterbancaria</label>-->
-  <!--    <label nz-radio-button nzValue="Ingreso a cuenta de terceros">Ingreso a cuenta de terceros</label>-->
-  <!--  </nz-radio-group>-->
-</div>
+<nz-divider></nz-divider>
 
 <app-generic-table #dataTable
                    [loading]="loading"

@@ -80,8 +80,10 @@
   flex-wrap: wrap;
   gap: 1rem;
   //justify-content: center;
-  margin: 2rem 0;
+  //margin: 2rem 0;
   p {
-    margin-bottom: .5rem;
+    margin-bottom: .2rem;
+    font-size: 12px;
+    font-weight: bold;
   }
 }

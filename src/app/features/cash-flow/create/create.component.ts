@@ -172,7 +172,7 @@ export class CreateComponent implements OnInit {
     })
 
     this.paymentDetailForm = this.fb.group({
-      amount: ['', Validators.required],
+      amount: ['', [Validators.required, Validators.minLength(3)]],
       currency: ['$'],
       wayToPay: ['Efectivo'],
       transactionType: ['Ingreso'],
@@ -199,7 +199,6 @@ export class CreateComponent implements OnInit {
     return this.paymentDetailForm.value.transactionType === 'Ingreso'
       || this.paymentDetailForm.value.transactionType === 'Egreso'
       || this.paymentDetailForm.value.transactionType === 'Ingreso a cuenta de terceros'
-      || this.paymentDetailForm.value.transactionType === 'Interbancaria'
   }
 
   showTotalDueField() {
