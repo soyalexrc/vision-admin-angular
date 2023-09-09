@@ -29,6 +29,7 @@
     "@types/uuid": "^9.0.2",
     "crypto-js": "^4.1.1",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
     "ng-zorro-antd": "^15.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

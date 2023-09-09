@@ -130,9 +130,9 @@
 
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="typeOfService">Tipo de servicio</nz-form-label>
+            <nz-form-label nzFor="serviceType">Tipo de servicio</nz-form-label>
             <nz-form-control>
-              <nz-select nzShowSearch nzAllowClear [nzLoading]="subServicesLoading" formControlName="typeOfService" style="width: 100%">
+              <nz-select nzShowSearch nzAllowClear [nzLoading]="subServicesLoading" formControlName="serviceType" style="width: 100%">
                 <nz-option
                   *ngFor="let option of subServices"
                   [nzValue]="option.id"
@@ -272,7 +272,7 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="entity">Entidad</nz-form-label>
             <nz-form-control [nzErrorTip]="entityErrTip">
-              <nz-select nzShowSearch nzAllowClear formControlName="originEntity">
+              <nz-select nzShowSearch formControlName="entity">
                 <nz-option nzValue="Banco Nacional de Crédito (BNC)"
                            nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>
                 <nz-option nzValue="Banesco Panamá" nzLabel="Banesco Panamá"></nz-option>

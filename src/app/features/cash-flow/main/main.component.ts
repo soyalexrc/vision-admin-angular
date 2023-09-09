@@ -14,6 +14,8 @@ import {User} from "../../../core/interfaces/user";
 import {UserService} from "../../../core/services/user.service";
 import {formatCurrency} from "@angular/common";
 import * as moment from "moment";
+import {Service} from "../../../core/interfaces/service";
+import {ServicesService} from "../../../core/services/services.service";
 
 @Component({
   selector: 'app-main',
@@ -33,19 +35,28 @@ export class MainComponent implements OnInit, AfterViewInit {
   totalItems = 1;
   pageIndex = 1;
   pageSize = 10;
-  sourceSelection = 'Ingreso';
+  sourceSelection = '';
+  currency = '';
+  wayToPay = '';
+  entity = '';
+  service = ''
+  servicesLoading = false;
+  services: Service[] = [];
+  date: any = '';
 
   constructor(
     private router: Router,
     private modal: NzModalService,
     private cashFlowService: CashFlowService,
     private uiService: UiService,
+    private servicesService: ServicesService,
     private fb: FormBuilder,
     private userService: UserService
   ) {
   }
 
   ngOnInit() {
+    this.getServices();
     this.transactionForm = this.fb.group({
       amount: ['', Validators.required],
       reason: ['', Validators.required],
@@ -97,11 +108,19 @@ export class MainComponent implements OnInit, AfterViewInit {
   getCashFlowData() {
     let headers: ITableHeader[];
     this.loading = true;
-    this.cashFlowService.getAll(this.pageIndex, this.pageSize).subscribe(data => {
+    this.cashFlowService.getAll(
+      this.pageIndex,
+      this.pageSize,
+      this.sourceSelection,
+      this.currency,
+      this.wayToPay,
+      this.entity,
+      this.service,
+      this.date[0] ? this.date[0] : '',
+      this.date[1] ? this.date[1] : '',
+    ).subscribe(data => {
       this.totalItems = data.count;
-        if (this.sourceSelection === 'Ingreso') {
           this.data = data.rows
-            .filter(x => x.transactionType === 'Ingreso' && !x.isTemporalTransaction)
             .map(element => ({
               id: element.id,
               date: moment(element.date).calendar(),
@@ -121,108 +140,6 @@ export class MainComponent implements OnInit, AfterViewInit {
             {key: 'pendingToCollect', displayName: 'Por cobrar'},
             {key: 'totalDue', displayName: 'Por pagar'},
           ]);
-        }
-        if (this.sourceSelection === 'Egreso') {
-          this.data = data.rows
-            .filter(x => x.transactionType === 'Egreso' && !x.isTemporalTransaction)
-            .map(element => ({
-              id: element.id,
-              date: element.date,
-              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
-              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
-              amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
-              reason: element.reason
-            }));
-          headers = setHeaders([
-            {key: 'date', displayName: 'Fecha'},
-            {key: 'customProperty', displayName: 'Inmueble'},
-            {key: 'person', displayName: 'Persona / Cliente'},
-            {key: 'amount', displayName: 'Monto'},
-            {key: 'reason', displayName: 'Concepto'},
-          ]);
-        }
-        if (this.sourceSelection === 'Cuenta por pagar') {
-          this.data = data.rows
-            .filter(x => x.transactionType === 'Cuenta por pagar' && !x.isTemporalTransaction)
-            .map(element => ({
-              id: element.id,
-              date: element.date,
-              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
-              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
-              reason: element.reason,
-              totalDue: `${formatCurrency(Number(element.totalDue), 'en', `${element.currency} `)}`
-            }));
-          headers = setHeaders([
-            {key: 'date', displayName: 'Fecha'},
-            {key: 'customProperty', displayName: 'Inmueble'},
-            {key: 'person', displayName: 'Persona / Cliente'},
-            {key: 'reason', displayName: 'Concepto'},
-            {key: 'totalDue', displayName: 'Por Pagar'},
-          ]);
-        }
-        if (this.sourceSelection === 'Cuenta por cobrar') {
-          this.data = data.rows
-            .filter(x => x.transactionType === 'Cuenta por cobrar' && !x.isTemporalTransaction)
-            .map(element => ({
-              id: element.id,
-              date: element.date,
-              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
-              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
-              reason: element.reason,
-              pendingToCollect: `${formatCurrency(Number(element.pendingToCollect), 'en', `${element.currency} `)}`,
-            }));
-          headers = setHeaders([
-            {key: 'date', displayName: 'Fecha'},
-            {key: 'customProperty', displayName: 'Inmueble'},
-            {key: 'person', displayName: 'Persona / Cliente'},
-            {key: 'reason', displayName: 'Concepto'},
-            {key: 'pendingToCollect', displayName: 'Por Cobrar'},
-          ]);
-        }
-
-        if (this.sourceSelection === 'Ingreso a cuenta de terceros') {
-          this.data = data.rows
-            .filter(x => x.transactionType === 'Ingreso a cuenta de terceros' && !x.isTemporalTransaction)
-            .map(element => ({
-              id: element.id,
-              date: moment(element.date).calendar(),
-              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
-              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
-              amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
-              reason: element.reason,
-              pendingToCollect: `${formatCurrency(Number(element.pendingToCollect), 'en', `${element.currency} `)}`,
-              totalDue: `${formatCurrency(Number(element.totalDue), 'en', `${element.currency} `)}`
-            }));
-          headers = setHeaders([
-            {key: 'date', displayName: 'Fecha'},
-            {key: 'customProperty', displayName: 'Inmueble'},
-            {key: 'person', displayName: 'Persona'},
-            {key: 'amount', displayName: 'Monto'},
-            {key: 'reason', displayName: 'Concepto'},
-            {key: 'pendingToCollect', displayName: 'Por cobrar'},
-            {key: 'totalDue', displayName: 'Por pagar'},
-          ]);
-        }
-
-        if (this.sourceSelection === 'Interbancaria') {
-          this.data = data.rows
-            .filter(x => x.transactionType === 'Interbancaria' && !x.isTemporalTransaction)
-            .map(element => ({
-              id: element.id,
-              date: element.date,
-              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
-              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
-              amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
-              reason: element.reason
-            }));
-          headers = setHeaders([
-            {key: 'date', displayName: 'Fecha'},
-            {key: 'customProperty', displayName: 'Inmueble'},
-            {key: 'person', displayName: 'Persona / Cliente'},
-            {key: 'amount', displayName: 'Monto'},
-            {key: 'reason', displayName: 'Concepto'},
-          ]);
-        }
 
         this.dataTable.render(headers, this.data);
       },
@@ -233,11 +150,6 @@ export class MainComponent implements OnInit, AfterViewInit {
         this.loading = false
       }
     )
-  }
-
-  handleChangeSelection(event: string) {
-    this.sourceSelection = event;
-    this.getCashFlowData()
   }
 
   handleCancelModal() {
@@ -290,5 +202,29 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.pageIndex = pageIndex;
     this.getCashFlowData();
     this.getTotalStats();
+  }
+
+  getServices() {
+    this.servicesLoading = true;
+    this.servicesService.getAll().subscribe(result => {
+      this.services = result;
+    }, error => {
+      this.servicesLoading = false;
+    }, () => {
+      this.servicesLoading = false;
+    })
+  }
+
+  onChangeDate(date: any[]) {
+    if (date.length < 1) {
+      this.date = ''
+    } else {
+      const dateFrom = new Date(date[0])
+      const dateTo = new Date(date[1])
+      this.date = [
+        dateFrom.toISOString().split('T')[0].concat('T01:00:00.000Z'),
+        dateTo.toISOString().split('T')[0].concat('T23:00:00.000Z'),
+      ];
+    }
   }
 }

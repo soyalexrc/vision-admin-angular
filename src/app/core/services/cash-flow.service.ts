@@ -24,8 +24,18 @@ export class CashFlowService {
     private  http: HttpClient
   ) { }
 
-  getAll(pageIndex: number, pageSize: number): Observable<GetAllCashFlowRegister> {
-    return this.http.get<GetAllCashFlowRegister>(`cashflow?pageIndex=${pageIndex}&pageSize=${pageSize}`)
+  getAll(
+    pageIndex: number,
+    pageSize: number,
+    transactionType: string,
+    currency: string,
+    wayToPay: string,
+    entity: string,
+    service: string,
+    dateFrom: string,
+    dateTo: string,
+  ): Observable<GetAllCashFlowRegister> {
+    return this.http.get<GetAllCashFlowRegister>(`cashflow?pageIndex=${pageIndex}&pageSize=${pageSize}&transactionType=${transactionType}&currency=${currency}&wayToPay=${wayToPay}&entity=${entity}&service=${service}&dateFrom=${dateFrom}&dateTo=${dateTo}`)
   }
 
   createOne(data: CashFlowRegister): Observable<CreateEditCashFlowResponse> {

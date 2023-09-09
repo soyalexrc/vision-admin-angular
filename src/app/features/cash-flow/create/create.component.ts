@@ -7,8 +7,6 @@ import * as moment from "moment/moment";
 import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MONTHS} from "../../../shared/utils/months";
-import {CurrencyPipe} from "@angular/common";
-import {Subscription} from "rxjs";
 import {CashFlowPerson} from "../../../core/interfaces/cashFlow";
 import {Service, SubService} from "../../../core/interfaces/service";
 import {ServicesService} from "../../../core/services/services.service";
@@ -72,13 +70,13 @@ export class CreateComponent implements OnInit {
     this.generalForm.get('person')?.valueChanges.subscribe(value => {
       if (value.includes('Administracion interna')) {
         this.serviceForm.get('service')?.reset()
-        this.serviceForm.get('typeOfService')?.reset()
+        this.serviceForm.get('serviceType')?.reset()
         this.serviceForm.get('service')?.patchValue(10);
         this.serviceForm.get('service')?.disable()
       } else {
         this.serviceForm.get('service')?.reset()
         this.serviceForm.get('service')?.enable()
-        this.serviceForm.get('typeOfService')?.reset()
+        this.serviceForm.get('serviceType')?.reset()
       }
     })
 
@@ -155,7 +153,7 @@ export class CreateComponent implements OnInit {
       cashflow_person_id: [null],
       property_id: [null],
       internalProperty: [''],
-      person: [null],
+      person: [null, Validators.required],
       date: [new Date(), Validators.required],
       month: [''],
       location: [''],
@@ -164,22 +162,22 @@ export class CreateComponent implements OnInit {
     });
 
     this.serviceForm = this.fb.group({
-      canon: [''],
-      contract: [''],
-      guarantee: [''],
-      typeOfService: [''],
-      reason: [''],
-      service: [''],
+      canon: [false],
+      contract: [false],
+      guarantee: [false],
+      serviceType: [''],
+      reason: ['', Validators.required],
+      service: ['', Validators.required],
       taxPayer: ['']
     })
 
     this.paymentDetailForm = this.fb.group({
-      amount: [''],
+      amount: ['', Validators.required],
       currency: ['$'],
       wayToPay: ['Efectivo'],
       transactionType: ['Ingreso'],
       totalDue: [''],
-      entity: [''],
+      entity: ['Tesorería'],
       pendingToCollect: [''],
       observation: ['']
     })
@@ -227,12 +225,20 @@ export class CreateComponent implements OnInit {
     data.client_id = data.person && data.person.includes('Cliente') ? data.person.split('-')[0] : null;
     data.owner_id = data.person && data.person.includes('Propietario') ? data.person.split('-')[0] : null;
     data.cashflow_person_id = data.person && data.person.includes('Administracion interna') ? data.person.split('-')[0] : null;
-    data.amount = !data.amount ? '0' : data.amount.replace(/[^\w\s.]/gi, '').trim();
-    data.pendingToCollect = !data.pendingToCollect ? '0' : data.pendingToCollect.replace(/[^\w\s.]/gi, '').trim();
-    data.totalDue = !data.totalDue ? '0' : data.totalDue.replace(/[^\w\s.]/gi, '').trim();
-    data.date = moment(data.date).format('YYYY-MM-DD');
-    const month = new Date(data.date).getMonth()
-    data.month = MONTHS[month];
+    data.amount = !data.amount ? '0' : data.amount.replace(/[^0-9.]+/g, '').trim();
+    data.pendingToCollect = !data.pendingToCollect ? '0' : data.pendingToCollect.replace(/[^0-9.]+/g, '').trim();
+    data.totalDue = !data.totalDue ? '0' : data.totalDue.replace(/[^0-9.]+/g, '').trim();
+    // const month = moment().format('MMMM')
+    // const day = moment().format('dddd')
+    // const year = moment().format('yyyy')
+    // const time = moment().format('h:mm:ss');
+    // console.log({
+    //   month,
+    //   day,
+    //   year,
+    //   time,
+    // })
+    // return;
     if (this.isEditing) {
       this.cashFlowService.update(data).subscribe(result => {
           this.uiService.createMessage('success', result.message);
@@ -245,6 +251,9 @@ export class CreateComponent implements OnInit {
           this.loading = false;
         })
     } else {
+      data.date = moment().format();
+      const month = new Date().getMonth();
+      data.month = MONTHS[month];
       this.cashFlowService.createOne(data).subscribe(result => {
           this.uiService.createMessage('success', result.message);
           this.router.navigate(['/flujo-de-caja'])
@@ -274,10 +283,11 @@ export class CreateComponent implements OnInit {
       this.serviceForm.get('canon')?.patchValue(result.canon);
       this.serviceForm.get('contract')?.patchValue(result.contract);
       this.serviceForm.get('guarantee')?.patchValue(result.guarantee);
-      this.serviceForm.get('typeOfService')?.patchValue(result.typeOfService);
+      this.serviceForm.get('service')?.patchValue(Number(result.service));
+      this.handleChangeService(Number(result.service));
+      this.serviceForm.get('serviceType')?.patchValue(Number(result.serviceType));
       this.serviceForm.get('reason')?.patchValue(result.reason);
       this.serviceForm.get('taxPayer')?.patchValue(result.taxPayer);
-      this.serviceForm.get('service')?.patchValue(result.service);
 
       this.paymentDetailForm.get('amount')?.patchValue(result.amount);
       this.paymentDetailForm.get('currency')?.patchValue(result.currency);

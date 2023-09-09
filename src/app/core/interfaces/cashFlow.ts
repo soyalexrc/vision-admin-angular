@@ -29,7 +29,7 @@ export interface CashFlowRegister {
   pendingToCollect?: string;
   observations:  string;
   service?: string;
-  typeOfService?: string;
+  serviceType?: string;
   transactionType: TransactionType;
   currency: Currency;
   wayToPay: WayToPay;
