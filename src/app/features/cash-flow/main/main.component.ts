@@ -221,7 +221,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   onChangeDate(date: any[]) {
     if (date.length < 1) {
       this.date = [
-        new Date().toISOString().split('T')[0].concat('T05:00:00.000Z'),
+        new Date().toISOString().split('T')[0].concat('T03:00:00.000Z'),
         new Date().toISOString().split('T')[0].concat('T23:00:00.000Z'),
       ]
     } else {
