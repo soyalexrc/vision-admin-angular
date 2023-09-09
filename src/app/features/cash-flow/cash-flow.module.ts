@@ -23,6 +23,7 @@ import { ConfigServicesModalComponent } from './config-services-modal/config-ser
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {NzSpinModule} from "ng-zorro-antd/spin";
 import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
 
 
 
@@ -34,28 +35,29 @@ import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
     RegisterPersonModalComponent,
     ConfigServicesModalComponent
   ],
-    imports: [
-        CommonModule,
-        CashFlowRoutingModule,
-        NzBreadCrumbModule,
-        SharedModule,
-        NzGridModule,
-        NzButtonModule,
-        FormsModule,
-        NzRadioModule,
-        NzModalModule,
-        NzSelectModule,
-        NzIconModule,
-        NzFormModule,
-        NzInputModule,
-        ReactiveFormsModule,
-        NzStepsModule,
-        NzDatePickerModule,
-        NzSkeletonModule,
-        NzDividerModule,
-        NzSpinModule,
-        NzCheckboxModule
-    ],
+  imports: [
+    CommonModule,
+    CashFlowRoutingModule,
+    NzBreadCrumbModule,
+    SharedModule,
+    NzGridModule,
+    NzButtonModule,
+    FormsModule,
+    NzRadioModule,
+    NzModalModule,
+    NzSelectModule,
+    NzIconModule,
+    NzFormModule,
+    NzInputModule,
+    ReactiveFormsModule,
+    NzStepsModule,
+    NzDatePickerModule,
+    NzSkeletonModule,
+    NzDividerModule,
+    NzSpinModule,
+    NzCheckboxModule,
+    NzDrawerModule
+  ],
   providers: [CurrencyPipe]
 })
 export class CashFlowModule { }

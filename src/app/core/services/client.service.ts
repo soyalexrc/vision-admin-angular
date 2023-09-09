@@ -13,7 +13,11 @@ export class ClientService {
     private http: HttpClient
   ) { }
 
-  getAll(pageIndex: number, pageSize: number) : Observable<GetAllClients> {
+  getAll(): Observable<Client[]> {
+    return this.http.get<Client[]>('client');
+  }
+
+  getAllPaginated(pageIndex: number, pageSize: number) : Observable<GetAllClients> {
     return this.http.get<GetAllClients>(`client/getPreviews?pageIndex=${pageIndex}&pageSize=${pageSize}`)
   }
 

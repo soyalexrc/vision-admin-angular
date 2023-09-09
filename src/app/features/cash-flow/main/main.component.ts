@@ -7,15 +7,28 @@ import {NzModalService} from "ng-zorro-antd/modal";
 import {AllyService} from "../../../core/services/ally.service";
 import {UiService} from "../../../core/services/ui.service";
 import {ITableHeader} from "../../../core/interfaces/table";
-import {CashFlowRegister, CashFlowTotals, Currency, Entity, WayToPay} from "../../../core/interfaces/cashFlow";
+import {
+  CashFlowPerson,
+  CashFlowRegister,
+  CashFlowTotals,
+  Currency,
+  Entity,
+  WayToPay
+} from "../../../core/interfaces/cashFlow";
 import {CashFlowService} from "../../../core/services/cash-flow.service";
 import {Form, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {User} from "../../../core/interfaces/user";
 import {UserService} from "../../../core/services/user.service";
 import {formatCurrency} from "@angular/common";
 import * as moment from "moment";
-import {Service} from "../../../core/interfaces/service";
+import {Service, SubService} from "../../../core/interfaces/service";
 import {ServicesService} from "../../../core/services/services.service";
+import {Client} from "../../../core/interfaces/client";
+import {Owner} from "../../../core/interfaces/owner";
+import {OwnerService} from "../../../core/services/owner.service";
+import {ClientService} from "../../../core/services/client.service";
+import {PropertyReview} from "../../../core/interfaces/property";
+import {PropertyService} from "../../../core/services/property.service";
 
 @Component({
   selector: 'app-main',
@@ -34,14 +47,31 @@ export class MainComponent implements OnInit, AfterViewInit {
   loadingStats = true;
   totalItems = 1;
   pageIndex = 1;
-  pageSize = 10;
+  pageSize = 5;
   sourceSelection = '';
   currency = '';
   wayToPay = '';
   entity = '';
-  service = ''
+  service = '';
+  serviceType = '';
   servicesLoading = false;
+  serviceTypesLoading = false;
   services: Service[] = [];
+  serviceTypes: SubService[] = [];
+  clients: Client[] = [];
+  client = '';
+  clientsLoading = false;
+  owners: Owner[] = [];
+  owner = '';
+  ownersLoading = false;
+  cashFlowPeople: CashFlowPerson[] = [];
+  cashFlowPerson = '';
+  cashFlowPeopleLoading = false;
+  properties: PropertyReview[] = [];
+  property = '';
+  propertiesLoading = false;
+  showFiltersDrawer = false;
+
   date = [
     new Date().toISOString().split('T')[0].concat('T05:00:00.000Z'),
     new Date().toISOString().split('T')[0].concat('T23:00:00.000Z'),
@@ -52,6 +82,9 @@ export class MainComponent implements OnInit, AfterViewInit {
     private modal: NzModalService,
     private cashFlowService: CashFlowService,
     private uiService: UiService,
+    private ownersService: OwnerService,
+    private propertyService: PropertyService,
+    private clientsService: ClientService,
     private servicesService: ServicesService,
     private fb: FormBuilder,
     private userService: UserService
@@ -60,6 +93,11 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.getServices();
+    this.getSubServices();
+    this.getCashFlowPeople();
+    this.getOwners();
+    this.getProperties()
+    this.getClients();
     this.transactionForm = this.fb.group({
       amount: ['', Validators.required],
       reason: ['', Validators.required],
@@ -119,8 +157,10 @@ export class MainComponent implements OnInit, AfterViewInit {
       this.wayToPay,
       this.entity,
       this.service,
-      this.date[0] ? this.date[0] : '',
-      this.date[1] ? this.date[1] : '',
+      this.date[0],
+      this.date[1],
+      this.serviceType,
+      this.property,
     ).subscribe(data => {
       this.totalItems = data.count;
           this.data = data.rows
@@ -131,6 +171,9 @@ export class MainComponent implements OnInit, AfterViewInit {
               person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
               amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
               reason: element.reason,
+              entity: element.entity,
+              wayToPay: element.wayToPay,
+              transactionType: element.transactionType,
               pendingToCollect: `${formatCurrency(Number(element.pendingToCollect), 'en', `${element.currency} `)}`,
               totalDue: `${formatCurrency(Number(element.totalDue), 'en', `${element.currency} `)}`
             }));
@@ -139,6 +182,9 @@ export class MainComponent implements OnInit, AfterViewInit {
             {key: 'customProperty', displayName: 'Inmueble'},
             {key: 'person', displayName: 'Persona'},
             {key: 'amount', displayName: 'Monto'},
+            {key: 'entity', displayName: 'Entidad'},
+            {key: 'transactionType', displayName: 'Tipo de transaccion'},
+            {key: 'wayToPay', displayName: 'Forma de pago'},
             {key: 'reason', displayName: 'Concepto'},
             {key: 'pendingToCollect', displayName: 'Por cobrar'},
             {key: 'totalDue', displayName: 'Por pagar'},
@@ -218,7 +264,66 @@ export class MainComponent implements OnInit, AfterViewInit {
     })
   }
 
-  onChangeDate(date: any[]) {
+  getSubServices() {
+    this.serviceTypesLoading = true;
+    this.servicesService.getAllSubService().subscribe(result => {
+      this.serviceTypes = result;
+    }, error => {
+      this.serviceTypesLoading = false;
+    }, () => {
+      this.serviceTypesLoading = false;
+    })
+  }
+
+  getOwners() {
+    this.ownersLoading = true;
+    this.ownersService.getAll().subscribe(result => {
+      this.owners = result;
+    }, error => {
+      this.ownersLoading = false;
+    }, () => {
+      this.ownersLoading = false;
+    })
+  }
+
+  getClients() {
+    this.clientsLoading = true;
+    this.clientsService.getAll().subscribe(result => {
+      this.clients = result;
+    }, error => {
+      this.clientsLoading = false;
+    }, () => {
+      this.clientsLoading = false;
+    })
+  }
+
+  getProperties() {
+    this.propertiesLoading = true;
+    this.propertyService.getAllPreviews().subscribe(result => {
+      this.properties = result.rows;
+    }, error => {
+      this.propertiesLoading = false;
+    }, () => {
+      this.propertiesLoading = false;
+    })
+  }
+
+  getPropertyLabel(property: PropertyReview) {
+    return `${property.code} - ${property.propertyType} - ${property.operationType}`;
+  }
+
+  getCashFlowPeople() {
+    this.cashFlowPeopleLoading = true;
+    this.cashFlowService.getPeople().subscribe(result => {
+      this.cashFlowPeople = result;
+    }, error => {
+      this.cashFlowPeopleLoading = false;
+    }, () => {
+      this.cashFlowPeopleLoading = false;
+    })
+  }
+
+  onChangeDate(date: any[], search = false) {
     if (date.length < 1) {
       this.date = [
         new Date().toISOString().split('T')[0].concat('T03:00:00.000Z'),
@@ -230,10 +335,18 @@ export class MainComponent implements OnInit, AfterViewInit {
         new Date(date[1]).toISOString().split('T')[0].concat('T23:00:00.000Z'),
       ];
     }
+    if (search) {
+      this.getData();
+    }
   }
 
   getData() {
     this.getCashFlowData()
     this.getTotalStats();
+    this.showFiltersDrawer = false;
+  }
+
+  closeFilterModal() {
+    this.showFiltersDrawer = false;
   }
 }

@@ -34,8 +34,10 @@ export class CashFlowService {
     service: string,
     dateFrom: string,
     dateTo: string,
+    serviceType: string,
+    property: string,
   ): Observable<GetAllCashFlowRegister> {
-    return this.http.get<GetAllCashFlowRegister>(`cashflow?pageIndex=${pageIndex}&pageSize=${pageSize}&transactionType=${transactionType}&currency=${currency}&wayToPay=${wayToPay}&entity=${entity}&service=${service}&dateFrom=${dateFrom}&dateTo=${dateTo}`)
+    return this.http.get<GetAllCashFlowRegister>(`cashflow?pageIndex=${pageIndex}&pageSize=${pageSize}&transactionType=${transactionType}&currency=${currency}&wayToPay=${wayToPay}&entity=${entity}&service=${service}&dateFrom=${dateFrom}&dateTo=${dateTo}&serviceType=${serviceType}&property_id=${property}`)
   }
 
   createOne(data: CashFlowRegister): Observable<CreateEditCashFlowResponse> {

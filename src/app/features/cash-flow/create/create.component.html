@@ -40,7 +40,7 @@
           <nz-form-item>
             <nz-form-label nzFor="person">Persona</nz-form-label>
             <nz-form-control>
-              <nz-select [nzLoading]="peopleLoading" formControlName="person" style="width: 100%"
+              <nz-select nzShowSearch [nzLoading]="peopleLoading" formControlName="person" style="width: 100%"
                          (ngModelChange)="handleChangeSample($event)">
                 <nz-option
                   *ngFor="let person of people"
