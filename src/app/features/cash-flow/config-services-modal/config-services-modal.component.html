@@ -67,6 +67,7 @@
                   </nz-form-control>
                 </nz-form-item>
                 <button
+                  *ngIf="onlyIfIsAdmin()"
                   style="margin-left: 1rem;"
                   (click)="deleteSubService(i)"
                   nz-button

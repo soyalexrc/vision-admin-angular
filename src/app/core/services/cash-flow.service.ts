@@ -11,7 +11,7 @@ import {
   CashFlowTotals,
   GetAllCashFlowRegister,
   GetAllTemporalTransaction,
-  CreateEditCashFlowResponse, CashFlowPerson,
+  CreateEditCashFlowResponse, CashFlowPerson, CashFlowTotal, CashFlowTotalsByEntities,
 } from "../interfaces/cashFlow";
 import {DeleteResult} from "../interfaces/generics";
 
@@ -57,7 +57,7 @@ export class CashFlowService {
   }
 
   createTemporalTransaction(data: TemporalTransactionToCreate): Observable<TemporalTransactionResponse> {
-    return this.http.post<TemporalTransactionResponse>('format/cashFlow/transferAmount', data)
+    return this.http.post<TemporalTransactionResponse>('cashFlow/temporalTransaction', data)
   }
 
   getTemporalTransactions(pageIndex: number, pageSize: number): Observable<GetAllTemporalTransaction> {
@@ -66,6 +66,15 @@ export class CashFlowService {
 
   getTotals(dateFrom: string, dateTo: string): Observable<CashFlowTotals> {
     return this.http.get<CashFlowTotals>(`cashFlow/getTotals?dateFrom=${dateFrom}&dateTo=${dateTo}`)
+  }
+
+
+  getTotalAvailable(dateFrom: string, dateTo: string): Observable<CashFlowTotal> {
+    return this.http.get<CashFlowTotal>(`cashFlow/getTotalAvailable?dateFrom=${dateFrom}&dateTo=${dateTo}`)
+  }
+
+  getTotalAvailableByEntities(dateFrom: string, dateTo: string): Observable<CashFlowTotalsByEntities> {
+    return this.http.get<CashFlowTotalsByEntities>(`cashFlow/getTotalAvailableByEntities?dateFrom=${dateFrom}&dateTo=${dateTo}`)
   }
 
   getPeople(): Observable<CashFlowPerson[]> {

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import {MainComponent} from "./main/main.component";
 import {OperationsResumeComponent} from "./operations-resume/operations-resume.component";
 import {CreateComponent} from "./create/create.component";
+import {TotalAvailableComponent} from "./total-available/total-available.component";
 
 const routes: Routes = [
   {
@@ -20,6 +21,10 @@ const routes: Routes = [
   {
     path: 'resumen-de-operaciones',
     component: OperationsResumeComponent,
+  },
+  {
+    path: 'total-disponible',
+    component: TotalAvailableComponent,
   },
 ];
 

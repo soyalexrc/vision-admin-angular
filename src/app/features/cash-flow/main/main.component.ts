@@ -9,7 +9,7 @@ import {UiService} from "../../../core/services/ui.service";
 import {ITableHeader} from "../../../core/interfaces/table";
 import {
   CashFlowPerson,
-  CashFlowRegister,
+  CashFlowRegister, CashFlowTotal,
   CashFlowTotals,
   Currency,
   Entity,
@@ -72,10 +72,12 @@ export class MainComponent implements OnInit, AfterViewInit {
   propertiesLoading = false;
   showFiltersDrawer = false;
 
-  date = [
+  date: any = [
     new Date().toISOString().split('T')[0].concat('T05:00:00.000Z'),
-    new Date().toISOString().split('T')[0].concat('T23:00:00.000Z'),
+    new Date().toISOString().split('T')[0].concat('T23:59:00.000Z'),
   ];
+  loadingTotalAvailable = false
+  totalAvailable: CashFlowTotal = {usd: null, eur: null, bs: null};
 
   constructor(
     private router: Router,
@@ -99,20 +101,20 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.getProperties()
     this.getClients();
     this.transactionForm = this.fb.group({
-      amount: ['', Validators.required],
+      amount: ['', [Validators.required, Validators.minLength(3)]],
       reason: ['', Validators.required],
-      originEntity: ['', Validators.required],
-      destinyEntity: ['', Validators.required],
-      way_to_pay: ['', Validators.required],
+      entityFrom: ['', Validators.required],
+      entityTo: ['', Validators.required],
+      wayToPay: ['', Validators.required],
       currency: ['', Validators.required],
       createdBy: [this.userService.currentUser.value.username],
-      isTemporalTransaction: [true]
     })
   }
 
   ngAfterViewInit() {
     this.getCashFlowData();
     this.getTotalStats()
+    this.getTotalAvailable();
   }
 
   handleNewMoneyTransfer() {
@@ -157,38 +159,38 @@ export class MainComponent implements OnInit, AfterViewInit {
       this.wayToPay,
       this.entity,
       this.service,
-      this.date[0],
-      this.date[1],
+      this.date[0] ? this.date[0] : '',
+      this.date[1] ? this.date[1] : '',
       this.serviceType,
       this.property,
     ).subscribe(data => {
-      this.totalItems = data.count;
-          this.data = data.rows
-            .map(element => ({
-              id: element.id,
-              date: moment(element.date).calendar(),
-              customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
-              person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
-              amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
-              reason: element.reason,
-              entity: element.entity,
-              wayToPay: element.wayToPay,
-              transactionType: element.transactionType,
-              pendingToCollect: `${formatCurrency(Number(element.pendingToCollect), 'en', `${element.currency} `)}`,
-              totalDue: `${formatCurrency(Number(element.totalDue), 'en', `${element.currency} `)}`
-            }));
-          headers = setHeaders([
-            {key: 'date', displayName: 'Fecha'},
-            {key: 'customProperty', displayName: 'Inmueble'},
-            {key: 'person', displayName: 'Persona'},
-            {key: 'amount', displayName: 'Monto'},
-            {key: 'entity', displayName: 'Entidad'},
-            {key: 'transactionType', displayName: 'Tipo de transaccion'},
-            {key: 'wayToPay', displayName: 'Forma de pago'},
-            {key: 'reason', displayName: 'Concepto'},
-            {key: 'pendingToCollect', displayName: 'Por cobrar'},
-            {key: 'totalDue', displayName: 'Por pagar'},
-          ]);
+        this.totalItems = data.count;
+        this.data = data.rows
+          .map(element => ({
+            id: element.id,
+            date: moment(element.date).calendar(),
+            customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
+            person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
+            amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
+            reason: element.reason,
+            entity: element.entity,
+            wayToPay: element.wayToPay,
+            transactionType: element.transactionType,
+            pendingToCollect: `${formatCurrency(Number(element.pendingToCollect), 'en', `${element.currency} `)}`,
+            totalDue: `${formatCurrency(Number(element.totalDue), 'en', `${element.currency} `)}`
+          }));
+        headers = setHeaders([
+          {key: 'date', displayName: 'Fecha'},
+          {key: 'customProperty', displayName: 'Inmueble'},
+          {key: 'person', displayName: 'Persona'},
+          {key: 'amount', displayName: 'Monto'},
+          {key: 'entity', displayName: 'Entidad'},
+          {key: 'transactionType', displayName: 'Tipo de transaccion'},
+          {key: 'wayToPay', displayName: 'Forma de pago'},
+          {key: 'reason', displayName: 'Concepto'},
+          {key: 'pendingToCollect', displayName: 'Por cobrar'},
+          {key: 'totalDue', displayName: 'Por pagar'},
+        ]);
 
         this.dataTable.render(headers, this.data);
       },
@@ -206,11 +208,13 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   handleOkModal() {
-    if (this.transactionForm.value.originEntity === this.transactionForm.value.destinyEntity) {
+    if (this.transactionForm.value.entityFrom === this.transactionForm.value.entityTo) {
       this.uiService.createMessage('warning', 'Debes seleccionar entidades diferentes de origen y destino')
     } else {
+      const data = {...this.transactionForm.value};
+      data.amount = data.amount.replace(/[^0-9.]+/g, '').trim();
       this.transferLoading = true;
-      this.cashFlowService.createTemporalTransaction(this.transactionForm.value).subscribe(result => {
+      this.cashFlowService.createTemporalTransaction(data).subscribe(result => {
           this.uiService.createMessage('success', 'Se creo el traslado de dinero con exito!');
           this.showModal = false
         },
@@ -225,7 +229,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getTotalStats() {
     this.loadingStats = true;
-    this.cashFlowService.getTotals(this.date[0], this.date[1]).subscribe(result => {
+    this.cashFlowService.getTotals(this.date[0] ? this.date[0] : '', this.date[1] ? this.date[1] : '').subscribe(result => {
       const data = {
         ...result,
         utilidad: {
@@ -245,6 +249,14 @@ export class MainComponent implements OnInit, AfterViewInit {
     }, () => {
       this.loadingStats = false;
     })
+  }
+
+  getTotalAvailable() {
+    this.loadingTotalAvailable = true;
+    this.cashFlowService.getTotalAvailable('', '').subscribe(result => {
+      this.totalAvailable = result;
+    }, () => {this.loadingTotalAvailable = false},
+      () => {this.loadingTotalAvailable = false})
   }
 
   handlePageIndexChange(pageIndex: number) {
@@ -325,14 +337,11 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   onChangeDate(date: any[], search = false) {
     if (date.length < 1) {
-      this.date = [
-        new Date().toISOString().split('T')[0].concat('T03:00:00.000Z'),
-        new Date().toISOString().split('T')[0].concat('T23:00:00.000Z'),
-      ]
+      this.date = '';
     } else {
       this.date = [
         new Date(date[0]).toISOString().split('T')[0].concat('T05:00:00.000Z'),
-        new Date(date[1]).toISOString().split('T')[0].concat('T23:00:00.000Z'),
+        new Date(date[1]).toISOString().split('T')[0].concat('T23:59:00.000Z'),
       ];
     }
     if (search) {
@@ -348,5 +357,13 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   closeFilterModal() {
     this.showFiltersDrawer = false;
+  }
+
+  onlyIfIsAdmin() {
+    return this.userService.onlyIfIsAdmin()
+  }
+
+  get transactionCurrency() {
+    return this.transactionForm.get('currency')?.value;
   }
 }

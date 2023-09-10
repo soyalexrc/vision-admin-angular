@@ -96,12 +96,11 @@ export interface DeleteOneResponse {
 export interface TemporalTransactionToCreate {
   amount: string;
   reason: string;
-  originEntity: Entity;
-  destinyEntity: Entity;
-  way_to_pay: WayToPay;
+  entityFrom: Entity;
+  entityTo: Entity;
+  wayToPay: WayToPay;
   currency: Currency;
   createdBy: string;
-  isTemporalTransaction: boolean;
 }
 
 export interface TemporalTransactionResponse {
@@ -117,6 +116,17 @@ export interface CashFlowTotals {
   utilidad: CashFlowTotal;
   totalDisponible: CashFlowTotal
   ingresoCuentaTerceros: CashFlowTotal
+}
+
+export interface CashFlowTotalsByEntities {
+  totalBnc: CashFlowTotal;
+  totalBanPan: CashFlowTotal;
+  totalBanVen: CashFlowTotal;
+  totalBanNacTer: CashFlowTotal;
+  totalOfiPaseo: CashFlowTotal;
+  totalTesoreria: CashFlowTotal;
+  totalOfiSanCar: CashFlowTotal;
+  totalBanInTer: CashFlowTotal;
 }
 
 export interface CashFlowTotal {
