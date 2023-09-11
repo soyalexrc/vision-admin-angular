@@ -21,6 +21,9 @@
       <span nz-icon nzType="plus"></span>
       {{buttonText}}
     </button>
+    <ng-container *ngIf="customRightSide">
+      <ng-content></ng-content>
+    </ng-container>
 
   </div>
 </div>

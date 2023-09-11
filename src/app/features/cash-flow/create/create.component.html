@@ -64,7 +64,7 @@
         <div nz-col [nzSpan]="24">
           <nz-form-item
             *ngIf="!generalForm.get('person')?.value?.includes('Administracion interna'); else internalAdministration">
-            <nz-form-label nzFor="property">Propiedad</nz-form-label>
+            <nz-form-label nzFor="property">Inmueble</nz-form-label>
             <nz-form-control>
               <nz-select formControlName="property_id" style="width: 100%">
                 <nz-option

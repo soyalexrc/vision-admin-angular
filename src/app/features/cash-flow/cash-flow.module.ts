@@ -24,6 +24,10 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
 import {NzSpinModule} from "ng-zorro-antd/spin";
 import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
+import {NzToolTipModule} from "ng-zorro-antd/tooltip";
+import { TotalAvailableComponent } from './total-available/total-available.component';
+import {HighchartsChartModule} from "highcharts-angular";
+import {NzSegmentedModule} from "ng-zorro-antd/segmented";
 
 
 
@@ -33,7 +37,8 @@ import {NzDrawerModule} from "ng-zorro-antd/drawer";
     OperationsResumeComponent,
     CreateComponent,
     RegisterPersonModalComponent,
-    ConfigServicesModalComponent
+    ConfigServicesModalComponent,
+    TotalAvailableComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +61,10 @@ import {NzDrawerModule} from "ng-zorro-antd/drawer";
     NzDividerModule,
     NzSpinModule,
     NzCheckboxModule,
-    NzDrawerModule
+    NzDrawerModule,
+    NzToolTipModule,
+    HighchartsChartModule,
+    NzSegmentedModule
   ],
   providers: [CurrencyPipe]
 })
