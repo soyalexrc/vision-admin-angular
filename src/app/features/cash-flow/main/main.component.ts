@@ -58,12 +58,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   serviceTypesLoading = false;
   services: Service[] = [];
   serviceTypes: SubService[] = [];
-  clients: Client[] = [];
-  client = '';
-  clientsLoading = false;
-  owners: Owner[] = [];
-  owner = '';
-  ownersLoading = false;
+  person = '';
   cashFlowPeople: CashFlowPerson[] = [];
   cashFlowPerson = '';
   cashFlowPeopleLoading = false;
@@ -78,15 +73,15 @@ export class MainComponent implements OnInit, AfterViewInit {
   ];
   loadingTotalAvailable = false
   totalAvailable: CashFlowTotal = {usd: null, eur: null, bs: null};
+  client = '';
+  owner = '';
 
   constructor(
     private router: Router,
     private modal: NzModalService,
     private cashFlowService: CashFlowService,
     private uiService: UiService,
-    private ownersService: OwnerService,
     private propertyService: PropertyService,
-    private clientsService: ClientService,
     private servicesService: ServicesService,
     private fb: FormBuilder,
     private userService: UserService
@@ -97,9 +92,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.getServices();
     this.getSubServices();
     this.getCashFlowPeople();
-    this.getOwners();
     this.getProperties()
-    this.getClients();
     this.transactionForm = this.fb.group({
       amount: ['', [Validators.required, Validators.minLength(3)]],
       reason: ['', Validators.required],
@@ -163,6 +156,9 @@ export class MainComponent implements OnInit, AfterViewInit {
       this.date[1] ? this.date[1] : '',
       this.serviceType,
       this.property,
+      this.client,
+      this.owner,
+      this.cashFlowPerson,
     ).subscribe(data => {
         this.totalItems = data.count;
         this.data = data.rows
@@ -287,28 +283,6 @@ export class MainComponent implements OnInit, AfterViewInit {
     })
   }
 
-  getOwners() {
-    this.ownersLoading = true;
-    this.ownersService.getAll().subscribe(result => {
-      this.owners = result;
-    }, error => {
-      this.ownersLoading = false;
-    }, () => {
-      this.ownersLoading = false;
-    })
-  }
-
-  getClients() {
-    this.clientsLoading = true;
-    this.clientsService.getAll().subscribe(result => {
-      this.clients = result;
-    }, error => {
-      this.clientsLoading = false;
-    }, () => {
-      this.clientsLoading = false;
-    })
-  }
-
   getProperties() {
     this.propertiesLoading = true;
     this.propertyService.getAllPreviews().subscribe(result => {
@@ -365,5 +339,31 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   get transactionCurrency() {
     return this.transactionForm.get('currency')?.value;
+  }
+
+  getValueFromPeople(person: CashFlowPerson, isLabel = false) {
+    return isLabel ? `${person.name} - ${person.type}` : `${person.id}-${person.name}-${person.type}`;
+  }
+
+  handleSelectPerson(person: string) {
+    const id = person.split('-')[0];
+    console.log(person);
+    if (person.includes('Propietario')) {
+      this.owner = id;
+      this.client = '';
+      this.cashFlowPerson = '';
+    } else if (person.includes('Cliente')) {
+      this.owner = '';
+      this.client = id;
+      this.cashFlowPerson = '';
+    } else if (person.includes('Administracion')) {
+      this.owner = '';
+      this.client = '';
+      this.cashFlowPerson = person;
+    } else {
+      this.owner = '';
+      this.client = '';
+      this.cashFlowPerson = '';
+    }
   }
 }

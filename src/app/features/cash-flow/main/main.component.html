@@ -240,24 +240,10 @@
       </div>
       <nz-divider></nz-divider>
       <div>
-        <p>Propietario</p>
-        <nz-select nzShowSearch [(ngModel)]="owner"  class="filter-select" [nzLoading]="ownersLoading">
+        <p>Persona</p>
+        <nz-select nzShowSearch [(ngModel)]="person"  class="filter-select"[nzLoading]="cashFlowPeopleLoading" (ngModelChange)="handleSelectPerson($event)">
           <nz-option nzLabel="Todos" nzValue=""></nz-option>
-          <nz-option *ngFor="let owner of owners" [nzLabel]="owner.firstName + ' ' + owner.lastName" [nzValue]="owner.id"></nz-option>
-        </nz-select>
-      </div>
-      <div>
-        <p>Cliente</p>
-        <nz-select nzShowSearch [(ngModel)]="client"  class="filter-select" [nzLoading]="clientsLoading">
-          <nz-option nzLabel="Todos" nzValue=""></nz-option>
-          <nz-option *ngFor="let client of clients" [nzLabel]="client.name" [nzValue]="client.id"></nz-option>
-        </nz-select>
-      </div>
-      <div>
-        <p>Personas (Admin. Interna)</p>
-        <nz-select nzShowSearch [(ngModel)]="cashFlowPerson"  class="filter-select"[nzLoading]="cashFlowPeopleLoading">
-          <nz-option nzLabel="Todos" nzValue=""></nz-option>
-          <nz-option *ngFor="let people of cashFlowPeople" [nzLabel]="people.name" [nzValue]="people.id"></nz-option>
+          <nz-option *ngFor="let person of cashFlowPeople" [nzLabel]="getValueFromPeople(person, true)" [nzValue]="getValueFromPeople(person)"></nz-option>
         </nz-select>
       </div>
 

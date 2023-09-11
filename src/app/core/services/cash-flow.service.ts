@@ -36,8 +36,11 @@ export class CashFlowService {
     dateTo: string,
     serviceType: string,
     property: string,
+    client: string,
+    owner: string,
+    cashFlowPerson: string,
   ): Observable<GetAllCashFlowRegister> {
-    return this.http.get<GetAllCashFlowRegister>(`cashflow?pageIndex=${pageIndex}&pageSize=${pageSize}&transactionType=${transactionType}&currency=${currency}&wayToPay=${wayToPay}&entity=${entity}&service=${service}&dateFrom=${dateFrom}&dateTo=${dateTo}&serviceType=${serviceType}&property_id=${property}`)
+    return this.http.get<GetAllCashFlowRegister>(`cashflow?pageIndex=${pageIndex}&pageSize=${pageSize}&transactionType=${transactionType}&currency=${currency}&wayToPay=${wayToPay}&entity=${entity}&service=${service}&dateFrom=${dateFrom}&dateTo=${dateTo}&serviceType=${serviceType}&property_id=${property}&client_id=${client}&owner_id=${owner}&person=${cashFlowPerson}`)
   }
 
   createOne(data: CashFlowRegister): Observable<CreateEditCashFlowResponse> {

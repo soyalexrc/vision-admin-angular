@@ -11,6 +11,7 @@ export class SectionTitleComponent {
   @Input() buttonText!: string;
   @Input() additionalButtonText!: string;
   @Input() additionalButton: boolean = false;
+  @Input() customRightSide: boolean = false;
   @Output() onNewElement: EventEmitter<any> = new EventEmitter<any>()
   @Output() onRefresh: EventEmitter<any> = new EventEmitter<any>()
   @Output() onAdditionalAction: EventEmitter<any> = new EventEmitter<any>()

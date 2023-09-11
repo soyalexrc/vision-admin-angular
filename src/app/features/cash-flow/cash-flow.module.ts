@@ -26,6 +26,8 @@ import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzToolTipModule} from "ng-zorro-antd/tooltip";
 import { TotalAvailableComponent } from './total-available/total-available.component';
+import {HighchartsChartModule} from "highcharts-angular";
+import {NzSegmentedModule} from "ng-zorro-antd/segmented";
 
 
 
@@ -38,30 +40,32 @@ import { TotalAvailableComponent } from './total-available/total-available.compo
     ConfigServicesModalComponent,
     TotalAvailableComponent
   ],
-    imports: [
-        CommonModule,
-        CashFlowRoutingModule,
-        NzBreadCrumbModule,
-        SharedModule,
-        NzGridModule,
-        NzButtonModule,
-        FormsModule,
-        NzRadioModule,
-        NzModalModule,
-        NzSelectModule,
-        NzIconModule,
-        NzFormModule,
-        NzInputModule,
-        ReactiveFormsModule,
-        NzStepsModule,
-        NzDatePickerModule,
-        NzSkeletonModule,
-        NzDividerModule,
-        NzSpinModule,
-        NzCheckboxModule,
-        NzDrawerModule,
-        NzToolTipModule
-    ],
+  imports: [
+    CommonModule,
+    CashFlowRoutingModule,
+    NzBreadCrumbModule,
+    SharedModule,
+    NzGridModule,
+    NzButtonModule,
+    FormsModule,
+    NzRadioModule,
+    NzModalModule,
+    NzSelectModule,
+    NzIconModule,
+    NzFormModule,
+    NzInputModule,
+    ReactiveFormsModule,
+    NzStepsModule,
+    NzDatePickerModule,
+    NzSkeletonModule,
+    NzDividerModule,
+    NzSpinModule,
+    NzCheckboxModule,
+    NzDrawerModule,
+    NzToolTipModule,
+    HighchartsChartModule,
+    NzSegmentedModule
+  ],
   providers: [CurrencyPipe]
 })
 export class CashFlowModule { }
