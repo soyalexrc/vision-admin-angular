@@ -29,7 +29,7 @@ export interface CashFlowRegister {
   pendingToCollect?: string;
   observations:  string;
   service?: string;
-  typeOfService?: string;
+  serviceType?: string;
   transactionType: TransactionType;
   currency: Currency;
   wayToPay: WayToPay;
@@ -96,12 +96,11 @@ export interface DeleteOneResponse {
 export interface TemporalTransactionToCreate {
   amount: string;
   reason: string;
-  originEntity: Entity;
-  destinyEntity: Entity;
-  way_to_pay: WayToPay;
+  entityFrom: Entity;
+  entityTo: Entity;
+  wayToPay: WayToPay;
   currency: Currency;
   createdBy: string;
-  isTemporalTransaction: boolean;
 }
 
 export interface TemporalTransactionResponse {
@@ -117,6 +116,17 @@ export interface CashFlowTotals {
   utilidad: CashFlowTotal;
   totalDisponible: CashFlowTotal
   ingresoCuentaTerceros: CashFlowTotal
+}
+
+export interface CashFlowTotalsByEntities {
+  totalBnc: CashFlowTotal;
+  totalBanPan: CashFlowTotal;
+  totalBanVen: CashFlowTotal;
+  totalBanNacTer: CashFlowTotal;
+  totalOfiPaseo: CashFlowTotal;
+  totalTesoreria: CashFlowTotal;
+  totalOfiSanCar: CashFlowTotal;
+  totalBanInTer: CashFlowTotal;
 }
 
 export interface CashFlowTotal {
@@ -137,7 +147,7 @@ export interface CreateEditCashFlowPeople {
 }
 
 
-export type TransactionType = "Cuenta por pagar" | "Ingreso" | "Egreso" | "Cuenta por cobrar" | "Ingreso a cuenta de terceros" | "Interbancaria";
+export type TransactionType = "Cuenta por pagar" | "Ingreso" | "Egreso" | "Cuenta por cobrar" | "Ingreso a cuenta de terceros" ;
 
 export type WayToPay = "Efectivo" | "Transferencia" | "Zelle" | "Pago Movil";
 export type Currency = "$" | "Bs" | "€";

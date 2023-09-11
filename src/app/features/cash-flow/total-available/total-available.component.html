@@ -1,0 +1,154 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
+  <nz-breadcrumb-item>
+    <a routerLink="/flujo-de-caja">Flujo de caja</a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>Detalle de total disponible</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<app-section-title
+  [title]="'Detalle de total disponible'"
+  (onRefresh)="getData()"
+  additionalButtonText="Nuevo traslado de dinero"
+  [customRightSide]="true"
+>
+  <div>
+    <p style="font-size: 12px; margin-bottom: 0.2rem; font-weight: bold">Fecha</p>
+    <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChangeDate($event)"></nz-range-picker>
+  </div>
+</app-section-title>
+
+
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzSpan]="8" style="max-height: 72vh; overflow: auto">
+    <div class="main-stat">
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingTotalAvailable" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingTotalAvailable">
+        <h2> {{totalAvailable.usd ?? 0 | currency}}</h2>
+        <h4> {{totalAvailable.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{totalAvailable.eur ?? 0  | currency: '€ '}}</h4>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingTotalAvailableEntities" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingTotalAvailableEntities">
+        <h3>Tesoreria</h3>
+        <h2> {{totalAvailableInEntity.totalTesoreria.usd ?? 0 | currency}}</h2>
+        <h4> {{totalAvailableInEntity.totalTesoreria.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{totalAvailableInEntity.totalTesoreria.eur ?? 0  | currency: '€ '}}</h4>
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingTotalAvailableEntities" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingTotalAvailableEntities">
+        <h3>Oficina paseo la granja</h3>
+        <h2> {{totalAvailableInEntity.totalOfiPaseo.usd ?? 0 | currency}}</h2>
+        <h4> {{totalAvailableInEntity.totalOfiPaseo.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{totalAvailableInEntity.totalOfiPaseo.eur ?? 0  | currency: '€ '}}</h4>
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingTotalAvailableEntities" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingTotalAvailableEntities">
+        <h3>Oficina San Carlos</h3>
+        <h2> {{totalAvailableInEntity.totalOfiSanCar.usd ?? 0 | currency}}</h2>
+        <h4> {{totalAvailableInEntity.totalOfiSanCar.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{totalAvailableInEntity.totalOfiSanCar.eur ?? 0  | currency: '€ '}}</h4>
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingTotalAvailableEntities" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingTotalAvailableEntities">
+        <h3>Banco Nacional De Credito (BNC)</h3>
+        <h2> {{totalAvailableInEntity.totalBnc.usd ?? 0 | currency}}</h2>
+        <h4> {{totalAvailableInEntity.totalBnc.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{totalAvailableInEntity.totalBnc.eur ?? 0  | currency: '€ '}}</h4>
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingTotalAvailableEntities" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingTotalAvailableEntities">
+        <h3>Banesco Venezuela</h3>
+        <h2> {{totalAvailableInEntity.totalBanVen.usd ?? 0 | currency}}</h2>
+        <h4> {{totalAvailableInEntity.totalBanVen.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{totalAvailableInEntity.totalBanVen.eur ?? 0  | currency: '€ '}}</h4>
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingTotalAvailableEntities" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingTotalAvailableEntities">
+        <h3>Banesco Panama</h3>
+        <h2> {{totalAvailableInEntity.totalBanPan.usd ?? 0 | currency}}</h2>
+        <h4> {{totalAvailableInEntity.totalBanPan.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{totalAvailableInEntity.totalBanPan.eur ?? 0  | currency: '€ '}}</h4>
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingTotalAvailableEntities" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingTotalAvailableEntities">
+        <h3>Banco nacional de terceros</h3>
+        <h2> {{totalAvailableInEntity.totalBanNacTer.usd ?? 0 | currency}}</h2>
+        <h4> {{totalAvailableInEntity.totalBanNacTer.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{totalAvailableInEntity.totalBanNacTer.eur ?? 0  | currency: '€ '}}</h4>
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingTotalAvailableEntities" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingTotalAvailableEntities">
+        <h3>Banco internacional de terceros</h3>
+        <h2> {{totalAvailableInEntity.totalBanInTer.usd ?? 0 | currency}}</h2>
+        <h4> {{totalAvailableInEntity.totalBanInTer.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{totalAvailableInEntity.totalBanInTer.eur ?? 0  | currency: '€ '}}</h4>
+      </div>
+    </div>
+
+  </div>
+  <div nz-col [nzSpan]="16">
+    <div style="display: flex; justify-content: center; margin-bottom: 2.5rem;">
+      <nz-segmented [nzOptions]="options" (nzValueChange)="handleIndexChange($event)"></nz-segmented>
+    </div>
+    <highcharts-chart
+      [Highcharts]="Highcharts"
+      [options]="chartOptions"
+
+      style="width: 100%; height: 400px; display: block;"
+    ></highcharts-chart>
+  </div>
+</div>

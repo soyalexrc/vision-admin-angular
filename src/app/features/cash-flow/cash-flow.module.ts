@@ -22,6 +22,12 @@ import { RegisterPersonModalComponent } from './register-person-modal/register-p
 import { ConfigServicesModalComponent } from './config-services-modal/config-services-modal.component';
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {NzSpinModule} from "ng-zorro-antd/spin";
+import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
+import {NzToolTipModule} from "ng-zorro-antd/tooltip";
+import { TotalAvailableComponent } from './total-available/total-available.component';
+import {HighchartsChartModule} from "highcharts-angular";
+import {NzSegmentedModule} from "ng-zorro-antd/segmented";
 
 
 
@@ -31,29 +37,35 @@ import {NzSpinModule} from "ng-zorro-antd/spin";
     OperationsResumeComponent,
     CreateComponent,
     RegisterPersonModalComponent,
-    ConfigServicesModalComponent
+    ConfigServicesModalComponent,
+    TotalAvailableComponent
   ],
-    imports: [
-        CommonModule,
-        CashFlowRoutingModule,
-        NzBreadCrumbModule,
-        SharedModule,
-        NzGridModule,
-        NzButtonModule,
-        FormsModule,
-        NzRadioModule,
-        NzModalModule,
-        NzSelectModule,
-        NzIconModule,
-        NzFormModule,
-        NzInputModule,
-        ReactiveFormsModule,
-        NzStepsModule,
-        NzDatePickerModule,
-        NzSkeletonModule,
-        NzDividerModule,
-        NzSpinModule
-    ],
+  imports: [
+    CommonModule,
+    CashFlowRoutingModule,
+    NzBreadCrumbModule,
+    SharedModule,
+    NzGridModule,
+    NzButtonModule,
+    FormsModule,
+    NzRadioModule,
+    NzModalModule,
+    NzSelectModule,
+    NzIconModule,
+    NzFormModule,
+    NzInputModule,
+    ReactiveFormsModule,
+    NzStepsModule,
+    NzDatePickerModule,
+    NzSkeletonModule,
+    NzDividerModule,
+    NzSpinModule,
+    NzCheckboxModule,
+    NzDrawerModule,
+    NzToolTipModule,
+    HighchartsChartModule,
+    NzSegmentedModule
+  ],
   providers: [CurrencyPipe]
 })
 export class CashFlowModule { }

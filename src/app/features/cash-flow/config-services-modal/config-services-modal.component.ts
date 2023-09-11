@@ -5,6 +5,7 @@ import {UiService} from "../../../core/services/ui.service";
 import {SERVICE_OPTIONS} from "../../../shared/utils/services";
 import {ServicesService} from "../../../core/services/services.service";
 import {NzModalService} from "ng-zorro-antd/modal";
+import {UserService} from "../../../core/services/user.service";
 
 @Component({
   selector: 'app-config-services-modal',
@@ -28,6 +29,7 @@ export class ConfigServicesModalComponent implements OnInit{
     private fb: FormBuilder,
     private servicesService: ServicesService,
     private uiService: UiService,
+    private userService: UserService,
     private modal: NzModalService,
   ) {
   }
@@ -164,5 +166,9 @@ export class ConfigServicesModalComponent implements OnInit{
         })
       });
     }
+  }
+
+  onlyIfIsAdmin() {
+    return this.userService.onlyIfIsAdmin()
   }
 }

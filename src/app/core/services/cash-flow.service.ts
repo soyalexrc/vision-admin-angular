@@ -11,7 +11,7 @@ import {
   CashFlowTotals,
   GetAllCashFlowRegister,
   GetAllTemporalTransaction,
-  CreateEditCashFlowResponse, CashFlowPerson,
+  CreateEditCashFlowResponse, CashFlowPerson, CashFlowTotal, CashFlowTotalsByEntities,
 } from "../interfaces/cashFlow";
 import {DeleteResult} from "../interfaces/generics";
 
@@ -24,8 +24,23 @@ export class CashFlowService {
     private  http: HttpClient
   ) { }
 
-  getAll(pageIndex: number, pageSize: number): Observable<GetAllCashFlowRegister> {
-    return this.http.get<GetAllCashFlowRegister>(`cashflow?pageIndex=${pageIndex}&pageSize=${pageSize}`)
+  getAll(
+    pageIndex: number,
+    pageSize: number,
+    transactionType: string,
+    currency: string,
+    wayToPay: string,
+    entity: string,
+    service: string,
+    dateFrom: string,
+    dateTo: string,
+    serviceType: string,
+    property: string,
+    client: string,
+    owner: string,
+    cashFlowPerson: string,
+  ): Observable<GetAllCashFlowRegister> {
+    return this.http.get<GetAllCashFlowRegister>(`cashflow?pageIndex=${pageIndex}&pageSize=${pageSize}&transactionType=${transactionType}&currency=${currency}&wayToPay=${wayToPay}&entity=${entity}&service=${service}&dateFrom=${dateFrom}&dateTo=${dateTo}&serviceType=${serviceType}&property_id=${property}&client_id=${client}&owner_id=${owner}&person=${cashFlowPerson}`)
   }
 
   createOne(data: CashFlowRegister): Observable<CreateEditCashFlowResponse> {
@@ -45,15 +60,24 @@ export class CashFlowService {
   }
 
   createTemporalTransaction(data: TemporalTransactionToCreate): Observable<TemporalTransactionResponse> {
-    return this.http.post<TemporalTransactionResponse>('format/cashFlow/transferAmount', data)
+    return this.http.post<TemporalTransactionResponse>('cashFlow/temporalTransaction', data)
   }
 
   getTemporalTransactions(pageIndex: number, pageSize: number): Observable<GetAllTemporalTransaction> {
     return this.http.get<GetAllTemporalTransaction>(`cashFlow/getTemporalTransactions?pageIndex=${pageIndex}&pageSize=${pageSize}`)
   }
 
-  getTotals(): Observable<CashFlowTotals> {
-    return this.http.get<CashFlowTotals>('cashFlow/getTotals')
+  getTotals(dateFrom: string, dateTo: string): Observable<CashFlowTotals> {
+    return this.http.get<CashFlowTotals>(`cashFlow/getTotals?dateFrom=${dateFrom}&dateTo=${dateTo}`)
+  }
+
+
+  getTotalAvailable(dateFrom: string, dateTo: string): Observable<CashFlowTotal> {
+    return this.http.get<CashFlowTotal>(`cashFlow/getTotalAvailable?dateFrom=${dateFrom}&dateTo=${dateTo}`)
+  }
+
+  getTotalAvailableByEntities(dateFrom: string, dateTo: string): Observable<CashFlowTotalsByEntities> {
+    return this.http.get<CashFlowTotalsByEntities>(`cashFlow/getTotalAvailableByEntities?dateFrom=${dateFrom}&dateTo=${dateTo}`)
   }
 
   getPeople(): Observable<CashFlowPerson[]> {

@@ -21,8 +21,8 @@ export class OwnerService {
     private  http: HttpClient
   ) { }
 
-  getAll(): Observable<GetAllOwners> {
-    return this.http.get<GetAllOwners>(`owner`)
+  getAll(): Observable<Owner[]> {
+    return this.http.get<Owner[]>(`owner`)
   }
 
   getAllPaginated(pageIndex: number, pageSize: number): Observable<GetAllOwners> {

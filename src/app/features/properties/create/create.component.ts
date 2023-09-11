@@ -659,7 +659,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   getOwners() {
     this.ownersLoading = true;
     this.ownerService.getAll().subscribe(result => {
-      this.owners = result.rows;
+      this.owners = result;
     }, () => {
       this.ownersLoading = false;
     }, () => {

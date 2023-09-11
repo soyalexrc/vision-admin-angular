@@ -65,7 +65,7 @@ export class MainComponent implements OnInit, AfterViewInit{
 
   getClients() {
     this.loading = true;
-    this.clientService.getAll(this.pageIndex, this.pageSize ).subscribe(data => {
+    this.clientService.getAllPaginated(this.pageIndex, this.pageSize ).subscribe(data => {
         this.totalItems = data.count;
         this.data = data.rows.map(element => ({
           id: element.id,
