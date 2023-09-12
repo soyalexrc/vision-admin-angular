@@ -4,6 +4,7 @@ import {MainComponent} from "./main/main.component";
 import {OperationsResumeComponent} from "./operations-resume/operations-resume.component";
 import {CreateComponent} from "./create/create.component";
 import {TotalAvailableComponent} from "./total-available/total-available.component";
+import {CloseCashFlowComponent} from "./close-cash-flow/close-cash-flow.component";
 
 const routes: Routes = [
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
   {
     path: 'total-disponible',
     component: TotalAvailableComponent,
+  },
+  {
+    path: 'cierre-de-caja',
+    component: CloseCashFlowComponent,
   },
 ];
 

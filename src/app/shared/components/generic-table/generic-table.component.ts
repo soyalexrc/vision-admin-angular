@@ -21,12 +21,15 @@ export class GenericTableComponent implements OnInit {
   @Input() pageSize: number = 10;
   @Input() historyActionTitle: string = '';
   @Input() approveTitle: string = '';
+  @Input() eyeTitle: string = '';
   @Input() actionsFixed: boolean = false;
   @Input() exposeFullObjOnDelete: boolean = false;
+  @Input() exposeFullObjOnEye: boolean = false;
   @Input() hasEdit: boolean = true;
   @Input() hasDelete: boolean = true;
   @Input() changeAction: boolean = false;
   @Input() hasApprove: boolean = false;
+  @Input() hasEye: boolean = false;
   @Input() linkAction: boolean = false;
   @Input() canDelete: boolean = false;
   @Input() historyAction: boolean = false;
@@ -38,6 +41,7 @@ export class GenericTableComponent implements OnInit {
   @Output() onPageIndexChange: EventEmitter<number> = new EventEmitter<number>()
   @Output() onChangeUserStatus: EventEmitter<any> = new EventEmitter<any>()
   @Output() onApprove: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onEye: EventEmitter<any> = new EventEmitter<any>()
 
   listOfData: any[] = [];
 
