@@ -32,6 +32,9 @@
         <a *ngIf="hasApprove" (click)="onApprove.emit(row)" nz-tooltip="true" [nzTooltipTitle]="approveTitle">
           <span nz-icon nzType="check-circle" style="font-size: 18px" ></span>
         </a>
+        <a *ngIf="hasEye" (click)="onEye.emit(exposeFullObjOnEye ? row.raw : row.id)" nz-tooltip="true" [nzTooltipTitle]="eyeTitle">
+          <span nz-icon nzType="eye" style="font-size: 18px" ></span>
+        </a>
         <a (click)="onDelete.emit(exposeFullObjOnDelete ? row : row.id)" nz-tooltip="true" nzTooltipTitle="Eliminar" *ngIf="canDelete">
           <span nz-icon nzType="delete" style="font-size: 18px" [nzTheme]="'twotone'" [nzTwotoneColor]="'#ff4d4f'"></span>
         </a>

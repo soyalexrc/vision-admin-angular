@@ -29,6 +29,7 @@ import {OwnerService} from "../../../core/services/owner.service";
 import {ClientService} from "../../../core/services/client.service";
 import {PropertyReview} from "../../../core/interfaces/property";
 import {PropertyService} from "../../../core/services/property.service";
+import {MONTHS} from "../../../shared/utils/months";
 
 @Component({
   selector: 'app-main',
@@ -71,10 +72,12 @@ export class MainComponent implements OnInit, AfterViewInit {
     new Date().toISOString().split('T')[0].concat('T05:00:00.000Z'),
     new Date().toISOString().split('T')[0].concat('T23:59:00.000Z'),
   ];
-  loadingTotalAvailable = false
+  loadingTotalAvailable = true
   totalAvailable: CashFlowTotal = {usd: null, eur: null, bs: null};
   client = '';
   owner = '';
+  detailModalData: any;
+  showDetailModal = false;
 
   constructor(
     private router: Router,
@@ -105,8 +108,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.getCashFlowData();
-    this.getTotalStats()
+    this.getData();
     this.getTotalAvailable();
   }
 
@@ -163,6 +165,10 @@ export class MainComponent implements OnInit, AfterViewInit {
         this.totalItems = data.count;
         this.data = data.rows
           .map(element => ({
+            raw: {
+              ...element,
+              date: moment(element.date).calendar(),
+            },
             id: element.id,
             date: moment(element.date).calendar(),
             customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
@@ -179,11 +185,11 @@ export class MainComponent implements OnInit, AfterViewInit {
           {key: 'date', displayName: 'Fecha'},
           {key: 'customProperty', displayName: 'Inmueble'},
           {key: 'person', displayName: 'Persona'},
-          {key: 'amount', displayName: 'Monto'},
           {key: 'entity', displayName: 'Entidad'},
           {key: 'transactionType', displayName: 'Tipo de transaccion'},
           {key: 'wayToPay', displayName: 'Forma de pago'},
           {key: 'reason', displayName: 'Concepto'},
+          {key: 'amount', displayName: 'Monto'},
           {key: 'pendingToCollect', displayName: 'Por cobrar'},
           {key: 'totalDue', displayName: 'Por pagar'},
         ]);
@@ -209,6 +215,11 @@ export class MainComponent implements OnInit, AfterViewInit {
     } else {
       const data = {...this.transactionForm.value};
       data.amount = data.amount.replace(/[^0-9.]+/g, '').trim();
+      data.user_id = this.userService.currentUser.value.id;
+      data.date = moment().format();
+      const month = new Date().getMonth();
+      data.month = MONTHS[month];
+      console.log(data);
       this.transferLoading = true;
       this.cashFlowService.createTemporalTransaction(data).subscribe(result => {
           this.uiService.createMessage('success', 'Se creo el traslado de dinero con exito!');
@@ -365,5 +376,28 @@ export class MainComponent implements OnInit, AfterViewInit {
       this.client = '';
       this.cashFlowPerson = '';
     }
+  }
+
+  handleCheckDetail(data: any) {
+    this.detailModalData = data;
+    this.showDetailModal = true;
+  }
+
+  handleCancelDetailModal() {
+    this.detailModalData = {};
+    this.showDetailModal = false;
+  }
+
+  handleOkDetailModal() {
+    this.detailModalData = {};
+    this.showDetailModal = false;
+  }
+
+  getSubServiceById(id: string) {
+    return this.serviceTypes.find(s => s.id === Number(id))?.title
+  }
+
+  getServiceById(id: string) {
+    return this.services.find(s => s.id === Number(id))?.title
   }
 }
