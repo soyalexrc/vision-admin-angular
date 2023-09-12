@@ -10,6 +10,8 @@ import {MONTHS} from "../../../shared/utils/months";
 import {CashFlowPerson} from "../../../core/interfaces/cashFlow";
 import {Service, SubService} from "../../../core/interfaces/service";
 import {ServicesService} from "../../../core/services/services.service";
+import {User} from "../../../core/interfaces/user";
+import {UserService} from "../../../core/services/user.service";
 
 interface Steps {
   first: string,
@@ -45,6 +47,7 @@ export class CreateComponent implements OnInit {
     private fb: FormBuilder,
     private propertyService: PropertyService,
     private cashFlowService: CashFlowService,
+    private userService: UserService,
     private servicesService: ServicesService,
     private uiService: UiService,
     private router: Router,
@@ -71,10 +74,14 @@ export class CreateComponent implements OnInit {
       if (value.includes('Administracion interna')) {
         this.serviceForm.get('service')?.reset()
         this.serviceForm.get('serviceType')?.reset()
+        this.generalForm.get('internalProperty')?.patchValue('')
+        this.generalForm.get('property_id')?.patchValue(null)
         this.serviceForm.get('service')?.patchValue(10);
         this.serviceForm.get('service')?.disable()
       } else {
         this.serviceForm.get('service')?.reset()
+        this.generalForm.get('internalProperty')?.patchValue('')
+        this.generalForm.get('property_id')?.patchValue(null)
         this.serviceForm.get('service')?.enable()
         this.serviceForm.get('serviceType')?.reset()
       }
@@ -250,6 +257,7 @@ export class CreateComponent implements OnInit {
           this.loading = false;
         })
     } else {
+      data.user_id = this.userService.currentUser.value.id;
       data.date = moment().format();
       const month = new Date().getMonth();
       data.month = MONTHS[month];

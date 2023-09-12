@@ -22,9 +22,12 @@
     <button nz-button nzType="primary" (click)="showFiltersDrawer = true">
       <span nz-icon nzType="filter" nzTheme="outline"></span>
       Ver mas filtros</button>
+    <button nz-button nzType="default"  routerLink="resumen-de-operaciones">Ver resumen de operaciones
+    </button>
+    <button nz-button nzType="default"  routerLink="cierre-de-caja">Ver cierre de caja
+    </button>
   </div>
-  <button nz-button nzType="link" style="margin: 1rem 0" routerLink="resumen-de-operaciones">Ver resumen de operaciones
-  </button>
+
 </div>
 
 
@@ -152,7 +155,11 @@
                    (onEdit)="handleEdit($event)"
                    [canDelete]="onlyIfIsAdmin()"
                    (onDelete)="handleDelete($event)"
+                   [hasEye]="true"
+                   eyeTitle="Ver detalle"
+                   (onEye)="handleCheckDetail($event)"
                    [pageIndex]="pageIndex"
+                   [exposeFullObjOnEye]="true"
                    [pageSize]="pageSize"
                    [totalItems]="totalItems"
                    (onPageIndexChange)="handlePageIndexChange($event)"
@@ -375,6 +382,97 @@
     </form>
   </ng-container>
 </nz-modal>
+
+<nz-modal
+  [nzStyle]="{width: '700px'}"
+  [(nzVisible)]="showDetailModal"
+  [nzTitle]="detailModalTitle"
+  (nzOnCancel)="handleCancelDetailModal()"
+  (nzOnOk)="handleOkDetailModal()"
+  [nzCancelText]="null"
+>
+  <ng-container *nzModalContent>
+    <h2 style="text-align: center; font-size: 36px;">{{ detailModalData.amount | currency: detailModalData.currency + ' '  }}</h2>
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <p><b>Por pagar:</b> {{detailModalData.totalDue | currency: detailModalData.currency + ' '}}</p>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <p><b>Por cobrar:</b> {{detailModalData.pendingToCollect | currency: detailModalData.currency + ' '}}</p>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+
+    <p><b>Servicio:</b>  {{getServiceById(detailModalData.service)}}</p>
+    <p><b>Tipo de servicio:</b>  {{getSubServiceById(detailModalData.serviceType)}}</p>
+
+    <nz-divider></nz-divider>
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <h2>{{ detailModalData.client ? 'Cliente' : detailModalData.owner ? 'Propietario': 'Personal interno' }}</h2>
+        <ng-container *ngIf="detailModalData.client">
+          <p><b>Nombre:</b> {{detailModalData.client.name}}</p>
+          <p><b>Desde:</b> {{detailModalData.client.contactFrom}}</p>
+          <p><b>En:</b> {{detailModalData.client.operationType}} - {{detailModalData.client.typeOfCapture}}</p>
+        </ng-container>
+        <ng-container *ngIf="detailModalData.owner">
+          <p><b>Nombre:</b> {{detailModalData.owner.firstName}} - {{detailModalData.owner.lastName}}</p>
+          <p><b>Correo:</b> {{detailModalData.owner.email}}</p>
+          <p><b>Telefono:</b> {{detailModalData.owner.phone}}</p>
+        </ng-container>
+        <ng-container *ngIf="!detailModalData.client && !detailModalData.owner">
+          <p><b>Nombre:</b> {{detailModalData.person}}</p>
+        </ng-container>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <h2>{{detailModalData.property ? 'Inmueble' : 'Propiedad interna'}}</h2>
+        <ng-container *ngIf="detailModalData.property; else internalProperty">
+          <p><b>Codigo:</b> {{detailModalData.property.generalInformation.code}}</p>
+          <p><b>Detalle:</b> {{detailModalData.property.generalInformation.propertyType}} - {{detailModalData.property.generalInformation.operationType}}</p>
+        </ng-container>
+        <ng-template #internalProperty>
+          <p><b>Detalle:</b> {{detailModalData.internalProperty}}</p>
+        </ng-template>
+       </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <div nz-row [nzGutter]=16>
+      <div nz-col [nzSpan]="12">
+        <h4>Observaciones</h4>
+        <p>{{detailModalData.observation}}</p>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <h4>Concepto</h4>
+        <p>{{detailModalData.reason }}</p>
+      </div>
+    </div>
+
+
+  </ng-container>
+
+</nz-modal>
+
+<ng-template #detailModalTitle>
+  <h5>
+    {{ detailModalData.date }}
+    <br>
+    <b style="text-decoration: underline; margin-right:.5rem">
+      {{ detailModalData.transactionType }}
+    </b>
+    {{ detailModalData.transactionType.includes('Ingreso') ? 'a' : 'de' }}
+    <b style="text-decoration: underline; margin:0 .5rem">
+      {{ detailModalData.entity }}
+    </b>
+    {{ detailModalData.wayToPay.includes('Efectivo') ? 'en' : 'por' }}
+    <b style="text-decoration: underline; margin:0 .5rem">
+      {{ detailModalData.wayToPay }}
+    </b>
+
+  </h5>
+</ng-template>
 
 
 

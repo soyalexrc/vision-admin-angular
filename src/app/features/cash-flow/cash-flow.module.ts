@@ -28,6 +28,8 @@ import {NzToolTipModule} from "ng-zorro-antd/tooltip";
 import { TotalAvailableComponent } from './total-available/total-available.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {NzSegmentedModule} from "ng-zorro-antd/segmented";
+import {NzSpaceModule} from "ng-zorro-antd/space";
+import { CloseCashFlowComponent } from './close-cash-flow/close-cash-flow.component';
 
 
 
@@ -38,7 +40,8 @@ import {NzSegmentedModule} from "ng-zorro-antd/segmented";
     CreateComponent,
     RegisterPersonModalComponent,
     ConfigServicesModalComponent,
-    TotalAvailableComponent
+    TotalAvailableComponent,
+    CloseCashFlowComponent,
   ],
   imports: [
     CommonModule,
@@ -64,7 +67,8 @@ import {NzSegmentedModule} from "ng-zorro-antd/segmented";
     NzDrawerModule,
     NzToolTipModule,
     HighchartsChartModule,
-    NzSegmentedModule
+    NzSegmentedModule,
+    NzSpaceModule
   ],
   providers: [CurrencyPipe]
 })

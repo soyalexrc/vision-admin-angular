@@ -2,6 +2,7 @@
   <div class="info">
     <h1>{{title}}</h1>
     <button
+      *ngIf="hasRefresh"
       (click)="onRefresh.emit()"
       nz-tooltip="true"
       nzTooltipTitle="Refrescar"
