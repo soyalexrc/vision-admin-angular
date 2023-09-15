@@ -1,0 +1,16 @@
+.button-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%  ;
+  p {
+    margin-bottom: .2rem;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .filter-select {
+    width: 100%;
+    margin-bottom: .7rem;
+  }
+}
