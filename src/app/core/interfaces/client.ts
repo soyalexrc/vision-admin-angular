@@ -3,13 +3,17 @@ export interface Client {
   property_id: null;
   name: string;
   contactFrom: string;
-  requirementStatus: boolean;
+  requirementStatus: string;
   user_id: number;
   phone: string;
   operationType: string;
   propertyOfInterest: string;
   propertyLocation: string;
   typeOfCapture: string;
+  specificRequirement: string;
+  interestDate: null | Date;
+  appointmentDate: null | Date;
+  inspectionDate: null | Date;
   aspiredPrice: string;
   typeOfBusiness: null;
   note: string;
@@ -30,6 +34,8 @@ export interface Client {
   createdAt: Date;
   service: string;
   referrer: string;
+  location: string;
+  company: string;
   usageProperty: string;
 }
 

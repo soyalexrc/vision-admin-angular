@@ -29,7 +29,6 @@ export class CreateComponent implements OnInit {
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       phone: ['', Validators.required],
-      birthDate: ['', Validators.required],
       id: [null]
     })
 
@@ -44,7 +43,6 @@ export class CreateComponent implements OnInit {
     if (this.form.valid) {
       this.loading = true;
       const data = this.form.value;
-      data.birthDate = moment(data.birthDate).format('YYYY-MM-DD');
         if (this.isEditing) {
         this.adviserService.update(data).subscribe(result => {
           this.uiService.createMessage('success', result.message)
@@ -81,7 +79,6 @@ export class CreateComponent implements OnInit {
     this.adviserService.getById(id).subscribe(result => {
       this.form.get('firstName')?.patchValue(result.firstName);
       this.form.get('lastName')?.patchValue(result.lastName);
-      this.form.get('birthDate')?.patchValue(result.birthDate);
       this.form.get('email')?.patchValue(result.email);
       this.form.get('phone')?.patchValue(result.phone);
       this.form.get('id')?.patchValue(result.id);

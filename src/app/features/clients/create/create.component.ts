@@ -16,7 +16,7 @@ interface Steps {
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit{
+export class CreateComponent implements OnInit {
   generalForm!: FormGroup;
   operationForm!: FormGroup;
   loading = false;
@@ -43,8 +43,8 @@ export class CreateComponent implements OnInit{
       this.id = this.route.snapshot.paramMap.get('id')!;
       this.getClient(this.id)
     } else {
-      this.addZone();
-      this.addFeature()
+      // this.addZone();
+      // this.addFeature()
     }
   }
 
@@ -68,11 +68,17 @@ export class CreateComponent implements OnInit{
       this.operationForm.get('amountOfNights')?.patchValue(result.amountOfNights);
       this.operationForm.get('amountOfPets')?.patchValue(result.amountOfPets);
       this.operationForm.get('amountOfYounger')?.patchValue(result.amountOfYounger);
+      this.operationForm.get('specificRequirement')?.patchValue(result.specificRequirement);
+      this.operationForm.get('interestDate')?.patchValue(result.interestDate);
+      this.operationForm.get('appointmentDate')?.patchValue(result.appointmentDate);
+      this.operationForm.get('inspectionDate')?.patchValue(result.inspectionDate);
       this.operationForm.get('arrivingDate')?.patchValue(result.arrivingDate);
       this.operationForm.get('checkoutDate')?.patchValue(result.checkoutDate);
       this.operationForm.get('reasonOfStay')?.patchValue(result.reasonOfStay);
       this.operationForm.get('requirementStatus')?.patchValue(result.requirementStatus);
       this.operationForm.get('usageProperty')?.patchValue(result.usageProperty);
+      this.operationForm.get('location')?.patchValue(result.location);
+      this.operationForm.get('company')?.patchValue(result.company);
       this.operationForm.get('typeOfPerson')?.patchValue(result.typeOfPerson);
       this.operationForm.get('personEntry')?.patchValue(result.personEntry);
       this.operationForm.get('personLocation')?.patchValue(result.personLocation);
@@ -116,10 +122,16 @@ export class CreateComponent implements OnInit{
       amountOfPets: [null],
       amountOfYounger: [null],
       arrivingDate: [null],
+      interestDate: [null],
+      appointmentDate: [null],
+      inspectionDate: [null],
       checkoutDate: [null],
       amountOfNights: [null],
       reasonOfStay: [''],
       usageProperty: [''],
+      specificRequirement: [''],
+      location: [''],
+      company: [''],
       typeOfPerson: [''],
       personEntry: [''],
       personHeadquarters: [''],
@@ -196,8 +208,8 @@ export class CreateComponent implements OnInit{
     if (this.generalForm.valid && this.operationForm.valid) {
       this.loading = true;
       const data = {...this.generalForm.value, ...this.operationForm.value};
-      data.zonesOfInterest = data.zonesOfInterest.map((zone: {value: string}) => zone.value);
-      data.essentialFeatures = data.essentialFeatures.map((feature: {value: string}) => feature.value);
+      data.zonesOfInterest = data.zonesOfInterest.map((zone: { value: string }) => zone.value);
+      data.essentialFeatures = data.essentialFeatures.map((feature: { value: string }) => feature.value);
       data.user_id = this.userService.currentUser?.value.id;
       data.requirementStatus = true;
 
@@ -215,6 +227,8 @@ export class CreateComponent implements OnInit{
           this.loading = false;
         })
       }
+    } else {
+      this.logMissingFields();
     }
   }
 
@@ -234,7 +248,7 @@ export class CreateComponent implements OnInit{
       bool = this.generalForm.invalid
     }
 
-    if (this.index === 1 ) {
+    if (this.index === 1) {
       bool = this.operationForm.invalid
     }
 
@@ -249,9 +263,83 @@ export class CreateComponent implements OnInit{
     if (value === 'Inmobiliario') {
       this.operationOptions = [
         'Alquiler residencial',
-        'Alquiler comercial',
+        'Alquiler comercial / industrial',
         'Alquiler vacacional',
         'Captacion'
+      ]
+    } else if (value === 'Administrativo') {
+      this.operationOptions = [
+        'Administracion de inmueble alquilado',
+        'Administracion de empresa'
+      ]
+    } else if (value === 'Limpieza (Ama de llaves)') {
+      this.operationOptions = [
+        'Limpieza de inmuevbe vacacional',
+        'Limpieza inmueble no vacacional',
+        'Paquete basico',
+        'Paquete flexible',
+        'Paquete plus',
+        'Paquete premium',
+        'Lavanderia',
+        'Planchado',
+        'Cocina',
+        'Organizacion de espacios',
+        'Jardineria'
+      ]
+    } else if (value === 'Mantenimiento') {
+      this.operationOptions = [
+        'Albañilería',
+        'Plomería'
+      ]
+    } else if (value === 'Remodelacion') {
+      this.operationOptions = [
+        'Remodelacion',
+      ]
+    } else if (value === 'Contabilidad') {
+      this.operationOptions = [
+        'Contabilidad Seniat',
+        'Contabilidad Seniat Parafiscales',
+        'Contabilidad Seniat Alcaldia Parafiscales',
+        'Declaracion ISLR',
+        'Declaracion definitiva patente',
+        'Carta de comisario',
+        'Balance de apertura',
+        'Informes de aprobacion estado financiero',
+        'Estados financieros historicos',
+        'Estados financieros reexpresados',
+        'Certificacion de ingresos',
+      ]
+    } else if (value === 'Legal') {
+      this.operationOptions = [
+        'Contrato de arrendamiento privado',
+        'Contrato de arrendamiento notariado',
+        'Finiquito visado',
+        'Finiquito sin visado',
+        'Compraventa registrada',
+        'Promesa bilateral de compraventa',
+        'Cedula catastral Naguanagua',
+        'Cedula catastral Valencia',
+        'Cedula catastral San Diego',
+        'Constitucion de empresa CA',
+        'Constitucion de empresa Pyme',
+        'Constitucion de Firma Personal',
+        'Acta de asamblea',
+        'Permisos de apertura de negocio Naguanagua',
+        'Permisos de apertura de negocio Valencia',
+        'Permisos de apertura de negocio San Diego',
+        'Bomberos Naguanagua',
+        'Uso conforme Naguanagua',
+        'Licencia de actividades economicas Naguanagua',
+        'Licencia de licores Naguanagua',
+        'Publicidad Naguanagua',
+        'Poder registrado',
+        'Declaracion sucesoral',
+        'Liberacion de hipoteca',
+        'Permiso de viaje',
+        'Liberacion de enajenacion tribunales',
+        'Titulo supletorio',
+        'Registro de marca SAPI Caracas',
+        'Inscripcion parafiscales',
       ]
     }
   }
@@ -268,6 +356,10 @@ export class CreateComponent implements OnInit{
     return this.operationForm.get('typeOfPerson')?.value;
   }
 
+  get typeOfCapture() {
+    return this.operationForm.get('typeOfCapture')?.value;
+  }
+
   get zonesOfInterest() {
     return this.operationForm.controls["zonesOfInterest"] as FormArray;
   }
@@ -282,19 +374,72 @@ export class CreateComponent implements OnInit{
 
 
   handleOperationTypeSelect(value: string) {
-    console.log(value, this.serviceType)
-    if (this.serviceType === 'Inmobiliario' ){
+    this.resetOperationForm();
+    if (this.serviceType === 'Inmobiliario') {
       if (value === 'Alquiler residencial') {
         this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
-        this.operationForm.get('usageProperty')?.setValidators([Validators.required]);
-        this.operationForm.get('zonesOfInterest')?.setValidators([Validators.required]);
         this.operationForm.get('aspiredPrice')?.setValidators([Validators.required]);
-        this.operationForm.get('essentialFeatures')?.setValidators([Validators.required]);
         this.operationForm.get('typeOfPerson')?.setValidators([Validators.required]);
         this.operationForm.get('amountOfPeople')?.setValidators([Validators.required]);
         this.operationForm.get('amountOfYounger')?.setValidators([Validators.required]);
         this.operationForm.get('amountOfPets')?.setValidators([Validators.required]);
+      } else if (value === 'Captacion') {
+        this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+        this.operationForm.get('location')?.setValidators([Validators.required]);
+        this.operationForm.get('aspiredPrice')?.setValidators([Validators.required]);
+        this.operationForm.get('typeOfCapture')?.setValidators([Validators.required]);
+      } else if (value === 'Alquiler vacacional') {
+        this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+        this.operationForm.get('amountOfPeople')?.setValidators([Validators.required]);
+        this.operationForm.get('amountOfNights')?.setValidators([Validators.required]);
+        this.operationForm.get('arrivingDate')?.setValidators([Validators.required]);
+        this.operationForm.get('checkoutDate')?.setValidators([Validators.required]);
+        this.operationForm.get('reasonOfStay')?.setValidators([Validators.required]);
+      } else if (value === 'Alquiler comercial / industrial') {
+        this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+        this.operationForm.get('aspiredPrice')?.setValidators([Validators.required]);
+        this.operationForm.get('typeOfPerson')?.setValidators([Validators.required]);
+        this.operationForm.get('usageProperty')?.setValidators([Validators.required]);
       }
+    }
+    if (this.serviceType === 'Administrativo') {
+      if (value === 'Administracion de inmueble alquilado') {
+        this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+        this.operationForm.get('location')?.setValidators([Validators.required]);
+
+      } else if (value === 'Administracion de empresa') {
+        this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+        this.operationForm.get('location')?.setValidators([Validators.required]);
+        this.operationForm.get('company')?.setValidators([Validators.required]);
+      }
+    }
+    if (this.serviceType === 'Limpieza (Ama de llaves)') {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('location')?.setValidators([Validators.required]);
+      this.operationForm.get('interestDate')?.setValidators([Validators.required]);
+    }
+    if (this.serviceType === 'Mantenimiento') {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('location')?.setValidators([Validators.required]);
+      this.operationForm.get('specificRequirement')?.setValidators([Validators.required]);
+      this.operationForm.get('appointmentDate')?.setValidators([Validators.required]);
+    }
+    if (this.serviceType === 'Remodelacion') {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('location')?.setValidators([Validators.required]);
+      this.operationForm.get('specificRequirement')?.setValidators([Validators.required]);
+      this.operationForm.get('appointmentDate')?.setValidators([Validators.required]);
+    }
+    if (this.serviceType === 'Contabilidad') {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('location')?.setValidators([Validators.required]);
+      this.operationForm.get('company')?.setValidators([Validators.required]);
+      this.operationForm.get('appointmentDate')?.setValidators([Validators.required]);
+    }
+    if (this.serviceType === 'Legal') {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('location')?.setValidators([Validators.required]);
+      this.operationForm.get('appointmentDate')?.setValidators([Validators.required]);
     }
   }
 
@@ -312,7 +457,7 @@ export class CreateComponent implements OnInit{
 
   addZone() {
     const zoneForm = this.fb.group({
-      value: ['', Validators.required]
+      value: ['']
     })
 
     this.zonesOfInterest.push(zoneForm);
@@ -324,7 +469,7 @@ export class CreateComponent implements OnInit{
 
   addFeature() {
     const feature = this.fb.group({
-      value: ['', Validators.required]
+      value: ['']
     })
 
     this.essentialFeatures.push(feature);
@@ -340,5 +485,35 @@ export class CreateComponent implements OnInit{
     } else {
       this.generalForm.get('contactFrom')?.clearValidators()
     }
+  }
+
+  checkService(serviceType: string, operationType?: string) {
+    if (operationType) {
+      return this.serviceType === serviceType && this.operationType === operationType
+    } else {
+      return this.serviceType === serviceType
+    }
+  }
+
+  resetOperationForm() {
+    this.zonesOfInterest.reset()
+    this.essentialFeatures.reset()
+    Object.keys(this.operationForm.controls).forEach(controlName => {
+      const control = this.operationForm.get(controlName);
+      if (controlName !== 'operationType') {
+        control?.clearValidators()
+        control?.reset();
+        control?.removeValidators(Validators.required)
+      }
+    });
+  }
+
+  logMissingFields() {
+    Object.keys(this.operationForm.controls).forEach(controlName => {
+      const control = this.operationForm.get(controlName);
+      if (control?.invalid) {
+        console.log(`Field '${controlName}' is missing or invalid.`);
+      }
+    });
   }
 }

@@ -1,4 +1,3 @@
-
 <nz-breadcrumb>
   <nz-breadcrumb-item>Inicio</nz-breadcrumb-item>
   <nz-breadcrumb-item>Clientes</nz-breadcrumb-item>
@@ -8,8 +7,14 @@
   [title]="'Clientes'"
   [buttonText]="'Nuevo cliente'"
   (onRefresh)="getClients()"
+  [additionalButton]="true"
+  additionalButtonText="Filtros"
+  additionalButtonIcon="filter"
+  (onAdditionalAction)="showFiltersDrawer = true"
   (onNewElement)="handleNewClient()"
 ></app-section-title>
+
+<!--filters-->
 <app-generic-table #dataTable
                    [loading]="loading"
                    (onEdit)="handleEdit($event)"
@@ -17,6 +22,101 @@
                    (onDelete)="handleDelete($event)"
                    [pageIndex]="pageIndex"
                    [totalItems]="totalItems"
+                   [changeAction]="true"
+                   changeActionTitle="Cambiar status"
+                   (onChange)="handleChangeStatus($event)"
                    [pageSize]="pageSize"
                    (onPageIndexChange)="handlePageIndexChange($event)"
 ></app-generic-table>
+
+
+<nz-drawer
+  [nzClosable]="false"
+  [nzVisible]="showFiltersDrawer"
+  nzPlacement="right"
+  nzTitle="Filtros"
+  (nzOnClose)="closeFilterModal()"
+>
+  <ng-container *nzDrawerContent>
+    <div class="button-group">
+      <div>
+        <div style="margin-bottom: 1rem">
+          <p>Fecha</p>
+          <nz-range-picker class="filter-select" [(ngModel)]="date" (ngModelChange)="onChangeDate($event)"></nz-range-picker>
+        </div>
+        <div style="margin-bottom: 1rem">
+          <p>Servicio</p>
+          <nz-select nzShowSearch [(ngModel)]="service" class="filter-select" nzAllowClear
+                     (ngModelChange)="handleSelectService($event)">
+            <nz-option nzValue="Inmobiliario" nzLabel="Inmobiliario"></nz-option>
+            <nz-option nzValue="Administrativo" nzLabel="Administrativo"></nz-option>
+            <nz-option nzValue="Mantenimiento" nzLabel="Mantenimiento"></nz-option>
+            <nz-option nzValue="Remodelacion" nzLabel="Remodelacion"></nz-option>
+            <nz-option nzValue="Contabilidad" nzLabel="Contabilidad"></nz-option>
+            <nz-option nzValue="Legal" nzLabel="Legal"></nz-option>
+            <nz-option nzValue="Limpieza (Ama de llaves)" nzLabel="Limpieza (Ama de llaves)"></nz-option>
+          </nz-select>
+        </div>
+
+        <div style="margin-bottom: 1rem">
+          <p>Tipo de operacion</p>
+          <nz-select nzShowSearch [(ngModel)]="operationType" class="filter-select" nzAllowClear >
+            <nz-option *ngFor="let option of operationOptions" [nzValue]="option" [nzLabel]="option"></nz-option>
+          </nz-select>
+        </div>
+
+        <div style="margin-bottom: 1rem">
+          <p>Status</p>
+          <nz-select nzShowSearch [(ngModel)]="status" class="filter-select" nzAllowClear >
+            <nz-option nzValue="Activo" nzLabel="Activo"></nz-option>
+            <nz-option nzValue="Inactivo" nzLabel="Inactivo"></nz-option>
+            <nz-option nzValue="Concretado" nzLabel="Concretado"></nz-option>
+          </nz-select>
+        </div>
+        <div style="margin-bottom: 1rem">
+          <p>De donde nos contacta</p>
+          <nz-select nzShowSearch [(ngModel)]="contactFrom" class="filter-select" nzAllowClear >
+            <nz-option nzValue="Mercado libre" nzLabel="Mercado libre"></nz-option>
+            <nz-option nzValue="Instagram" nzLabel="Instagram"></nz-option>
+            <nz-option nzValue="Facebook" nzLabel="Facebook"></nz-option>
+            <nz-option nzValue="Whatsapp" nzLabel="Whatsapp"></nz-option>
+            <nz-option nzValue="Llamada" nzLabel="Llamada"></nz-option>
+            <nz-option nzValue="Mensajeria de texto" nzLabel="Mensajeria de texto"></nz-option>
+            <nz-option nzValue="Pagina web" nzLabel="Pagina web"></nz-option>
+            <nz-option nzValue="Cliente recurrente" nzLabel="Cliente recurrente"></nz-option>
+            <nz-option nzValue="Referido" nzLabel="Referido"></nz-option>
+          </nz-select>
+        </div>
+      </div>
+      <button nz-button nzBlock nzType="primary" (click)="getClients()"> Buscar</button>
+    </div>
+  </ng-container>
+</nz-drawer>
+
+
+<nz-modal
+  [nzStyle]="{width: '500px'}"
+  [(nzVisible)]="showChangeStatusModal"
+  [nzTitle]="modalTitle"
+  (nzOnCancel)="handleCancelChangeStatusModal()"
+  (nzOnOk)="handleOkChangeStatusModal()"
+  nzOkText="Guardar cambios"
+  [nzOkLoading]="changeStatusLoading"
+  nzCancelText="Cancelar"
+  [nzOkDisabled]="selectedStatus === null"
+>
+  <ng-container *nzModalContent>
+    <nz-select [(ngModel)]="selectedStatus" style="width: 100%">
+      <nz-option nzLabel="Activo" nzValue="Activo"></nz-option>
+      <nz-option nzLabel="Inactivo" nzValue="Inactivo"></nz-option>
+      <nz-option nzLabel="Concretado" nzValue="Concretado"></nz-option>
+    </nz-select>
+  </ng-container>
+</nz-modal>
+
+<ng-template #modalTitle>
+  <div class="modal-title-container">
+    <p class="modal-title">Estatus de solicitud</p>
+    <nz-tag [nzColor]="getColorByStatus()">{{currentStatus}}</nz-tag>
+  </div>
+</ng-template>

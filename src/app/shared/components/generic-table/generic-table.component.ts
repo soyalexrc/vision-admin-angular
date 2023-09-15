@@ -39,7 +39,7 @@ export class GenericTableComponent implements OnInit {
   @Output() onHistory: EventEmitter<any> = new EventEmitter<any>()
   @Output() onEdit: EventEmitter<number> = new EventEmitter<number>()
   @Output() onPageIndexChange: EventEmitter<number> = new EventEmitter<number>()
-  @Output() onChangeUserStatus: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onChangeUserAction: EventEmitter<any> = new EventEmitter<any>()
   @Output() onApprove: EventEmitter<any> = new EventEmitter<any>()
   @Output() onEye: EventEmitter<any> = new EventEmitter<any>()
 

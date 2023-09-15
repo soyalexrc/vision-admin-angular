@@ -15,7 +15,7 @@
   </div>
   <div style="display: flex; gap: 1rem">
     <button *ngIf="additionalButton" nz-button nzType="default"  (click)="onAdditionalAction.emit()">
-      <span nz-icon nzType="plus"></span>
+      <span nz-icon [nzType]="additionalButtonIcon"></span>
       {{additionalButtonText}}
     </button>
     <button *ngIf="buttonText" nz-button nzType="primary" (click)="onNewElement.emit()">

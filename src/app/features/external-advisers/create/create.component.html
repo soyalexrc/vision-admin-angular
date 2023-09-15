@@ -67,19 +67,6 @@
         </nz-form-item>
       </div>
     </div>
-    <div nz-row class="row" [nzGutter]="16">
-      <div nz-col [nzSpan]="12">
-        <nz-form-item>
-          <nz-form-label nzRequired nzFor="birthDate">Fecha de nacimiento</nz-form-label>
-          <nz-form-control [nzErrorTip]="birthDateErrTemp">
-            <nz-date-picker style="width: 100%" formControlName="birthDate"></nz-date-picker>
-            <ng-template #birthDateErrTemp let-control>
-              <ng-container *ngIf="control.hasError('required')">Debes ingresar una fecha de nacimiento!</ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-    </div>
     <div>
       <button nz-button nzType="primary" nzBlock type="submit" [disabled]="form.invalid" [nzLoading]="loading">Guardar cambios</button>
     </div>
