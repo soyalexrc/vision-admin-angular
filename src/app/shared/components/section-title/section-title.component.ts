@@ -10,6 +10,7 @@ export class SectionTitleComponent {
   @Input() title!: string;
   @Input() buttonText!: string;
   @Input() additionalButtonText!: string;
+  @Input() additionalButtonIcon!: string;
   @Input() additionalButton: boolean = false;
   @Input() customRightSide: boolean = false;
   @Input() hasRefresh: boolean = true;

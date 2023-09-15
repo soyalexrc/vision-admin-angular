@@ -10,13 +10,16 @@ import {NzFormModule} from "ng-zorro-antd/form";
 import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MainComponent} from "./main/main.component";
 import { CreateComponent } from './create/create.component';
 import {NzStepsModule} from "ng-zorro-antd/steps";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {NzIconModule} from "ng-zorro-antd/icon";
 import {NzDividerModule} from "ng-zorro-antd/divider";
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
+import {NzModalModule} from "ng-zorro-antd/modal";
+import {NzTagModule} from "ng-zorro-antd/tag";
 
 
 @NgModule({
@@ -40,7 +43,11 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
     NzStepsModule,
     NzSelectModule,
     NzIconModule,
-    NzDividerModule
+    NzDividerModule,
+    FormsModule,
+    NzDrawerModule,
+    NzModalModule,
+    NzTagModule
   ]
 })
 export class ClientsModule {
