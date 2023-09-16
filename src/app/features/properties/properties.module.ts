@@ -27,6 +27,8 @@ import { StatusBadgeComponent } from './status-badge/status-badge.component';
 import {NzTagModule} from "ng-zorro-antd/tag";
 import { CommissionConfigModalComponent } from './commission-config-modal/commission-config-modal.component';
 import {NzSwitchModule} from "ng-zorro-antd/switch";
+import { ReorderImagesModalComponent } from './reorder-images-modal/reorder-images-modal.component';
+import {NzRadioModule} from "ng-zorro-antd/radio";
 
 
 
@@ -38,7 +40,8 @@ import {NzSwitchModule} from "ng-zorro-antd/switch";
     DraggableGridComponent,
     StatusHistoryComponent,
     StatusBadgeComponent,
-    CommissionConfigModalComponent
+    CommissionConfigModalComponent,
+    ReorderImagesModalComponent
   ],
     imports: [
         CommonModule,
@@ -65,7 +68,8 @@ import {NzSwitchModule} from "ng-zorro-antd/switch";
         NzModalModule,
         FormsModule,
         NzTagModule,
-        NzSwitchModule
+        NzSwitchModule,
+        NzRadioModule
     ],
   providers: [CurrencyPipe]
 })
