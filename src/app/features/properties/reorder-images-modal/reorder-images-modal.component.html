@@ -1,0 +1,20 @@
+
+<nz-modal
+  [nzStyle]="{width: '500px'}"
+  [(nzVisible)]="showModal"
+  nzTitle="Configurar orden de imagenes"
+  (nzOnCancel)="onCancel.emit(false)"
+  (nzOnOk)="onFinished.emit()"
+  nzOkText="Ok"
+  nzCancelText="Cancelar"
+>
+  <ng-container *nzModalContent>
+    <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+      <div class="example-box" *ngFor="let image of images; index as i" cdkDrag>
+        <p>{{i + 1}}</p>
+        <img [src]="image" alt="">
+        <h4 *ngIf="i === 0">Imagen principal</h4>
+      </div>
+    </div>
+  </ng-container>
+</nz-modal>

@@ -20,6 +20,7 @@ import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
 import {NzInputModule} from "ng-zorro-antd/input";
 import { TextShortenerPipe } from './pipes/text-shortener.pipe';
 import { CurrencyInputDirective } from './directives/currency-input.directive';
+import { SlugTransformDirective } from './directives/slug-transform.directive';
 
 
 
@@ -32,6 +33,7 @@ import { CurrencyInputDirective } from './directives/currency-input.directive';
     OnlyNumbersDirective,
     TextShortenerPipe,
     CurrencyInputDirective,
+    SlugTransformDirective,
   ],
   exports: [
     SectionTitleComponent,
@@ -40,6 +42,8 @@ import { CurrencyInputDirective } from './directives/currency-input.directive';
     OnlyNumbersDirective,
     TextShortenerPipe,
     CurrencyInputDirective,
+    SlugTransformDirective,
+    SlugTransformDirective,
   ],
   imports: [
     CommonModule,
