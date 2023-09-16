@@ -3,6 +3,7 @@ import {CashFlowRegister} from "./cashFlow";
 
 export interface PropertyReview {
   id: number;
+  publicationTitle: string;
   propertyType: string;
   operationType: string;
   price: string;
@@ -49,6 +50,7 @@ export interface PropertyFull {
   attributes: Attribute[];
   createdAt?: Date;
   updatedAt?: Date;
+  publicationTitle: string;
   generalInformation: GeneralInformation;
   locationInformation: LocationInformation;
   negotiationInformation: NegotiationInformation;
@@ -93,6 +95,7 @@ export interface GeneralInformation {
   property_id: number;
   status: string;
   code: string;
+  publicationTitle: string;
   nomenclature: string;
   footageGround: string;
   footageBuilding: string;

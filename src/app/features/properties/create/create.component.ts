@@ -17,6 +17,7 @@ import {UserService} from "../../../core/services/user.service";
 import {CurrencyPipe} from "@angular/common";
 import {User} from "../../../core/interfaces/user";
 import {PROPERTY_TYPES} from "../../../shared/utils/property-types";
+import {LOCATIONS, LOCATIONS_DETAIL} from "../../../shared/utils/locations";
 
 interface Steps {
   first: string,
@@ -59,7 +60,10 @@ export class CreateComponent implements OnInit, OnDestroy {
   externalAdvisers: Adviser[] = [];
   users: User[] = [];
   advisers: any[] = [];
-
+  showOrderModal = false;
+  states = LOCATIONS;
+  cities: string[] = [];
+  locationsDetail = LOCATIONS_DETAIL;
 
   showRegisterOwnersModal = false;
   ownersLoading = true;
@@ -135,21 +139,6 @@ export class CreateComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.negotiationFormSubscription = this.negotiationForm.valueChanges.subscribe(form => {
-      if (form.price) {
-        this.negotiationForm.patchValue({
-          price: this.currencyPipe.transform(form.price.replace(/\D/g, '').replace(/^0+/, ''), '$', 'code', '1.0-0')
-        }, {emitEvent: false})
-      }
-      if (form.minimumNegotiation) {
-        this.negotiationForm.patchValue({
-          minimumNegotiation: this.currencyPipe.transform(form.minimumNegotiation.replace(/\D/g, '').replace(/^0+/, ''), '$', 'code', '1.0-0')
-        }, {emitEvent: false})
-      }
-      if (form.externalAdviser) {
-        // this.negotiationForm.get('owner')?.patchValue(null)
-      }
-    })
 
     this.negotiationForm.get('externalAdviser')?.valueChanges.subscribe(value => {
       if (value) {
@@ -182,6 +171,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       code: [{value: '', disabled: true}],
       description: ['', Validators.required],
       distributionComments: [''],
+      publicationTitle: ['', Validators.required],
       footageBuilding: [''],
       footageGround: [''],
       nomenclature: [''],
@@ -215,13 +205,13 @@ export class CreateComponent implements OnInit, OnDestroy {
     })
 
     this.negotiationForm = this.fb.group({
-      price: ['', Validators.required],
+      price: ['', [Validators.required, Validators.minLength(3)]],
       owner: [{value: null, disabled: false}, Validators.required],
       attorneyPhone: [''],
       attorneyEmail: ['', Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)],
       attorneyFirstName: [''],
       attorneyLastName: [''],
-      minimumNegotiation: [''],
+      minimumNegotiation: ['', Validators.minLength(3)],
       reasonToSellOrRent: [''],
       externalAdviser: [null],
       ally: [null],
@@ -243,6 +233,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         locationInformation: this.locationForm.value,
         negotiationInformation: this.negotiationForm.value,
         images: this.images,
+        publicationTitle: this.generalForm.get('publicationTitle')?.value,
         files: this.documents,
         publicationSource: this.publicationSourceForm.value,
         attributes: this.attributes.value,
@@ -252,13 +243,14 @@ export class CreateComponent implements OnInit, OnDestroy {
         ally_id: this.negotiationForm.get('ally')?.value === '' ? null : this.negotiationForm.get('ally')?.value,
       };
 
-      data.negotiationInformation.price = data.negotiationInformation.price.replace(/\D/g, '');
-      data.negotiationInformation.minimumNegotiation = !data.negotiationInformation.minimumNegotiation ? '0' : data.negotiationInformation.minimumNegotiation.replace(/\D/g, '');
+      data.negotiationInformation.price = data.negotiationInformation.price.replace(/[^0-9.]+/g, '').trim();
+      data.negotiationInformation.minimumNegotiation = !data.negotiationInformation.minimumNegotiation ? '0' : data.negotiationInformation.minimumNegotiation.replace(/[^0-9.]+/g, '').trim();
 
       delete data.negotiationInformation.externalAdviser;
       delete data.negotiationInformation.owner;
       delete data.negotiationInformation.ally;
       delete data.negotiationInformation.user;
+      delete data.generalInformation.publicationTitle;
 
       if (this.isEditing) {
         this.propertyService.update(data as PropertyFull).subscribe(result => {
@@ -272,6 +264,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       } else {
         this.propertyService.createOne(data as PropertyFull).subscribe(result => {
           this.uiService.createMessage('success', 'Se creo la propiedad con exito!')
+          localStorage.removeItem('property_create_temporal')
           this.router.navigate(['/propiedades'])
         }, () => {
           this.loading = false
@@ -298,6 +291,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.generalForm.get('description')?.patchValue(result.generalInformation.description);
       this.generalForm.get('propertyType')?.patchValue(result.generalInformation.propertyType);
       this.generalForm.get('operationType')?.patchValue(result.generalInformation.operationType);
+      this.generalForm.get('publicationTitle')?.patchValue(result.publicationTitle);
       this.generalForm.get('propertyCondition')?.patchValue(result.generalInformation.propertyCondition);
 
       this.locationForm.get('city')?.patchValue(result.locationInformation.city);
@@ -315,7 +309,21 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.locationForm.get('referencePoint')?.patchValue(result.locationInformation.referencePoint);
       this.locationForm.get('buildingShoppingcenter')?.patchValue(result.locationInformation.buildingShoppingCenter);
 
-      result.attributes.forEach(attr => {
+      const attrs = result.attributes.sort((a , b) => {
+        const formTypeA = a.formType.toUpperCase();
+        const formTypeB = b.formType.toUpperCase();
+
+        if (formTypeA > formTypeB) {
+          return -1;
+        }
+        if (formTypeA > formTypeB) {
+          return 1;
+        }
+
+        return 0;
+      })
+
+      attrs.forEach(attr => {
         this.attributes.push(this.fb.group({
           id: [attr.id],
           propertyType: [attr.propertyType],
@@ -735,7 +743,6 @@ export class CreateComponent implements OnInit, OnDestroy {
       attributes: this.attributes.value
     };
     if (!this.isEditing && (this.generalForm.touched || this.locationForm.touched || this.negotiationForm.touched || this.publicationSourceForm.touched || this.attributesForm.touched)) {
-      console.log('here');
       localStorage.setItem('property_create_temporal', JSON.stringify(data));
     }
   }
@@ -752,5 +759,20 @@ export class CreateComponent implements OnInit, OnDestroy {
     }, (error) => {
       this.uiService.createMessage('error', error.error.message);
     }, () => {})
+  }
+
+  handleSelectState(value: string) {
+    if (value === 'Carabobo') {
+      this.cities = this.locationsDetail.carabobo
+    }
+    if (value === 'Caracas') {
+      this.cities = this.locationsDetail.caracas
+    }
+    if (value === 'Aragua') {
+      this.cities = this.locationsDetail.aragua
+    }
+    if (value === 'Cojedes') {
+      this.cities = this.locationsDetail.cojedes
+    }
   }
 }

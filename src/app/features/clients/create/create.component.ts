@@ -115,7 +115,7 @@ export class CreateComponent implements OnInit {
       propertyOfInterest: [''],
       propertyLocation: [''],
       typeOfCapture: [''],
-      aspiredPrice: [''],
+      aspiredPrice: ['', Validators.minLength(3)],
       typeOfBusiness: [''],
       note: [''],
       amountOfPeople: [null],
@@ -212,6 +212,7 @@ export class CreateComponent implements OnInit {
       data.essentialFeatures = data.essentialFeatures.map((feature: { value: string }) => feature.value);
       data.user_id = this.userService.currentUser?.value.id;
       data.requirementStatus = true;
+      data.aspiredPrice = !data.aspiredPrice ? '0' : data.aspiredPrice.replace(/[^0-9.]+/g, '').trim()
 
       if (this.isEditing) {
 
