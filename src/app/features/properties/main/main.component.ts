@@ -131,7 +131,6 @@ export class MainComponent implements OnInit, AfterViewInit {
             nomenclature: element.nomenclature,
             footageGround: element.footageGround,
             footageBuilding: element.footageBuilding,
-            distributionComments: element.distributionComments
           }));
           const headers = setHeaders([
             {key: 'code', displayName: 'Codigo'},
@@ -151,7 +150,6 @@ export class MainComponent implements OnInit, AfterViewInit {
             {key: 'nomenclature', displayName: 'Nomenclatura'},
             {key: 'footageGround', displayName: 'Metraje de terreno'},
             {key: 'footageBuilding', displayName: 'Metraje de construccion'},
-            {key: 'distributionComments', displayName: 'Comentarios de distribucion'},
           ]);
 
           this.dataTable.render(headers, this.data);
@@ -184,7 +182,6 @@ export class MainComponent implements OnInit, AfterViewInit {
             nomenclature: element.nomenclature,
             footageGround: element.footageGround,
             footageBuilding: element.footageBuilding,
-            distributionComments: element.distributionComments
           }));
           const headers = setHeaders([
             {key: 'code', displayName: 'Codigo'},
@@ -204,7 +201,6 @@ export class MainComponent implements OnInit, AfterViewInit {
             {key: 'nomenclature', displayName: 'Nomenclatura'},
             {key: 'footageGround', displayName: 'Metraje de terreno'},
             {key: 'footageBuilding', displayName: 'Metraje de construccion'},
-            {key: 'distributionComments', displayName: 'Comentarios de distribucion'},
           ]);
 
           this.dataTable.render(headers, this.data);
