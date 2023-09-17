@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Form, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PropertyService} from "../../../core/services/property.service";
 import {PropertyReview} from "../../../core/interfaces/property";
 import {CashFlowService} from "../../../core/services/cash-flow.service";
@@ -26,9 +26,7 @@ interface Steps {
 })
 export class CreateComponent implements OnInit {
   isEditing = false;
-  generalForm!: FormGroup;
-  paymentDetailForm!: FormGroup;
-  serviceForm!: FormGroup;
+  form!: FormGroup;
   loading = false;
   servicesLoading = false;
   id: any;
@@ -70,91 +68,36 @@ export class CreateComponent implements OnInit {
       this.getCashFlowRegisterById(this.id)
     }
 
-    this.generalForm.get('person')?.valueChanges.subscribe(value => {
+    this.form.get('person')?.valueChanges.subscribe(value => {
       if (value.includes('Administracion interna')) {
-        this.serviceForm.get('service')?.reset()
-        this.serviceForm.get('serviceType')?.reset()
-        this.generalForm.get('internalProperty')?.patchValue('')
-        this.generalForm.get('property_id')?.patchValue(null)
-        this.serviceForm.get('service')?.patchValue(10);
-        this.serviceForm.get('service')?.disable()
+        this.form.get('internalProperty')?.patchValue('')
+        this.form.get('property_id')?.patchValue(null)
+        this.payments.controls.forEach(control => {
+            control.get('service')?.reset()
+            control.get('service')?.patchValue(10);
+            control.get('service')?.disable()
+            control.get('serviceType')?.reset()
+        })
       } else {
-        this.serviceForm.get('service')?.reset()
-        this.generalForm.get('internalProperty')?.patchValue('')
-        this.generalForm.get('property_id')?.patchValue(null)
-        this.serviceForm.get('service')?.enable()
-        this.serviceForm.get('serviceType')?.reset()
+        this.form.get('internalProperty')?.patchValue('')
+        this.form.get('property_id')?.patchValue(null)
+
+        this.payments.controls.forEach(control => {
+            control.get('service')?.reset()
+            control.get('service')?.enable()
+            control.get('serviceType')?.reset()
+        })
+
       }
     })
 
   }
 
-  onIndexChange(index: number): void {
-    this.index = index;
-  }
 
 
-  getStatusBasedOnIndex(index: number): Steps {
-    let steps: Steps = {
-      first: '',
-      second: '',
-      last: ''
-    }
-
-    // initial state
-
-    if (index === 0) {
-      steps = {
-        first: 'process',
-        second: 'wait',
-        last: 'wait'
-      }
-    }
-    if (index === 1) {
-      steps = {
-        first: 'finish',
-        second: 'process',
-        last: 'wait'
-      }
-    }
-    if (index === 2) {
-      steps = {
-        first: 'finish',
-        second: 'finish',
-        last: 'wait'
-      }
-    }
-
-
-    // There are errors
-
-    if (this.generalForm.dirty && this.generalForm.invalid) {
-      steps.first = 'error'
-    }
-    if (this.serviceForm.dirty && this.serviceForm.invalid) {
-      steps.second = 'error'
-    }
-    if (this.paymentDetailForm.dirty && this.paymentDetailForm.invalid) {
-      steps.last = 'error'
-    }
-
-    //  Form finished and valid
-
-    if (this.generalForm.dirty && this.generalForm.valid) {
-      steps.first = 'finish'
-    }
-    if (this.serviceForm.dirty && this.serviceForm.valid) {
-      steps.second = 'finish'
-    }
-    if (this.paymentDetailForm.dirty && this.paymentDetailForm.valid) {
-      steps.last = 'finish'
-    }
-
-    return steps
-  }
 
   private buildForms() {
-    this.generalForm = this.fb.group({
+    this.form = this.fb.group({
       client_id: [null],
       owner_id: [null],
       cashflow_person_id: [null],
@@ -165,28 +108,8 @@ export class CreateComponent implements OnInit {
       month: [''],
       location: [''],
       isTemporalTransaction: [false],
-      id: [null]
-    });
-
-    this.serviceForm = this.fb.group({
-      canon: [false],
-      contract: [false],
-      guarantee: [false],
-      serviceType: [''],
-      reason: ['', Validators.required],
-      service: ['', Validators.required],
-      taxPayer: ['']
-    })
-
-    this.paymentDetailForm = this.fb.group({
-      amount: ['', [Validators.required, Validators.minLength(3)]],
-      currency: ['$'],
-      wayToPay: ['Efectivo'],
-      transactionType: ['Ingreso'],
-      totalDue: [''],
-      entity: ['Tesorería'],
-      pendingToCollect: [''],
-      observation: ['']
+      id: [null],
+      payments: this.fb.array([this.createPayment()])
     })
   }
 
@@ -194,7 +117,8 @@ export class CreateComponent implements OnInit {
     return `${property.code} - ${property.propertyType} - ${property.operationType}`;
   }
 
-  handleChangeService(serviceId: number) {
+  handleChangeService(serviceId: number | string) {
+    if (typeof serviceId !== "number") return;
     this.subServicesLoading = true;
     this.servicesService.getSubServicesByServiceId(serviceId).subscribe(result => {
         this.subServices = result;
@@ -202,49 +126,39 @@ export class CreateComponent implements OnInit {
       () => this.subServicesLoading = false)
   }
 
-  showAmountField() {
-    return this.paymentDetailForm.value.transactionType === 'Ingreso'
-      || this.paymentDetailForm.value.transactionType === 'Egreso'
-      || this.paymentDetailForm.value.transactionType === 'Ingreso a cuenta de terceros'
+  showAmountField(i: number) {
+    return this.payments.at(i).value.transactionType === 'Ingreso'
+      || this.payments.at(i).value.transactionType === 'Egreso'
+      || this.payments.at(i).value.transactionType === 'Ingreso a cuenta de terceros'
   }
 
-  showTotalDueField() {
-    return this.paymentDetailForm.value.transactionType === 'Ingreso'
-    || this.paymentDetailForm.value.transactionType === 'Ingreso a cuenta de terceros'
-    || this.paymentDetailForm.value.transactionType === 'Cuenta por pagar'
+  showTotalDueField(i: number) {
+    return this.payments.at(i).value.transactionType === 'Ingreso'
+    || this.payments.at(i).value.transactionType === 'Ingreso a cuenta de terceros'
+    || this.payments.at(i).value.transactionType === 'Cuenta por pagar'
   }
 
-  showPendingToCollectField() {
-    return this.paymentDetailForm.value.transactionType === 'Ingreso'
-    || this.paymentDetailForm.value.transactionType === 'Ingreso a cuenta de terceros'
-    || this.paymentDetailForm.value.transactionType === 'Cuenta por cobrar'
+  showPendingToCollectField(i: number) {
+    return this.payments.at(i).value.transactionType === 'Ingreso'
+    || this.payments.at(i).value.transactionType === 'Ingreso a cuenta de terceros'
+    || this.payments.at(i).value.transactionType === 'Cuenta por cobrar'
   }
 
 
   submitForm() {
     this.loading = true;
-    const data = {
-      ...this.generalForm.value,
-      ...this.serviceForm.value,
-      ...this.paymentDetailForm.value
-    }
+    const data = { ...this.form.value }
     data.client_id = data.person && data.person.includes('Cliente') ? data.person.split('-')[0] : null;
     data.owner_id = data.person && data.person.includes('Propietario') ? data.person.split('-')[0] : null;
     data.cashflow_person_id = data.person && data.person.includes('Administracion interna') ? data.person.split('-')[0] : null;
-    data.amount = !data.amount ? '0' : data.amount.replace(/[^0-9.]+/g, '').trim();
-    data.pendingToCollect = !data.pendingToCollect ? '0' : data.pendingToCollect.replace(/[^0-9.]+/g, '').trim();
-    data.totalDue = !data.totalDue ? '0' : data.totalDue.replace(/[^0-9.]+/g, '').trim();
-    // const month = moment().format('MMMM')
-    // const day = moment().format('dddd')
-    // const year = moment().format('yyyy')
-    // const time = moment().format('h:mm:ss');
-    // console.log({
-    //   month,
-    //   day,
-    //   year,
-    //   time,
-    // })
-    // return;
+    data.payments = data.payments.map((payment: any) => ({
+      ...payment,
+      amount: !payment.amount ? '0' : payment.amount.replace(/[^0-9.]+/g, '').trim(),
+      pendingToCollect: !payment.pendingToCollect ? '0' : payment.pendingToCollect.replace(/[^0-9.]+/g, '').trim(),
+      totalDue: !payment.totalDue ? '0' : payment.totalDue.replace(/[^0-9.]+/g, '').trim(),
+    }))
+
+    console.log(data);
     if (this.isEditing) {
       this.cashFlowService.update(data).subscribe(result => {
           this.uiService.createMessage('success', result.message);
@@ -277,33 +191,33 @@ export class CreateComponent implements OnInit {
 
   getCashFlowRegisterById(id: string) {
     this.cashFlowService.getById(id).subscribe(result => {
-      this.generalForm.get('person')?.patchValue(result.person);
-      this.generalForm.get('client_id')?.patchValue(result.client_id);
-      this.generalForm.get('owner_id')?.patchValue(result.owner_id);
-      this.generalForm.get('internalProperty')?.patchValue(result.internalProperty);
-      this.generalForm.get('date')?.patchValue(result.date);
-      this.generalForm.get('month')?.patchValue(result.month);
-      this.generalForm.get('property_id')?.patchValue(result.property_id);
-      this.generalForm.get('location')?.patchValue(result.location);
-      this.generalForm.get('id')?.patchValue(this.id);
+      this.form.get('person')?.patchValue(result.person);
+      this.form.get('client_id')?.patchValue(result.client_id);
+      this.form.get('owner_id')?.patchValue(result.owner_id);
+      this.form.get('internalProperty')?.patchValue(result.internalProperty);
+      this.form.get('date')?.patchValue(result.date);
+      this.form.get('month')?.patchValue(result.month);
+      this.form.get('property_id')?.patchValue(result.property_id);
+      this.form.get('location')?.patchValue(result.location);
+      this.form.get('id')?.patchValue(this.id);
 
-      this.serviceForm.get('canon')?.patchValue(result.canon);
-      this.serviceForm.get('contract')?.patchValue(result.contract);
-      this.serviceForm.get('guarantee')?.patchValue(result.guarantee);
-      this.serviceForm.get('service')?.patchValue(Number(result.service));
+      this.form.get('canon')?.patchValue(result.canon);
+      this.form.get('contract')?.patchValue(result.contract);
+      this.form.get('guarantee')?.patchValue(result.guarantee);
+      this.form.get('service')?.patchValue(Number(result.service));
       this.handleChangeService(Number(result.service));
-      this.serviceForm.get('serviceType')?.patchValue(Number(result.serviceType));
-      this.serviceForm.get('reason')?.patchValue(result.reason);
-      this.serviceForm.get('taxPayer')?.patchValue(result.taxPayer);
+      this.form.get('serviceType')?.patchValue(Number(result.serviceType));
+      this.form.get('reason')?.patchValue(result.reason);
+      this.form.get('taxPayer')?.patchValue(result.taxPayer);
 
-      this.paymentDetailForm.get('amount')?.patchValue(result.amount);
-      this.paymentDetailForm.get('currency')?.patchValue(result.currency);
-      this.paymentDetailForm.get('wayToPay')?.patchValue(result.wayToPay);
-      this.paymentDetailForm.get('transactionType')?.patchValue(result.transactionType);
-      this.paymentDetailForm.get('totalDue')?.patchValue(result.totalDue);
-      this.paymentDetailForm.get('entity')?.patchValue(result.entity);
-      this.paymentDetailForm.get('pendingToCollect')?.patchValue(result.pendingToCollect);
-      this.paymentDetailForm.get('observations')?.patchValue(result.observations);
+      this.form.get('amount')?.patchValue(result.amount);
+      this.form.get('currency')?.patchValue(result.currency);
+      this.form.get('wayToPay')?.patchValue(result.wayToPay);
+      this.form.get('transactionType')?.patchValue(result.transactionType);
+      this.form.get('totalDue')?.patchValue(result.totalDue);
+      this.form.get('entity')?.patchValue(result.entity);
+      this.form.get('pendingToCollect')?.patchValue(result.pendingToCollect);
+      this.form.get('observations')?.patchValue(result.observations);
     })
   }
 
@@ -320,16 +234,16 @@ export class CreateComponent implements OnInit {
     let bool = true;
 
     if (this.index === 0) {
-      bool = this.generalForm.invalid
+      bool = this.form.invalid
     }
 
 
     if (this.index === 1) {
-      bool = this.serviceForm.invalid
+      bool = this.form.invalid
     }
 
     if (this.index === 2) {
-      bool = this.paymentDetailForm.invalid
+      bool = this.form.invalid
     }
 
 
@@ -338,7 +252,7 @@ export class CreateComponent implements OnInit {
 
   handleChangeSample($event: any) {
     console.log($event)
-    console.log($event === this.generalForm.get('person')?.value);
+    console.log($event === this.form.get('person')?.value);
   }
 
   getValueFromPeople(person: CashFlowPerson) {
@@ -368,10 +282,66 @@ export class CreateComponent implements OnInit {
   }
 
   get transactionType() {
-    return this.paymentDetailForm.get('transactionType')?.value
+    return this.form.get('transactionType')?.value
   }
 
   get currency() {
-    return this.paymentDetailForm.get('currency')?.value
+    return this.form.get('currency')?.value
+  }
+
+  getTransactionType(i: number) {
+    return this.payments.at(i).get('transactionType')?.value;
+  }
+
+
+  getCurrency(i: number) {
+    return this.payments.at(i).get('currency')?.value;
+  }
+
+  get payments() {
+    return this.form.get('payments') as FormArray;
+  }
+
+
+  // Function to create a default item FormGroup
+  createPayment() {
+    return this.fb.group({
+      canon: [false],
+      contract: [false],
+      guarantee: [false],
+      serviceType: [''],
+      reason: ['', Validators.required],
+      service: ['', Validators.required],
+      taxPayer: [''],
+      amount: ['', [Validators.minLength(3)]],
+      currency: ['$'],
+      wayToPay: ['Efectivo'],
+      transactionType: ['Ingreso'],
+      totalDue: [''],
+      entity: ['Tesorería'],
+      pendingToCollect: [''],
+      observation: [''],
+    });
+  }
+
+  // Function to add controls to the FormArray
+  addPayment() {
+    const newPayment = this.createPayment();
+    this.payments.push(newPayment);
+    if (this.form.get('person')?.value?.includes('Administracion interna')) {
+      this.form.get('internalProperty')?.patchValue('')
+      this.form.get('property_id')?.patchValue(null)
+
+      this.payments.controls.forEach(control => {
+        control.get('service')?.reset()
+        control.get('service')?.patchValue(10);
+        control.get('service')?.disable()
+        control.get('serviceType')?.reset()
+      })
+    }
+  }
+
+  removePayment(i: number) {
+    this.payments.removeAt(i);
   }
 }
