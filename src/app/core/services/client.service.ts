@@ -27,7 +27,7 @@ export class ClientService {
     status: string,
     contactFrom: string,
   ) : Observable<GetAllClients> {
-    return this.http.get<GetAllClients>(`client/getPreviews?pageIndex=${pageIndex}&pageSize=${pageSize}&service=${service}&operationType=${operationType}&dateFrom=${dateFrom}&dateTo=${dateTo}&status=${status}&contactFrom=${contactFrom}`)
+    return this.http.get<GetAllClients>(`client/getPreviews?pageIndex=${pageIndex}&pageSize=${pageSize}&service=${service}&operationType=${operationType}&dateFrom=${dateFrom}&dateTo=${dateTo}&requirementStatus=${status}&contactFrom=${contactFrom}`)
   }
 
   deleteOne(id: number): Observable<DeleteResult> {
