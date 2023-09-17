@@ -254,6 +254,7 @@ export class CreateComponent implements OnInit, OnDestroy {
 
       if (this.isEditing) {
         this.propertyService.update(data as PropertyFull).subscribe(result => {
+          localStorage.removeItem('property_create_temporal')
           this.uiService.createMessage('success', 'Se edito la propiedad con exito!')
           this.router.navigate(['/propiedades'])
         }, () => {
@@ -263,8 +264,8 @@ export class CreateComponent implements OnInit, OnDestroy {
         })
       } else {
         this.propertyService.createOne(data as PropertyFull).subscribe(result => {
-          this.uiService.createMessage('success', 'Se creo la propiedad con exito!')
           localStorage.removeItem('property_create_temporal')
+          this.uiService.createMessage('success', 'Se creo la propiedad con exito!')
           this.router.navigate(['/propiedades'])
         }, () => {
           this.loading = false
