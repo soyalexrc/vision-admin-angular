@@ -8,6 +8,7 @@ import {Client} from "../../../core/interfaces/client";
 import {ClientService} from "../../../core/services/client.service";
 import * as moment from 'moment';
 import {PropertyReview, PropertyStatus} from "../../../core/interfaces/property";
+import formatDatesFilter from "../../../shared/utils/formatDatesFilter";
 
 @Component({
   selector: 'app-main',
@@ -34,7 +35,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   currentStatus: any = '';
   selectedStatus: any = '';
   currentId: any = null;
-  changeStatusLoading = false ;
+  changeStatusLoading = false;
 
   constructor(
     private router: Router,
@@ -225,13 +226,9 @@ export class MainComponent implements OnInit, AfterViewInit {
     if (date.length < 1) {
       this.date = '';
     } else {
-      this.date = [
-        new Date(date[0]).toISOString().split('T')[0].concat('T01:00:00.000Z'),
-        new Date(date[1]).toISOString().split('T')[0].concat('T23:59:00.000Z'),
-      ];
+      this.date = formatDatesFilter(date);
     }
   }
-
 
 
   handleChangeStatus(row: Partial<Client>) {

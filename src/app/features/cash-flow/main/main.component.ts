@@ -30,6 +30,7 @@ import {ClientService} from "../../../core/services/client.service";
 import {PropertyReview} from "../../../core/interfaces/property";
 import {PropertyService} from "../../../core/services/property.service";
 import {MONTHS} from "../../../shared/utils/months";
+import formatDatesFilter from "../../../shared/utils/formatDatesFilter";
 
 @Component({
   selector: 'app-main',
@@ -68,10 +69,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   propertiesLoading = false;
   showFiltersDrawer = false;
 
-  date: any = [
-    new Date().toISOString().split('T')[0].concat('T05:00:00.000Z'),
-    new Date().toISOString().split('T')[0].concat('T23:59:00.000Z'),
-  ];
+  date: any = formatDatesFilter([]);
   loadingTotalAvailable = true
   totalAvailable: CashFlowTotal = {usd: null, eur: null, bs: null};
   client = '';
@@ -324,10 +322,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     if (date.length < 1) {
       this.date = '';
     } else {
-      this.date = [
-        new Date(date[0]).toISOString().split('T')[0].concat('T05:00:00.000Z'),
-        new Date(date[1]).toISOString().split('T')[0].concat('T23:59:00.000Z'),
-      ];
+      this.date = formatDatesFilter(date);
     }
     if (search) {
       this.getData();

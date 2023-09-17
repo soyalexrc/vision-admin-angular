@@ -3,6 +3,7 @@ import {CashFlowTotal, CashFlowTotalsByEntities} from "../../../core/interfaces/
 import {CashFlowService} from "../../../core/services/cash-flow.service";
 import * as Highcharts from 'highcharts'
 import {CurrencyPipe} from "@angular/common";
+import formatDatesFilter from "../../../shared/utils/formatDatesFilter";
 
 @Component({
   selector: 'app-total-available',
@@ -260,10 +261,7 @@ export class TotalAvailableComponent implements OnInit {
     if (date.length < 1) {
       this.date = '';
     } else {
-      this.date = [
-        new Date(date[0]).toISOString().split('T')[0].concat('T05:00:00.000Z'),
-        new Date(date[1]).toISOString().split('T')[0].concat('T23:59:00.000Z'),
-      ];
+      this.date = formatDatesFilter(date);
     }
     this.getData();
   }
