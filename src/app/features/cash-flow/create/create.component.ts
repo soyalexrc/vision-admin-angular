@@ -7,7 +7,7 @@ import * as moment from "moment/moment";
 import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MONTHS} from "../../../shared/utils/months";
-import {CashFlowPerson} from "../../../core/interfaces/cashFlow";
+import {CashFlowPerson, CashFlowRegister} from "../../../core/interfaces/cashFlow";
 import {Service, SubService} from "../../../core/interfaces/service";
 import {ServicesService} from "../../../core/services/services.service";
 import {User} from "../../../core/interfaces/user";
@@ -66,6 +66,8 @@ export class CreateComponent implements OnInit {
       this.isEditing = true;
       this.id = this.route.snapshot.paramMap.get('id')!;
       this.getCashFlowRegisterById(this.id)
+    } else {
+      this.addPayment({})
     }
 
     this.form.get('person')?.valueChanges.subscribe(value => {
@@ -109,7 +111,7 @@ export class CreateComponent implements OnInit {
       location: [''],
       isTemporalTransaction: [false],
       id: [null],
-      payments: this.fb.array([this.createPayment()])
+      payments: this.fb.array([])
     })
   }
 
@@ -201,54 +203,27 @@ export class CreateComponent implements OnInit {
       this.form.get('location')?.patchValue(result.location);
       this.form.get('id')?.patchValue(this.id);
 
-      this.form.get('canon')?.patchValue(result.canon);
-      this.form.get('contract')?.patchValue(result.contract);
-      this.form.get('guarantee')?.patchValue(result.guarantee);
-      this.form.get('service')?.patchValue(Number(result.service));
+      this.addPayment({
+          canon: result.canon,
+          contract: result.contract,
+          guarantee: result.guarantee,
+          service: Number(result.service),
+          serviceType: Number(result.serviceType),
+          reason: result.reason,
+          taxPayer: result.taxPayer,
+          currency: result.currency,
+          wayToPay: result.wayToPay,
+          transactionType: result.transactionType,
+          totalDue: result.totalDue,
+          amount: result.amount,
+          entity: result.entity,
+          pendingToCollect: result.pendingToCollect,
+          observations: result.observations,
+      })
       this.handleChangeService(Number(result.service));
-      this.form.get('serviceType')?.patchValue(Number(result.serviceType));
-      this.form.get('reason')?.patchValue(result.reason);
-      this.form.get('taxPayer')?.patchValue(result.taxPayer);
-
-      this.form.get('amount')?.patchValue(result.amount);
-      this.form.get('currency')?.patchValue(result.currency);
-      this.form.get('wayToPay')?.patchValue(result.wayToPay);
-      this.form.get('transactionType')?.patchValue(result.transactionType);
-      this.form.get('totalDue')?.patchValue(result.totalDue);
-      this.form.get('entity')?.patchValue(result.entity);
-      this.form.get('pendingToCollect')?.patchValue(result.pendingToCollect);
-      this.form.get('observations')?.patchValue(result.observations);
     })
   }
 
-  goPrev() {
-    this.index -= 1;
-  }
-
-  goNext() {
-    this.index += 1;
-  }
-
-  handleGoNextButtonDisabled(): boolean {
-
-    let bool = true;
-
-    if (this.index === 0) {
-      bool = this.form.invalid
-    }
-
-
-    if (this.index === 1) {
-      bool = this.form.invalid
-    }
-
-    if (this.index === 2) {
-      bool = this.form.invalid
-    }
-
-
-    return bool;
-  }
 
   handleChangeSample($event: any) {
     console.log($event)
@@ -281,16 +256,12 @@ export class CreateComponent implements OnInit {
     })
   }
 
-  get transactionType() {
-    return this.form.get('transactionType')?.value
-  }
-
-  get currency() {
-    return this.form.get('currency')?.value
-  }
-
   getTransactionType(i: number) {
     return this.payments.at(i).get('transactionType')?.value;
+  }
+
+  get person() {
+    return this.form.get('person')?.value;
   }
 
 
@@ -304,29 +275,29 @@ export class CreateComponent implements OnInit {
 
 
   // Function to create a default item FormGroup
-  createPayment() {
+  createPayment(params?: Partial<CashFlowRegister>) {
     return this.fb.group({
-      canon: [false],
-      contract: [false],
-      guarantee: [false],
-      serviceType: [''],
-      reason: ['', Validators.required],
-      service: ['', Validators.required],
-      taxPayer: [''],
-      amount: ['', [Validators.minLength(3)]],
-      currency: ['$'],
-      wayToPay: ['Efectivo'],
-      transactionType: ['Ingreso'],
-      totalDue: [''],
-      entity: ['Tesorería'],
-      pendingToCollect: [''],
-      observation: [''],
+      canon: [params?.canon ?? false],
+      contract: [params?.contract || false],
+      guarantee: [params?.guarantee || false],
+      serviceType: [params?.serviceType || ''],
+      reason: [params?.reason || '', Validators.required],
+      service: [params?.service || '', Validators.required],
+      taxPayer: [params?.taxPayer || ''],
+      amount: [params?.amount || '', [Validators.minLength(3)]],
+      currency: [params?.currency || '$'],
+      wayToPay: [params?.wayToPay || 'Efectivo'],
+      transactionType: [params?.transactionType || 'Ingreso'],
+      totalDue: [params?.totalDue || ''],
+      entity: [params?.entity || 'Tesorería'],
+      pendingToCollect: [params?.pendingToCollect || ''],
+      observation: [params?.observations || ''],
     });
   }
 
   // Function to add controls to the FormArray
-  addPayment() {
-    const newPayment = this.createPayment();
+  addPayment(params?: Partial<CashFlowRegister>) {
+    const newPayment = this.createPayment(params);
     this.payments.push(newPayment);
     if (this.form.get('person')?.value?.includes('Administracion interna')) {
       this.form.get('internalProperty')?.patchValue('')

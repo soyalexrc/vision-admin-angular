@@ -80,7 +80,7 @@
     <div nz-row class="row" [nzGutter]="16">
       <div nz-col [nzSpan]="24">
         <nz-form-item
-          *ngIf="!form.get('person')?.value?.includes('Administracion interna'); else internalAdministration">
+          *ngIf="!person?.includes('Administracion interna'); else internalAdministration">
           <nz-form-label nzFor="property">Inmueble</nz-form-label>
           <nz-form-control>
             <nz-select formControlName="property_id" style="width: 100%">
@@ -364,7 +364,7 @@
           </div>
 
           <div nz-col [nzSpan]="8"
-               *ngIf="transactionType !== 'Cuenta por pagar' && transactionType !== 'Cuenta por cobrar' ">
+               *ngIf="getTransactionType(i) !== 'Cuenta por pagar' && getTransactionType(i) !== 'Cuenta por cobrar' ">
             <nz-form-item>
               <nz-form-label nzRequired nzFor="wayToPay">Forma de pago</nz-form-label>
               <nz-form-control [nzErrorTip]="wayToPayErrTemp">
@@ -438,7 +438,7 @@
           <div nz-col [nzSpan]="6" *ngIf="showTotalDueField(i)">
             <nz-form-item>
               <nz-form-label
-                nzFor="totalDue">{{ transactionType === 'Cuenta por pagar' ? 'Monto' : 'Por pagar' }}</nz-form-label>
+                nzFor="totalDue">{{ getTransactionType(i) === 'Cuenta por pagar' ? 'Monto' : 'Por pagar' }}</nz-form-label>
               <nz-form-control>
                 <input type="text" appCurrencyInput [currencySymbol]="getCurrency(i)" style="width: 100%" nz-input
                        formControlName="totalDue"/>
@@ -448,7 +448,7 @@
           <div nz-col [nzSpan]="6" *ngIf="showPendingToCollectField(i)">
             <nz-form-item>
               <nz-form-label
-                nzFor="pendingToCollect">{{ transactionType === 'Cuenta por cobrar' ? 'Monto' : 'Por cobrar' }}</nz-form-label>
+                nzFor="pendingToCollect">{{ getTransactionType(i) === 'Cuenta por cobrar' ? 'Monto' : 'Por cobrar' }}</nz-form-label>
               <nz-form-control>
                 <input type="text" appCurrencyInput [currencySymbol]="getCurrency(i)" style="width: 100%" nz-input
                        formControlName="pendingToCollect"/>
@@ -563,25 +563,15 @@
 </form>
 
 
-<div style="display: flex; justify-content: center">
-  <button nz-button nzType="default" (click)="addPayment()">
+<div style="display: flex; justify-content: center" *ngIf="!isEditing">
+  <button nz-button nzType="default" (click)="addPayment({})">
     <span nz-icon nzType="plus" nzTheme="outline"></span>
     Agregar pago adicional
   </button>
 </div>
 
 <div style="display: flex; justify-content: center; margin-top: 2rem">
-  <div style="width: 900px; display: flex; justify-content: space-between">
-    <div>
-      <button
-        nz-button
-        nzType="default"
-        *ngIf="index > 0"
-        (click)="goPrev()"
-      >
-        Anterior
-      </button>
-    </div>
+  <div style="width: 900px; display: flex; justify-content: flex-end">
     <button
       nz-button
       nzType="primary"
