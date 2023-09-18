@@ -529,7 +529,7 @@
 
 
         <div nz-row class="row" [nzGutter]="16">
-          <div nz-col [nzSpan]="12">
+          <div nz-col [nzSpan]="24">
             <nz-form-item>
               <nz-form-label nzRequired nzFor="reason">Concepto</nz-form-label>
               <nz-form-control [nzErrorTip]="reasonErrTemp">
@@ -540,16 +540,11 @@
               </nz-form-control>
             </nz-form-item>
           </div>
-          <div nz-col [nzSpan]="12">
-            <nz-form-item>
-              <nz-form-label nzFor="reason">Comprobante(s) de pago</nz-form-label>
-              <nz-form-control [nzErrorTip]="reasonErrTemp">
-                <textarea rows="4" nz-input formControlName="reason" placeholder="Concepto"></textarea>
-                <ng-template #reasonErrTemp let-control>
-                  <ng-container *ngIf="control.hasError('required')">Debes ingresar un concepto!</ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
+          <div nz-col [nzSpan]="12" [nzOffset]="6">
+            <button nz-button nzBlock nzType="primary" type="button" [nzLoading]="loadingImage" (click)="clickInputFile()">
+              <span nz-icon nzType="upload"></span>
+              Agregar comprobante de pago
+            </button>
           </div>
 
 
@@ -581,6 +576,9 @@
     </button>
   </div>
 </div>
+
+<input style="display: none" (change)="handleUploadFile($event)" multiple type="file" #inputFile
+       accept="image/*">
 
 
 <app-register-person-modal (onClose)="showRegisterPersonModal = false" (onFinished)="getPeople()"

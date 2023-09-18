@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Form, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PropertyService} from "../../../core/services/property.service";
 import {PropertyReview} from "../../../core/interfaces/property";
@@ -12,6 +12,7 @@ import {Service, SubService} from "../../../core/interfaces/service";
 import {ServicesService} from "../../../core/services/services.service";
 import {User} from "../../../core/interfaces/user";
 import {UserService} from "../../../core/services/user.service";
+import {FileService} from "../../../core/services/file.service";
 
 interface Steps {
   first: string,
@@ -40,6 +41,8 @@ export class CreateComponent implements OnInit {
   services: Service[] = []
   subServicesLoading = false;
   subServices: SubService[] = [];
+  loadingImage = false;
+  @ViewChild('inputFile') inputFile!: ElementRef<HTMLInputElement>
 
   constructor(
     private fb: FormBuilder,
@@ -49,6 +52,7 @@ export class CreateComponent implements OnInit {
     private servicesService: ServicesService,
     private uiService: UiService,
     private router: Router,
+    private fileService: FileService,
     private route: ActivatedRoute,
   ) {
   }
@@ -75,27 +79,25 @@ export class CreateComponent implements OnInit {
         this.form.get('internalProperty')?.patchValue('')
         this.form.get('property_id')?.patchValue(null)
         this.payments.controls.forEach(control => {
-            control.get('service')?.reset()
-            control.get('service')?.patchValue(10);
-            control.get('service')?.disable()
-            control.get('serviceType')?.reset()
+          control.get('service')?.reset()
+          control.get('service')?.patchValue(10);
+          control.get('service')?.disable()
+          control.get('serviceType')?.reset()
         })
       } else {
         this.form.get('internalProperty')?.patchValue('')
         this.form.get('property_id')?.patchValue(null)
 
         this.payments.controls.forEach(control => {
-            control.get('service')?.reset()
-            control.get('service')?.enable()
-            control.get('serviceType')?.reset()
+          control.get('service')?.reset()
+          control.get('service')?.enable()
+          control.get('serviceType')?.reset()
         })
 
       }
     })
 
   }
-
-
 
 
   private buildForms() {
@@ -136,20 +138,20 @@ export class CreateComponent implements OnInit {
 
   showTotalDueField(i: number) {
     return this.payments.at(i).value.transactionType === 'Ingreso'
-    || this.payments.at(i).value.transactionType === 'Ingreso a cuenta de terceros'
-    || this.payments.at(i).value.transactionType === 'Cuenta por pagar'
+      || this.payments.at(i).value.transactionType === 'Ingreso a cuenta de terceros'
+      || this.payments.at(i).value.transactionType === 'Cuenta por pagar'
   }
 
   showPendingToCollectField(i: number) {
     return this.payments.at(i).value.transactionType === 'Ingreso'
-    || this.payments.at(i).value.transactionType === 'Ingreso a cuenta de terceros'
-    || this.payments.at(i).value.transactionType === 'Cuenta por cobrar'
+      || this.payments.at(i).value.transactionType === 'Ingreso a cuenta de terceros'
+      || this.payments.at(i).value.transactionType === 'Cuenta por cobrar'
   }
 
 
   submitForm() {
     this.loading = true;
-    const data = { ...this.form.value }
+    const data = {...this.form.value}
     data.client_id = data.person && data.person.includes('Cliente') ? data.person.split('-')[0] : null;
     data.owner_id = data.person && data.person.includes('Propietario') ? data.person.split('-')[0] : null;
     data.cashflow_person_id = data.person && data.person.includes('Administracion interna') ? data.person.split('-')[0] : null;
@@ -204,21 +206,21 @@ export class CreateComponent implements OnInit {
       this.form.get('id')?.patchValue(this.id);
 
       this.addPayment({
-          canon: result.canon,
-          contract: result.contract,
-          guarantee: result.guarantee,
-          service: Number(result.service),
-          serviceType: Number(result.serviceType),
-          reason: result.reason,
-          taxPayer: result.taxPayer,
-          currency: result.currency,
-          wayToPay: result.wayToPay,
-          transactionType: result.transactionType,
-          totalDue: result.totalDue,
-          amount: result.amount,
-          entity: result.entity,
-          pendingToCollect: result.pendingToCollect,
-          observations: result.observations,
+        canon: result.canon,
+        contract: result.contract,
+        guarantee: result.guarantee,
+        service: Number(result.service),
+        serviceType: Number(result.serviceType),
+        reason: result.reason,
+        taxPayer: result.taxPayer,
+        currency: result.currency,
+        wayToPay: result.wayToPay,
+        transactionType: result.transactionType,
+        totalDue: result.totalDue,
+        amount: result.amount,
+        entity: result.entity,
+        pendingToCollect: result.pendingToCollect,
+        observations: result.observations,
       })
       this.handleChangeService(Number(result.service));
     })
@@ -292,6 +294,7 @@ export class CreateComponent implements OnInit {
       entity: [params?.entity || 'Tesorería'],
       pendingToCollect: [params?.pendingToCollect || ''],
       observation: [params?.observations || ''],
+      proofOfPayment: [params?.proofOfPayment || this.fb.array([])]
     });
   }
 
@@ -315,4 +318,42 @@ export class CreateComponent implements OnInit {
   removePayment(i: number) {
     this.payments.removeAt(i);
   }
+
+  async handleUploadFile(event: any) {
+    this.loadingImage = true;
+
+    const {files} = event.target;
+
+    const forLoop = async () => {
+      for (let i = 0; i < files.length; i++) {
+        try {
+          const reader = new FileReader();
+          reader.readAsDataURL(files[i]);
+          reader.onload = async () => {
+            const path = `servicio-contable+flujos-de-caja+${new Date().getTime()}`
+            this.fileService.uploadGenericStaticFile(files[i], path).subscribe(result => {
+                this.fileService.storeImage(result.secureUrl)
+              },
+              () => {
+                this.loadingImage = false;
+                this.uiService.createMessage('error', 'No se logro subir la imagen, ocurrio un error. Intenalo de nuevo')
+              },
+              () => {
+                if (i === files.length - 1) {
+                  this.loadingImage = false;
+                }
+              }
+            )
+          }
+        } catch (e) {
+        }
+      }
+    }
+    await forLoop();
+  }
+
+  clickInputFile() {
+    this.inputFile?.nativeElement.click();
+  }
+
 }

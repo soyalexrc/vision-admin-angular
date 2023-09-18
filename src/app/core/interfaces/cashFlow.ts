@@ -19,6 +19,7 @@ export interface CashFlowRegister {
   guarantee?:  string;
   internalProperty?:  string;
   contract?:  string;
+  proofOfPayment?:  string[];
   taxPayer?: string;
   month: string;
   date: Date | string;
