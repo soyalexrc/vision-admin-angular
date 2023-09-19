@@ -95,7 +95,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.getCashFlowPeople();
     this.getProperties()
     this.transactionForm = this.fb.group({
-      amount: ['', [Validators.required, Validators.minLength(3)]],
+      amount: ['', [Validators.required, Validators.minLength(4)]],
       reason: ['', Validators.required],
       entityFrom: ['', Validators.required],
       entityTo: ['', Validators.required],

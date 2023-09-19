@@ -17,11 +17,11 @@
 <nz-divider *ngIf="uiService.isPhoneScreen()"></nz-divider>
 
   <div class="filter-row">
-    <div>
+    <div *ngIf="!uiService.isPhoneScreen()">
       <p style="font-size: 12px; margin-bottom: 0.2rem; font-weight: bold">Fecha</p>
       <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChangeDate($event, true)"></nz-range-picker>
     </div>
-    <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="primary" (click)="showFiltersDrawer = true">
+    <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="default" (click)="showFiltersDrawer = true">
       <span nz-icon nzType="filter" nzTheme="outline"></span>
       Ver mas filtros</button>
     <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="default"  routerLink="resumen-de-operaciones">Ver resumen de operaciones
@@ -263,11 +263,11 @@
   <ng-container *nzModalContent>
     <form nz-form nzLayout="vertical" [formGroup]="transactionForm">
       <div nz-row style="display: flex; align-items: center" [nzGutter]="16">
-        <div nz-col [nzSpan]="11">
+        <div nz-col [nzXs]="24" [nzMd]="11">
           <nz-form-item>
             <nz-form-label nzRequired nzFor="entityFrom">Desde</nz-form-label>
             <nz-form-control [nzErrorTip]="entityFromErrTemp">
-              <nz-select formControlName="entityFrom" style="width: 200px">
+              <nz-select formControlName="entityFrom">
                 <nz-option nzValue="Banco Nacional de Crédito (BNC)"
                            nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>
                 <nz-option nzValue="Banesco Panamá" nzLabel="Banesco Panamá"></nz-option>
@@ -284,14 +284,14 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="2" style="display: flex; justify-content: center">
+        <div nz-col [nzXs]="24" [nzMd]="2" style="display: flex; justify-content: center">
           <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
         </div>
-        <div nz-col [nzSpan]="11">
+        <div nz-col [nzXs]="24" [nzMd]="11">
           <nz-form-item>
             <nz-form-label nzRequired nzFor="entityTo">Hasta</nz-form-label>
             <nz-form-control [nzErrorTip]="entityToErrTemp">
-              <nz-select formControlName="entityTo" style="width: 200px">
+              <nz-select formControlName="entityTo" >
                 <nz-option nzValue="Banco Nacional de Crédito (BNC)"
                            nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>
                 <nz-option nzValue="Banesco Panamá" nzLabel="Banesco Panamá"></nz-option>
@@ -310,7 +310,7 @@
         </div>
       </div>
       <div nz-row class="row" [nzGutter]="16">
-        <div nz-col [nzSpan]="8">
+        <div nz-col [nzXs]="12" [nzMd]="8">
           <nz-form-item>
             <nz-form-label nzRequired nzFor="currency">Moneda</nz-form-label>
             <nz-form-control [nzErrorTip]="currencyErrTemp">
@@ -325,7 +325,7 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="8">
+        <div nz-col [nzXs]="12" [nzMd]="8">
           <nz-form-item>
             <nz-form-label nzRequired nzFor="wayToPay">Tipo de pago</nz-form-label>
             <nz-form-control [nzErrorTip]="wayToPayErrTemp">
@@ -341,7 +341,7 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="8">
+        <div nz-col [nzXs]="24" [nzMd]="8">
           <nz-form-item>
             <nz-form-label nzRequired nzFor="amount">Monto</nz-form-label>
             <nz-form-control [nzErrorTip]="amountErrTemp">
