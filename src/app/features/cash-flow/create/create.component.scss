@@ -17,7 +17,11 @@ h2 {
   margin-bottom: 2rem;
 }
 .content {
-  width: 900px
+  width: 900px;
+  @media screen and (max-width: 716px) {
+    width: 100%;
+    padding: 0 .2rem;
+  }
 }
 .mt-3 {
   margin-top: 3rem;

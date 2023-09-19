@@ -81,7 +81,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     private router: Router,
     private modal: NzModalService,
     private cashFlowService: CashFlowService,
-    private uiService: UiService,
+    public uiService: UiService,
     private propertyService: PropertyService,
     private servicesService: ServicesService,
     private fb: FormBuilder,

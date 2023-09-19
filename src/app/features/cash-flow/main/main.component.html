@@ -14,140 +14,127 @@
   additionalButtonText="Nuevo traslado de dinero"
 ></app-section-title>
 
-<div style="display: flex; justify-content: space-between">
-  <div style="display: flex; align-items: flex-end; gap: 1rem;">
+<nz-divider *ngIf="uiService.isPhoneScreen()"></nz-divider>
+
+  <div class="filter-row">
     <div>
       <p style="font-size: 12px; margin-bottom: 0.2rem; font-weight: bold">Fecha</p>
       <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChangeDate($event, true)"></nz-range-picker>
     </div>
-    <button nz-button nzType="primary" (click)="showFiltersDrawer = true">
+    <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="primary" (click)="showFiltersDrawer = true">
       <span nz-icon nzType="filter" nzTheme="outline"></span>
       Ver mas filtros</button>
-    <button nz-button nzType="default"  routerLink="resumen-de-operaciones">Ver resumen de operaciones
+    <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="default"  routerLink="resumen-de-operaciones">Ver resumen de operaciones
     </button>
-    <button nz-button nzType="default"  routerLink="cierre-de-caja">Ver cierre de caja
+    <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="default"  routerLink="cierre-de-caja">Ver cierre de caja
     </button>
   </div>
-
-</div>
-
-
-
-
-
-
 
 <nz-divider></nz-divider>
-
-<div class="stats">
-  <!--  <div class="main-stat">-->
-  <!--    <div class="icon">-->
-  <!--      <img src="/assets/icons/utility-2.svg" width="25px" height="25px" alt="">-->
-  <!--    </div>-->
-  <!--    <h1>Utilidad estimada</h1>-->
-  <!--    <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>-->
-  <!--    <div class="stat-content" *ngIf="!loadingStats">-->
-  <!--      <h2> {{statsData.utilidad.usd ?? 0 | currency}}</h2>-->
-  <!--      <h4> {{statsData.utilidad.bs ?? 0 | currency: 'Bs. '}}</h4>-->
-  <!--      <h4> {{statsData.utilidad.eur ?? 0 | currency: '€ '}}</h4>-->
-  <!--    </div>-->
-  <!--  </div>-->
-  <div class="other-stats">
-    <div class="stats-row">
-      <div class="stat">
-        <button *ngIf="!loadingTotalAvailable" routerLink="/flujo-de-caja/total-disponible" nz-tooltip="Ver detalle" nz-button nzType="default" nzShape="circle">
-          <span nz-icon nzType="eye"  nzTheme="outline"></span>
-        </button>
-        <div class="icon">
-          <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
-        </div>
-        <nz-skeleton *ngIf="loadingTotalAvailable" [nzActive]="true"></nz-skeleton>
-        <div class="stat-content" *ngIf="!loadingTotalAvailable">
-          <h3>Total disponible</h3>
-          <h2> {{totalAvailable.usd ?? 0 | currency}}</h2>
-          <h4> {{totalAvailable.bs ?? 0  | currency: 'Bs. '}}</h4>
-          <h4> {{totalAvailable.eur ?? 0  | currency: '€ '}}</h4>
-        </div>
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzXs]="24" [nzMd]="12" [nzLg]="6">
+    <div class="stat">
+      <button *ngIf="!loadingTotalAvailable" routerLink="/flujo-de-caja/total-disponible" nz-tooltip="Ver detalle" nz-button nzType="default" nzShape="circle">
+        <span nz-icon nzType="eye"  nzTheme="outline"></span>
+      </button>
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
       </div>
-      <div class="stat">
-        <div class="icon">
-          <img src="/assets/icons/utility-2.svg" width="25px" height="25px" alt="">
-        </div>
-        <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
-        <div class="stat-content" *ngIf="!loadingStats">
-          <h3>Utilidad estimada</h3>
-          <h2> {{statsData.utilidad.usd ?? 0 | currency}}</h2>
-          <h4> {{statsData.utilidad.bs ?? 0 | currency: 'Bs. '}}</h4>
-          <h4> {{statsData.utilidad.eur ?? 0 | currency: '€ '}}</h4>
-        </div>
+      <nz-skeleton *ngIf="loadingTotalAvailable" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingTotalAvailable">
+        <h3>Total disponible</h3>
+        <h2> {{totalAvailable.usd ?? 0 | currency}}</h2>
+        <h4> {{totalAvailable.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{totalAvailable.eur ?? 0  | currency: '€ '}}</h4>
       </div>
-      <div class="stat">
-        <div class="icon">
-          <img src="/assets/icons/income.svg" width="25px" height="25px" alt="">
-        </div>
-        <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
-        <div class="stat-content" *ngIf="!loadingStats">
-          <h3>Total de ingresos</h3>
-          <h2> {{statsData.ingreso.usd ?? 0 | currency}}</h2>
-          <h4> {{statsData.ingreso.bs ?? 0  | currency: 'Bs. '}}</h4>
-          <h4> {{statsData.ingreso.eur ?? 0  | currency: '€ '}}</h4>
-        </div>
-      </div>
-      <div class="stat">
-        <div class="icon">
-          <img src="/assets/icons/expense.svg" width="25px" height="25px" alt="">
-        </div>
-        <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
-        <div class="stat-content" *ngIf="!loadingStats">
-          <h3>Total de egresos</h3>
-          <h2> {{statsData.egreso.usd ?? 0  | currency}}</h2>
-          <h4> {{statsData.egreso.bs ?? 0 | currency: 'Bs. '}}</h4>
-          <h4> {{statsData.egreso.eur ?? 0 | currency: '€ '}}</h4>
-        </div>
-      </div>
-
-
     </div>
-    <div class="stats-row">
-      <div class="stat">
-        <div class="icon">
-          <img src="/assets/icons/to-pay.svg" width="25px" height="25px" alt="">
-        </div>
-        <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
-        <div class="stat-content" *ngIf="!loadingStats">
-          <h3>Total por pagar</h3>
-          <h2> {{statsData.cuentasPorPagar.usd ?? 0 | currency}}</h2>
-          <h4> {{statsData.cuentasPorPagar.bs ?? 0 | currency: 'Bs. '}}</h4>
-          <h4> {{statsData.cuentasPorPagar.eur ?? 0 | currency: '€ '}}</h4>
-        </div>
+  </div>
+  <div nz-col [nzXs]="24" [nzMd]="12" [nzLg]="6">
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/utility-2.svg" width="25px" height="25px" alt="">
       </div>
-      <div class="stat">
-        <div class="icon">
-          <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
-        </div>
-        <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
-        <div class="stat-content" *ngIf="!loadingStats">
-          <h3>Total por cobrar</h3>
-          <h2> {{statsData.cuentasPorCobrar.usd ?? 0 | currency}}</h2>
-          <h4> {{statsData.cuentasPorCobrar.bs ?? 0  | currency: 'Bs. '}}</h4>
-          <h4> {{statsData.cuentasPorCobrar.eur ?? 0  | currency: '€ '}}</h4>
-        </div>
+      <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingStats">
+        <h3>Utilidad estimada</h3>
+        <h2> {{statsData.utilidad.usd ?? 0 | currency}}</h2>
+        <h4> {{statsData.utilidad.bs ?? 0 | currency: 'Bs. '}}</h4>
+        <h4> {{statsData.utilidad.eur ?? 0 | currency: '€ '}}</h4>
       </div>
-      <div class="stat">
-        <div class="icon">
-          <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
-        </div>
-        <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
-        <div class="stat-content" *ngIf="!loadingStats">
-          <h3>Total ingreso cuenta de terceros</h3>
-          <h2> {{statsData.ingresoCuentaTerceros.usd ?? 0 | currency}}</h2>
-          <h4> {{statsData.ingresoCuentaTerceros.bs ?? 0  | currency: 'Bs. '}}</h4>
-          <h4> {{statsData.ingresoCuentaTerceros.eur ?? 0  | currency: '€ '}}</h4>
-        </div>
+    </div>
+  </div>
+  <div nz-col [nzXs]="24" [nzMd]="12" [nzLg]="6">
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/income.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingStats">
+        <h3>Total de ingresos</h3>
+        <h2> {{statsData.ingreso.usd ?? 0 | currency}}</h2>
+        <h4> {{statsData.ingreso.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{statsData.ingreso.eur ?? 0  | currency: '€ '}}</h4>
+      </div>
+    </div>
+  </div>
+  <div nz-col [nzXs]="24" [nzMd]="12" [nzLg]="6">
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/expense.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingStats">
+        <h3>Total de egresos</h3>
+        <h2> {{statsData.egreso.usd ?? 0  | currency}}</h2>
+        <h4> {{statsData.egreso.bs ?? 0 | currency: 'Bs. '}}</h4>
+        <h4> {{statsData.egreso.eur ?? 0 | currency: '€ '}}</h4>
+      </div>
+    </div>
+  </div>
+  <div nz-col [nzXs]="24" [nzMd]="12" [nzLg]="8">
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/to-pay.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingStats">
+        <h3>Total por pagar</h3>
+        <h2> {{statsData.cuentasPorPagar.usd ?? 0 | currency}}</h2>
+        <h4> {{statsData.cuentasPorPagar.bs ?? 0 | currency: 'Bs. '}}</h4>
+        <h4> {{statsData.cuentasPorPagar.eur ?? 0 | currency: '€ '}}</h4>
+      </div>
+    </div>
+  </div>
+  <div nz-col [nzXs]="24" [nzMd]="12" [nzLg]="8">
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingStats">
+        <h3>Total por cobrar</h3>
+        <h2> {{statsData.cuentasPorCobrar.usd ?? 0 | currency}}</h2>
+        <h4> {{statsData.cuentasPorCobrar.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{statsData.cuentasPorCobrar.eur ?? 0  | currency: '€ '}}</h4>
+      </div>
+    </div>
+  </div>
+  <div nz-col [nzXs]="24" [nzMd]="12" [nzLg]="8">
+    <div class="stat">
+      <div class="icon">
+        <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
+      </div>
+      <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
+      <div class="stat-content" *ngIf="!loadingStats">
+        <h3>Total ingreso cuenta de terceros</h3>
+        <h2> {{statsData.ingresoCuentaTerceros.usd ?? 0 | currency}}</h2>
+        <h4> {{statsData.ingresoCuentaTerceros.bs ?? 0  | currency: 'Bs. '}}</h4>
+        <h4> {{statsData.ingresoCuentaTerceros.eur ?? 0  | currency: '€ '}}</h4>
       </div>
     </div>
   </div>
 </div>
+
 
 <nz-divider></nz-divider>
 
@@ -168,8 +155,8 @@
 
 
 <nz-drawer
-  [nzClosable]="false"
   [nzVisible]="showFiltersDrawer"
+  [nzWidth]="350"
   nzPlacement="right"
   nzTitle="Filtros"
   (nzOnClose)="closeFilterModal()"

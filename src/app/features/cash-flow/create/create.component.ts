@@ -50,7 +50,7 @@ export class CreateComponent implements OnInit {
     private cashFlowService: CashFlowService,
     private userService: UserService,
     private servicesService: ServicesService,
-    private uiService: UiService,
+    public uiService: UiService,
     private router: Router,
     private fileService: FileService,
     private route: ActivatedRoute,
@@ -269,6 +269,10 @@ export class CreateComponent implements OnInit {
 
   getCurrency(i: number) {
     return this.payments.at(i).get('currency')?.value;
+  }
+
+  getService(i: number) {
+    return this.payments.at(i).get('service')?.value;
   }
 
   get payments() {

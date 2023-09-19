@@ -6,42 +6,15 @@
   <nz-breadcrumb-item>{{isEditing ? 'Editar' : 'Crear'}} Registro</nz-breadcrumb-item>
 </nz-breadcrumb>
 
-<h2>Datos de registro</h2>
+<h2 [ngStyle]="{'margin-top': uiService.isPhoneScreen() ? '1rem' : '0'}">Datos de registro</h2>
 
 
-<!--<div class="form mt-3">-->
-<!--  <div class="content">-->
-<!--    <nz-steps [nzCurrent]="index" (nzIndexChange)=" isEditing ? onIndexChange($event) : null">-->
-<!--      <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>-->
-<!--      <nz-step nzTitle="Servicio" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>-->
-<!--      <nz-step nzTitle="Informacion de pago" [nzStatus]="getStatusBasedOnIndex(index).last"></nz-step>-->
-<!--    </nz-steps>-->
-<!--  </div>-->
-<!--</div>-->
-
-<!--<ng-container *ngIf="index === 0">-->
-<!--  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="generalForm">-->
-<!--    <div class="content">-->
-
-<!--   -->
-<!--    </div>-->
-<!--  </form>-->
-<!--</ng-container>-->
-
-<!--<ng-container *ngIf="index === 1">-->
-<!--  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="serviceForm">-->
-<!--    <div class="content">-->
-
-<!--     -->
-<!--    </div>-->
-<!--  </form>-->
-<!--</ng-container>-->
 
 <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="form">
   <div class="content">
 
     <div nz-row class="row" [nzGutter]="16">
-      <div nz-col [nzSpan]="6">
+      <div nz-col [nzXs]="24" nzMd="6">
         <nz-form-item>
           <nz-form-label nzRequired nzFor="date">Fecha</nz-form-label>
           <nz-form-control [nzErrorTip]="dateErrTip">
@@ -53,7 +26,7 @@
         </nz-form-item>
       </div>
 
-      <div nz-col [nzSpan]="12">
+      <div nz-col [nzXs]="24" nzMd="12">
         <nz-form-item>
           <nz-form-label nzFor="person">Persona</nz-form-label>
           <nz-form-control>
@@ -68,7 +41,7 @@
           </nz-form-control>
         </nz-form-item>
       </div>
-      <div nz-col [nzSpan]="6" style="display: flex; justify-content: center; align-items: center">
+      <div nz-col [nzXs]="24" nzMd="6" style="display: flex; justify-content: center; align-items: center">
         <button nz-button nzType="link" (click)="showRegisterPersonModal = true">
           <span nz-icon nzType="plus" nzTheme="outline"></span>
           Ingresar nueva persona
@@ -109,220 +82,6 @@
 
     <nz-divider></nz-divider>
 
-    <!--    <h2>Detalle de pago</h2>-->
-
-
-    <!--    <div nz-row class="row" [nzGutter]="16">-->
-    <!--      <div nz-col [nzSpan]="8">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label nzRequired nzFor="transactionType">Tipo de transaccion</nz-form-label>-->
-    <!--          <nz-form-control [nzErrorTip]="transactionTypeErrTemp">-->
-    <!--            <nz-select nzShowSearch formControlName="transactionType">-->
-    <!--              <nz-option nzValue="Ingreso" nzLabel="Ingreso"></nz-option>-->
-    <!--              <nz-option nzValue="Egreso" nzLabel="Egreso"></nz-option>-->
-    <!--              <nz-option nzValue="Cuenta por pagar" nzLabel="Cuenta por pagar"></nz-option>-->
-    <!--              <nz-option nzValue="Cuenta por cobrar" nzLabel="Cuenta por cobrar"></nz-option>-->
-    <!--              <nz-option nzValue="Ingreso a cuenta de terceros" nzLabel="Ingreso a cuenta de terceros"></nz-option>-->
-    <!--            </nz-select>-->
-    <!--            <ng-template #transactionTypeErrTemp let-control>-->
-    <!--              <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de transaccion!</ng-container>-->
-    <!--            </ng-template>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-
-    <!--      <div nz-col [nzSpan]="8"-->
-    <!--           *ngIf="transactionType !== 'Cuenta por pagar' && transactionType !== 'Cuenta por cobrar' ">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label nzRequired nzFor="wayToPay">Forma de pago</nz-form-label>-->
-    <!--          <nz-form-control [nzErrorTip]="wayToPayErrTemp">-->
-    <!--            <nz-select nzShowSearch formControlName="wayToPay">-->
-    <!--              <nz-option nzValue="Efectivo" nzLabel="Efectivo"></nz-option>-->
-    <!--              <nz-option nzValue="Transferencia" nzLabel="Transferencia"></nz-option>-->
-    <!--              <nz-option nzValue="Pago Movil" nzLabel="Pago Movil"></nz-option>-->
-    <!--              <nz-option nzValue="Zelle" nzLabel="Zelle"></nz-option>-->
-    <!--            </nz-select>-->
-    <!--            <ng-template #wayToPayErrTemp let-control>-->
-    <!--              <ng-container *ngIf="control.hasError('required')">Debes ingresar un medio de pago!</ng-container>-->
-    <!--            </ng-template>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-
-    <!--      <div nz-col [nzSpan]="8">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label nzRequired nzFor="currency">Moneda</nz-form-label>-->
-    <!--          <nz-form-control [nzErrorTip]="currencyErrTemp">-->
-    <!--            <nz-select nzShowSearch formControlName="currency">-->
-    <!--              <nz-option nzValue="$" nzLabel="$ Dolar"></nz-option>-->
-    <!--              <nz-option nzValue="Bs" nzLabel="Bs Bolivar"></nz-option>-->
-    <!--              <nz-option nzValue="€" nzLabel="€ Euro"></nz-option>-->
-    <!--            </nz-select>-->
-    <!--            <ng-template #currencyErrTemp let-control>-->
-    <!--              <ng-container *ngIf="control.hasError('required')">Debes ingresar una moneda!</ng-container>-->
-    <!--            </ng-template>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-
-
-    <!--    </div>-->
-
-
-    <!--    <div nz-row class="row" [nzGutter]="16">-->
-    <!--      <div nz-col [nzSpan]="6"-->
-    <!--           *ngIf="transactionType !== 'Cuenta por pagar' && transactionType !== 'Cuenta por cobrar' ">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label nzRequired nzFor="entity">Entidad</nz-form-label>-->
-    <!--          <nz-form-control [nzErrorTip]="entityErrTip">-->
-    <!--            <nz-select nzShowSearch formControlName="entity">-->
-    <!--              <nz-option nzValue="Banco Nacional de Crédito (BNC)"-->
-    <!--                         nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>-->
-    <!--              <nz-option nzValue="Banesco Panamá" nzLabel="Banesco Panamá"></nz-option>-->
-    <!--              <nz-option nzValue="Banesco Venezuela" nzLabel="Banesco Venezuela"></nz-option>-->
-    <!--              <nz-option nzValue="Banco Nacional de Terceros" nzLabel="Banco Nacional de Terceros"></nz-option>-->
-    <!--              <nz-option nzValue="Oficina Paseo La Granja" nzLabel="Oficina Paseo La Granja"></nz-option>-->
-    <!--              <nz-option nzValue="Tesorería" nzLabel="Tesorería"></nz-option>-->
-    <!--              <nz-option nzValue="Oficina San Carlos" nzLabel="Oficina San Carlos"></nz-option>-->
-    <!--              <nz-option nzValue="Banco internacional de terceros"-->
-    <!--                         nzLabel="Banco internacional de terceros"></nz-option>-->
-    <!--            </nz-select>-->
-    <!--            <ng-template #entityErrTip let-control>-->
-    <!--              <ng-container *ngIf="control.hasError('required')">Debes ingresar una entidad!</ng-container>-->
-    <!--            </ng-template>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-    <!--      <div nz-col [nzSpan]="6" *ngIf="showAmountField()">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label nzFor="amount">Monto</nz-form-label>-->
-    <!--          <nz-form-control>-->
-    <!--            <input type="text" appCurrencyInput [currencySymbol]="currency" style="width: 100%" nz-input-->
-    <!--                   formControlName="amount"-->
-    <!--                   placeholder="Monto"/>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-    <!--      <div nz-col [nzSpan]="6" *ngIf="showTotalDueField()">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label-->
-    <!--            nzFor="totalDue">{{ transactionType === 'Cuenta por pagar' ? 'Monto' : 'Por pagar' }}</nz-form-label>-->
-    <!--          <nz-form-control>-->
-    <!--            <input type="text" appCurrencyInput [currencySymbol]="currency" style="width: 100%" nz-input-->
-    <!--                   formControlName="totalDue"/>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-    <!--      <div nz-col [nzSpan]="6" *ngIf="showPendingToCollectField()">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label-->
-    <!--            nzFor="pendingToCollect">{{ transactionType === 'Cuenta por cobrar' ? 'Monto' : 'Por cobrar' }}</nz-form-label>-->
-    <!--          <nz-form-control>-->
-    <!--            <input type="text" appCurrencyInput [currencySymbol]="currency" style="width: 100%" nz-input-->
-    <!--                   formControlName="pendingToCollect"/>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-    <!--    </div>-->
-
-
-    <!--    <h2 style="margin-top: 1rem">Datos de servicio</h2>-->
-
-
-    <!--    <div style="display: flex; justify-content: flex-end">-->
-    <!--      <button nz-button nzType="link" (click)="showConfigServicesModal = true">-->
-    <!--        <span nz-icon nzType="select" nzTheme="outline"></span>-->
-    <!--        Configuracion de servicios-->
-    <!--      </button>-->
-    <!--    </div>-->
-    <!--    <div nz-row class="row" [nzGutter]="16">-->
-    <!--      <div nz-col [nzSpan]="12">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label nzRequired nzFor="service">Servicio</nz-form-label>-->
-    <!--          <nz-form-control [nzErrorTip]="serviceErrTemp">-->
-    <!--            <nz-select nzShowSearch nzAllowClear [nzLoading]="servicesLoading" formControlName="service"-->
-    <!--                       (ngModelChange)="handleChangeService($event)" style="width: 100%">-->
-    <!--              <nz-option-->
-    <!--                *ngFor="let service of services"-->
-    <!--                [nzValue]="service.id"-->
-    <!--                [nzLabel]="service.title">-->
-    <!--              </nz-option>-->
-    <!--            </nz-select>-->
-    <!--            <ng-template #serviceErrTemp let-control>-->
-    <!--              <ng-container *ngIf="control.hasError('required')">Debes ingresar un servicio!</ng-container>-->
-    <!--            </ng-template>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-
-    <!--      <div nz-col [nzSpan]="12">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label nzFor="serviceType">Tipo de servicio</nz-form-label>-->
-    <!--          <nz-form-control>-->
-    <!--            <nz-select nzShowSearch nzAllowClear [nzLoading]="subServicesLoading" formControlName="serviceType"-->
-    <!--                       style="width: 100%">-->
-    <!--              <nz-option-->
-    <!--                *ngFor="let option of subServices"-->
-    <!--                [nzValue]="option.id"-->
-    <!--                [nzLabel]="option.title">-->
-    <!--              </nz-option>-->
-    <!--            </nz-select>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-
-
-    <!--    </div>-->
-    <!--    <div nz-row class="row" [nzGutter]="16" *ngIf="form.value.service === 4 ">-->
-    <!--      <div nz-col [nzSpan]="24" style="display: flex; justify-content: center; margin-bottom: 1rem">-->
-    <!--        <label nz-checkbox formControlName="canon">Es canon</label>-->
-    <!--        <label nz-checkbox formControlName="guarantee">Es garantia</label>-->
-    <!--        <label nz-checkbox formControlName="contract">Es contrato</label>-->
-    <!--      </div>-->
-    <!--    </div>-->
-    <!--    <div nz-row class="row" [nzGutter]="16" *ngIf="form.value.service === 5 ">-->
-    <!--      <div nz-col [nzSpan]="12">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label nzFor="taxPayer">Contribuyente</nz-form-label>-->
-    <!--          <nz-form-control>-->
-    <!--            <nz-select formControlName="taxPayer" style="width: 100%">-->
-    <!--              <nz-option nzValue="Ordinario Natural" nzLabel="Ordinario Natural"></nz-option>-->
-    <!--              <nz-option nzValue="Ordinario Jurídico" nzLabel="Ordinario Jurídico"></nz-option>-->
-    <!--              <nz-option nzValue="Especial" nzLabel="Especial"></nz-option>-->
-    <!--            </nz-select>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-    <!--    </div>-->
-
-
-    <!--    <div nz-row class="row" [nzGutter]="16">-->
-    <!--      <div nz-col [nzSpan]="12">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label nzRequired nzFor="reason">Concepto</nz-form-label>-->
-    <!--          <nz-form-control [nzErrorTip]="reasonErrTemp">-->
-    <!--            <textarea rows="4" nz-input formControlName="reason" placeholder="Concepto"></textarea>-->
-    <!--            <ng-template #reasonErrTemp let-control>-->
-    <!--              <ng-container *ngIf="control.hasError('required')">Debes ingresar un concepto!</ng-container>-->
-    <!--            </ng-template>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-    <!--      <div nz-col [nzSpan]="12">-->
-    <!--        <nz-form-item>-->
-    <!--          <nz-form-label nzFor="reason">Comprobante(s) de pago</nz-form-label>-->
-    <!--          <nz-form-control [nzErrorTip]="reasonErrTemp">-->
-    <!--            <textarea rows="4" nz-input formControlName="reason" placeholder="Concepto"></textarea>-->
-    <!--            <ng-template #reasonErrTemp let-control>-->
-    <!--              <ng-container *ngIf="control.hasError('required')">Debes ingresar un concepto!</ng-container>-->
-    <!--            </ng-template>-->
-    <!--          </nz-form-control>-->
-    <!--        </nz-form-item>-->
-    <!--      </div>-->
-
-
-    <!--    </div>-->
-
     <div formArrayName="payments">
       <div *ngFor="let item of payments.controls; let i = index" [formGroupName]="i">
         <div style="display: flex; justify-content: space-between; ">
@@ -344,7 +103,7 @@
 
 
         <div nz-row class="row" [nzGutter]="16">
-          <div nz-col [nzSpan]="8">
+          <div nz-col [nzXs]="12" nzMd="8">
             <nz-form-item>
               <nz-form-label nzRequired nzFor="transactionType">Tipo de transaccion</nz-form-label>
               <nz-form-control [nzErrorTip]="transactionTypeErrTemp">
@@ -363,7 +122,7 @@
             </nz-form-item>
           </div>
 
-          <div nz-col [nzSpan]="8"
+          <div nz-col [nzXs]="12" nzMd="8"
                *ngIf="getTransactionType(i) !== 'Cuenta por pagar' && getTransactionType(i) !== 'Cuenta por cobrar' ">
             <nz-form-item>
               <nz-form-label nzRequired nzFor="wayToPay">Forma de pago</nz-form-label>
@@ -381,7 +140,7 @@
             </nz-form-item>
           </div>
 
-          <div nz-col [nzSpan]="8">
+          <div nz-col [nzXs]="12" nzMd="8">
             <nz-form-item>
               <nz-form-label nzRequired nzFor="currency">Moneda</nz-form-label>
               <nz-form-control [nzErrorTip]="currencyErrTemp">
@@ -402,7 +161,7 @@
 
 
         <div nz-row class="row" [nzGutter]="16">
-          <div nz-col [nzSpan]="6"
+          <div nz-col [nzXs]="12" nzMd="6"
                *ngIf="getTransactionType(i) !== 'Cuenta por pagar' && getTransactionType(i) !== 'Cuenta por cobrar' ">
             <nz-form-item>
               <nz-form-label nzRequired nzFor="entity">Entidad</nz-form-label>
@@ -425,7 +184,7 @@
               </nz-form-control>
             </nz-form-item>
           </div>
-          <div nz-col [nzSpan]="6" *ngIf="showAmountField(i)">
+          <div nz-col [nzXs]="12" nzMd="6" *ngIf="showAmountField(i)">
             <nz-form-item>
               <nz-form-label nzFor="amount">Monto</nz-form-label>
               <nz-form-control>
@@ -435,7 +194,7 @@
               </nz-form-control>
             </nz-form-item>
           </div>
-          <div nz-col [nzSpan]="6" *ngIf="showTotalDueField(i)">
+          <div nz-col [nzXs]="12" nzMd="6" *ngIf="showTotalDueField(i)">
             <nz-form-item>
               <nz-form-label
                 nzFor="totalDue">{{ getTransactionType(i) === 'Cuenta por pagar' ? 'Monto' : 'Por pagar' }}</nz-form-label>
@@ -445,7 +204,7 @@
               </nz-form-control>
             </nz-form-item>
           </div>
-          <div nz-col [nzSpan]="6" *ngIf="showPendingToCollectField(i)">
+          <div nz-col [nzXs]="12" nzMd="6" *ngIf="showPendingToCollectField(i)">
             <nz-form-item>
               <nz-form-label
                 nzFor="pendingToCollect">{{ getTransactionType(i) === 'Cuenta por cobrar' ? 'Monto' : 'Por cobrar' }}</nz-form-label>
@@ -461,14 +220,14 @@
         <h2 style="margin-top: 1rem; text-align: left">Datos de servicio #{{i + 1}}</h2>
 
 
-        <div style="display: flex; justify-content: flex-end">
+        <div style="display: flex" [ngStyle]="{'justify-content': uiService.isPhoneScreen() ? 'center': 'flex-end', 'margin-bottom': uiService.isPhoneScreen() ? '1rem' : '0' }">
           <button nz-button nzType="link" (click)="showConfigServicesModal = true">
             <span nz-icon nzType="select" nzTheme="outline"></span>
             Configuracion de servicios
           </button>
         </div>
         <div nz-row class="row" [nzGutter]="16">
-          <div nz-col [nzSpan]="12">
+          <div nz-col [nzXs]="24" nzMd="12">
             <nz-form-item>
               <nz-form-label nzRequired nzFor="service">Servicio</nz-form-label>
               <nz-form-control [nzErrorTip]="serviceErrTemp">
@@ -487,7 +246,7 @@
             </nz-form-item>
           </div>
 
-          <div nz-col [nzSpan]="12">
+          <div nz-col [nzXs]="24" nzMd="12">
             <nz-form-item>
               <nz-form-label nzFor="serviceType">Tipo de servicio</nz-form-label>
               <nz-form-control>
@@ -505,14 +264,14 @@
 
 
         </div>
-        <div nz-row class="row" [nzGutter]="16" *ngIf="form.value.service === 4 ">
+        <div nz-row class="row" [nzGutter]="16" *ngIf="getService(i) === 4 ">
           <div nz-col [nzSpan]="24" style="display: flex; justify-content: center; margin-bottom: 1rem">
             <label nz-checkbox formControlName="canon">Es canon</label>
             <label nz-checkbox formControlName="guarantee">Es garantia</label>
             <label nz-checkbox formControlName="contract">Es contrato</label>
           </div>
         </div>
-        <div nz-row class="row" [nzGutter]="16" *ngIf="form.value.service === 5 ">
+        <div nz-row class="row" [nzGutter]="16" *ngIf="getService(i) === 5 ">
           <div nz-col [nzSpan]="12">
             <nz-form-item>
               <nz-form-label nzFor="taxPayer">Contribuyente</nz-form-label>
@@ -540,12 +299,17 @@
               </nz-form-control>
             </nz-form-item>
           </div>
-          <div nz-col [nzSpan]="12" [nzOffset]="6">
+          <div nz-col *ngIf="!uiService.isPhoneScreen()" [nzSpan]="12" [nzOffset]="6">
             <button nz-button nzBlock nzType="primary" type="button" [nzLoading]="loadingImage" (click)="clickInputFile()">
               <span nz-icon nzType="upload"></span>
               Agregar comprobante de pago
             </button>
           </div>
+
+          <button *ngIf="uiService.isPhoneScreen()" nz-button nzBlock nzType="primary" type="button" [nzLoading]="loadingImage" (click)="clickInputFile()">
+            <span nz-icon nzType="upload"></span>
+            Agregar comprobante de pago
+          </button>
 
 
         </div>

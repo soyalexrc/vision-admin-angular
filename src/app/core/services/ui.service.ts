@@ -3,11 +3,13 @@ import {BehaviorSubject} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {AuthService} from "./auth.service";
+import {CustomBreakpoints} from "../constants/custom-breakpoints";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UiService {
+  currentScreen: BehaviorSubject<CustomBreakpoints> = new BehaviorSubject<CustomBreakpoints>(CustomBreakpoints.INIT)
 
   isLayoutDrawerVisible = new BehaviorSubject<boolean>(false);
 
@@ -39,6 +41,24 @@ export class UiService {
     })
   }
 
+  updateScreenBreakpoint(value: CustomBreakpoints) {
+    this.currentScreen.next(value);
+  }
 
+  isPhoneScreen() {
+    return this.currentScreen.value === CustomBreakpoints.PHONE
+  }
+  isFoldScreen() {
+    return this.currentScreen.value === CustomBreakpoints.FOLD
+  }
+  isFoldWrappedScreen() {
+    return this.currentScreen.value === CustomBreakpoints.FOLD_WRAPPED
+  }
+  isTabletScreen() {
+    return this.currentScreen.value === CustomBreakpoints.TABLET
+  }
+  isDesktopScreen() {
+    return this.currentScreen.value === CustomBreakpoints.DESKTOP
+  }
 
 }
