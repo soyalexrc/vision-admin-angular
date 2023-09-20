@@ -48,10 +48,12 @@ export class CreateComponent implements OnInit {
     this.generalForm = this.fb.group({
       company: ['Vision Inmobiliaria', Validators.required],
       username: ['', Validators.required],
+      joinDate: ['', Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       password: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
+      corporateEmail: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       mainPhone: ['', Validators.required],
       secondaryPhone: [''],
       userType: ['', Validators.required],
@@ -62,11 +64,11 @@ export class CreateComponent implements OnInit {
     })
 
     this.personalForm = this.fb.group({
-      birthDate: ['', Validators.required],
-      profession: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      address: ['', Validators.required],
+      birthDate: [null],
+      profession: [''],
+      city: [''],
+      state: [''],
+      address: [''],
       image: [''],
     })
 
@@ -81,7 +83,8 @@ export class CreateComponent implements OnInit {
     if (this.generalForm.valid && this.personalForm.valid && this.socialForm.valid) {
       this.loading = true;
       const data = {...this.generalForm.value, ...this.socialForm.value, ...this.personalForm.value};
-      data.birthDate = moment(data.birthday).format('YYYY-MM-DD');
+      data.birthDate = data.birthDate ? moment(data.birthday).format('YYYY-MM-DD') : null;
+      data.joinDate = moment(data.joinDate).format('YYYY-MM-DD');
       data.userCommission = data.userLevel === 'Asesor Diamante' ? 80 : data.userLevel === 'Asesor Estrella' ? 70 : data.userLevel === 'Asesor Destacado' ? 60 : data.userLevel === 'Asesor Emprendedor' ? 50 : 0;
       data.userLevel = this.generalForm.get('userLevel')?.value || '';
       if (this.isEditing) {
@@ -214,7 +217,7 @@ export class CreateComponent implements OnInit {
   }
 
   handleSelectUserType(value: string) {
-    if (value === 'Asesor inmobiliario vision') {
+    if (value === 'Asesor inmobiliario') {
       console.log(value)
       this.generalForm.get('userLevel')?.enable();
     } else {

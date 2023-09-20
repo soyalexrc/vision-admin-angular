@@ -1,10 +1,14 @@
 <div class="header-section">
   <div class="info">
-    <h1>{{title}}</h1>
+    <div>
+      <h1>{{title}}</h1>
+      <h3 *ngIf="showTotal">Total: <b>{{totalValue}}</b></h3>
+    </div>
     <button
       *ngIf="hasRefresh"
       (click)="onRefresh.emit()"
       nz-tooltip="true"
+      style="margin-top: .5rem"
       nzTooltipTitle="Refrescar"
       nz-button
       nzType="default"
@@ -13,12 +17,12 @@
       <span nz-icon nzType="redo"></span>
     </button>
   </div>
-  <div style="display: flex; gap: 1rem">
-    <button *ngIf="additionalButton" nz-button nzType="default"  (click)="onAdditionalAction.emit()">
+  <div class="actions">
+    <button [nzBlock]="uiService.isPhoneScreen()" *ngIf="additionalButton" nz-button nzType="default"  (click)="onAdditionalAction.emit()">
       <span nz-icon [nzType]="additionalButtonIcon"></span>
       {{additionalButtonText}}
     </button>
-    <button *ngIf="buttonText" nz-button nzType="primary" (click)="onNewElement.emit()">
+    <button [nzBlock]="uiService.isPhoneScreen()"  *ngIf="buttonText" nz-button nzType="primary" (click)="onNewElement.emit()">
       <span nz-icon nzType="plus"></span>
       {{buttonText}}
     </button>

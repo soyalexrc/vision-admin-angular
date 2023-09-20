@@ -19,6 +19,7 @@ export interface CashFlowRegister {
   guarantee?:  string;
   internalProperty?:  string;
   contract?:  string;
+  proofOfPayment?:  string[];
   taxPayer?: string;
   month: string;
   date: Date | string;
@@ -33,8 +34,8 @@ export interface CashFlowRegister {
   totalDue?: string;
   pendingToCollect?: string;
   observations:  string;
-  service?: string;
-  serviceType?: string;
+  service?: string | number;
+  serviceType?: string | number;
   transactionType: TransactionType;
   currency: Currency;
   wayToPay: WayToPay;

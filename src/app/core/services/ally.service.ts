@@ -16,8 +16,12 @@ export class AllyService {
     private  http: HttpClient
   ) { }
 
-  getAll(pageIndex: number, pageSize: number): Observable<GetAllAllies> {
-    return this.http.get<GetAllAllies>(`ally?pageIndex=${pageIndex}&pageSize=${pageSize}`)
+  getAll(): Observable<Ally[]> {
+    return this.http.get<Ally[]>(`ally`)
+  }
+
+  getAllPaginated(pageIndex: number, pageSize: number): Observable<GetAllAllies> {
+    return this.http.get<GetAllAllies>(`ally/paginated?pageIndex=${pageIndex}&pageSize=${pageSize}`)
   }
 
   createOne(owner: Ally): Observable<CreateEditAllyResponse> {

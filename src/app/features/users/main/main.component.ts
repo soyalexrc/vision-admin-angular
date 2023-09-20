@@ -8,6 +8,7 @@ import {UiService} from "../../../core/services/ui.service";
 import {setHeaders} from "../../../shared/utils/generic-table";
 import {UserService} from "../../../core/services/user.service";
 import {User} from "../../../core/interfaces/user";
+import * as moment from "moment";
 
 @Component({
   selector: 'app-main',
@@ -21,7 +22,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   headers: any[] = [];
   pageIndex = 1;
   pageSize = 10;
-  totalItems = 100;
+  totalItems = 1;
 
   constructor(
     private router: Router,
@@ -77,17 +78,21 @@ export class MainComponent implements OnInit, AfterViewInit {
           userType: element.userType,
           mainPhone: element.mainPhone,
           email: element.email,
+          corporateEmail: element.corporateEmail,
           status: element.isActive,
+          customJoinDate: moment(element.joinDate).calendar(),
           statusString: element.isActive ? 'Activo' : 'Inactivo',
           isUserTable: true,
         }));
         const headers = setHeaders([
-          {key: 'username', displayName: 'Nombre de usuario'},
+          {key: 'username', displayName: 'Usuario'},
           {key: 'name', displayName: 'Nombre '},
           {key: 'userType', displayName: 'Tipo de usuario '},
           {key: 'mainPhone', displayName: 'Telefono principal'},
-          {key: 'email', displayName: 'Correo'},
+          {key: 'email', displayName: 'Correo (personal)'},
+          {key: 'corporateEmail', displayName: 'Correo (corporativo)'},
           {key: 'statusString', displayName: 'Estatus'},
+          {key: 'customJoinDate', displayName: 'Fecha de llegada'},
         ]);
 
         this.dataTable.render(headers, this.data);

@@ -64,6 +64,10 @@ export class FileService {
     return this.http.delete<DeleteResult>(`files/propertyImage/${code}/${fileName}`)
   }
 
+  removeFile(path: string): Observable<DeleteResult> {
+    return this.http.delete<DeleteResult>(`files/deleteFolderOrFile/${path}`)
+  }
+
   removePropertyFile(code: string, fileName: string): Observable<DeleteResult> {
     return this.http.delete<DeleteResult>(`files/propertyFile/${code}/${fileName}`)
   }
@@ -99,10 +103,9 @@ export class FileService {
 
   deleteImage(image: string) {
     const index = this.currentImages.value.findIndex((i) => i === image);
-    const imageToDelete = this.currentImages.value[index];
-    const imageCode = imageToDelete.split('properties')[1].split('/')[1];
-    const fileName = imageToDelete.split('properties')[1].split('/')[3]
-    this.removePropertyImage(imageCode, fileName).subscribe(res => {
+    const imageToDelete = this.currentImages.value[index].split('genericStaticFileAsset/')[1];
+    const pathToImage = imageToDelete.split('/').join('+')
+    this.removeFile(pathToImage).subscribe(res => {
       this.currentImages.value.splice(index, 1);
       this.uiService.createMessage('success', res.message)
     }, (error) => {

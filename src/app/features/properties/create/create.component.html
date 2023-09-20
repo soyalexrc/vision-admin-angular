@@ -134,26 +134,18 @@
         <div nz-col [nzSpan]="24">
           <nz-form-item>
             <nz-form-label nzRequired nzFor="publicationTitle">Titulo de publicacion (URL)</nz-form-label>
-            <nz-form-control  [nzErrorTip]="publicationTitleErrTemp">
+            <nz-form-control [nzErrorTip]="publicationTitleErrTemp">
               <input r appSlugTransform type="text" style="width: 100%" nz-input formControlName="publicationTitle"
-                        placeholder="Titulo de publicacion (URL)" />
+                     placeholder="Titulo de publicacion (URL)"/>
               <ng-template #publicationTitleErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar un titulo de publicacion!</ng-container>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un titulo de publicacion!
+                </ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="12">
-          <nz-form-item>
-            <nz-form-label nzFor="distributionComments">Comentarios de distribucion</nz-form-label>
-            <nz-form-control>
-              <textarea rows="4" type="text" style="width: 100%" nz-input formControlName="distributionComments"
-                        placeholder="Comentarios de distribucion"></textarea>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
 
-        <div nz-col [nzSpan]="12">
+        <div nz-col [nzSpan]="24">
           <nz-form-item>
             <nz-form-label nzRequired nzFor="description">Descripcion</nz-form-label>
             <nz-form-control [nzErrorTip]="descriptionErrTemp">
@@ -210,7 +202,8 @@
             <nz-form-label nzRequired nzFor="city">Municipio</nz-form-label>
             <nz-form-control [nzErrorTip]="cityErrTemp">
               <nz-select nzShowSearch formControlName="city" (ngModelChange)="handleSelectState($event)">
-                <nz-option *ngFor="let municipality of cities" [nzValue]="municipality" [nzLabel]="municipality"></nz-option>
+                <nz-option *ngFor="let municipality of cities" [nzValue]="municipality"
+                           [nzLabel]="municipality"></nz-option>
               </nz-select>
               <ng-template #cityErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un municipio!</ng-container>
@@ -453,7 +446,8 @@
         <div nz-row class="row" [nzGutter]="16">
           <div nz-col [nzSpan]="12" *ngFor="let attributeForm of attributes.controls, index as i">
             <nz-form-item [formGroup]="getFormGroup(attributeForm)">
-              <p *ngIf="attributeForm.value.formType !== 'check'" style="font-size: 12px !important; font-weight: bold">{{attributeForm.value.label}}: </p>
+              <p *ngIf="attributeForm.value.formType !== 'check'"
+                 style="font-size: 12px !important; font-weight: bold">{{attributeForm.value.label}}: </p>
               <nz-form-control>
                 <ng-container *ngIf="attributeForm.value.formType === 'check'">
                   <label nz-checkbox formControlName="value">
@@ -471,15 +465,16 @@
                 <ng-container
                   *ngIf="attributeForm.value.formType === 'select'">
                   <nz-radio-group formControlName="value">
-                    <label *ngFor="let option of attributeForm.value.options.split('#')" nz-radio [nzValue]="option">{{option}}</label>
+                    <label *ngFor="let option of attributeForm.value.options.split('#')" nz-radio
+                           [nzValue]="option">{{option}}</label>
                   </nz-radio-group>
-<!--                  <nz-select formControlName="value">-->
-<!--                    <nz-option-->
-<!--                      *ngFor="let option of attributeForm.value.options.split('#'), index as i"-->
-<!--                      [nzValue]="option"-->
-<!--                      [nzLabel]="option">-->
-<!--                    </nz-option>-->
-<!--                  </nz-select>-->
+                  <!--                  <nz-select formControlName="value">-->
+                  <!--                    <nz-option-->
+                  <!--                      *ngFor="let option of attributeForm.value.options.split('#'), index as i"-->
+                  <!--                      [nzValue]="option"-->
+                  <!--                      [nzLabel]="option">-->
+                  <!--                    </nz-option>-->
+                  <!--                  </nz-select>-->
                 </ng-container>
               </nz-form-control>
             </nz-form-item>
@@ -498,7 +493,8 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="price">Precio del inmueble</nz-form-label>
             <nz-form-control [nzErrorTip]="priceErrTemp">
-              <input type="text" appCurrencyInput currencySymbol="$" style="width: 100%" nz-input formControlName="price"
+              <input type="text" appCurrencyInput currencySymbol="$" style="width: 100%" nz-input
+                     formControlName="price"
                      placeholder="Precio del inmueble"/>
               <ng-template #priceErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar el precio del inmueble!</ng-container>
@@ -521,7 +517,8 @@
           <nz-form-item>
             <nz-form-label nzFor="minimumNegotiation">Negociacion minima</nz-form-label>
             <nz-form-control>
-              <input type="text" appCurrencyInput currencySymbol="$" style="width: 100%" nz-input formControlName="minimumNegotiation"
+              <input type="text" appCurrencyInput currencySymbol="$" style="width: 100%" nz-input
+                     formControlName="minimumNegotiation"
                      placeholder="Negociacion minima"/>
             </nz-form-control>
           </nz-form-item>
@@ -556,8 +553,20 @@
             </nz-form-control>
           </nz-form-item>
         </div>
+      </div>
 
-        <div nz-col [nzSpan]="6">
+      <nz-divider></nz-divider>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem">
+        <h3>Datos de captacion externa</h3>
+        <button nz-button nzType="link" (click)="showRegisterAlliesModal = true">
+          <span nz-icon nzType="plus"></span>
+          Registrar nuevo aliado
+        </button>
+      </div>
+
+      <div nz-row [nzGutter]="16" class="row">
+        <div nz-col [nzSpan]="12">
           <nz-form-item>
             <nz-form-label nzFor="ally">Aliado</nz-form-label>
             <nz-form-control>
@@ -569,7 +578,7 @@
           </nz-form-item>
         </div>
 
-        <div nz-col [nzSpan]="6">
+        <div nz-col [nzSpan]="12">
           <nz-form-item>
             <nz-form-label nzFor="externalAdviser">Captacion asesor externo</nz-form-label>
             <nz-form-control>
@@ -734,6 +743,11 @@
 <app-register-owner-modal (onClose)="showRegisterOwnersModal = false" (onFinished)="getOwners()"
                           (onCancel)="showRegisterOwnersModal = $event"
                           [showModal]="showRegisterOwnersModal"></app-register-owner-modal>
+
+
+<app-register-ally-modal (onClose)="showRegisterAlliesModal = false" (onFinished)="getAllies()"
+                         (onCancel)="showRegisterAlliesModal = $event"
+                         [showModal]="showRegisterAlliesModal"></app-register-ally-modal>
 
 <app-reorder-images-modal [showModal]="showOrderModal" (onCancel)="showOrderModal = false" [images]="images"
                           (onClose)="showOrderModal = false"

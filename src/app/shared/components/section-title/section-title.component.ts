@@ -1,4 +1,10 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
+import {UiService} from "../../../core/services/ui.service";
 
 @Component({
   selector: 'app-section-title',
@@ -17,6 +23,12 @@ export class SectionTitleComponent {
   @Output() onNewElement: EventEmitter<any> = new EventEmitter<any>()
   @Output() onRefresh: EventEmitter<any> = new EventEmitter<any>()
   @Output() onAdditionalAction: EventEmitter<any> = new EventEmitter<any>()
+  @Input() showTotal = false;
+  @Input() totalValue: any;
+
+  constructor(public uiService: UiService) {
+  }
+
 
 
 }

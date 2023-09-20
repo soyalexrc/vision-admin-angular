@@ -8,6 +8,8 @@
   [title]="'Usuarios'"
   [buttonText]="'Nuevo usuario'"
   (onRefresh)="getUsers()"
+  [showTotal]="true"
+  [totalValue]="loading ? '...' : totalItems"
   (onNewElement)="handleNewUser()"
 ></app-section-title>
 <app-generic-table #dataTable

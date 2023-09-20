@@ -5,6 +5,8 @@
 
 <app-section-title
   [title]="'Propiedades'"
+  [showTotal]="true"
+  [totalValue]="loading ? '...' : totalItems"
   [buttonText]="'Nueva propiedad'"
   (onRefresh)="getPropertiesPreview()"
   (onNewElement)="handleNewProperty()"
@@ -20,12 +22,16 @@
                    linkActionTitle="Ver vista previa"
                    historyActionTitle="Ver historial de status"
                    [loading]="loading"
+                   [pageIndex]="pageIndex"
+                   [totalItems]="totalItems"
+                   [pageSize]="pageSize"
                    [exposeFullObjOnDelete]="true"
                    (onEdit)="handleEdit($event)"
                    (onDelete)="handleDelete($event)"
                    (onChange)="handleChangeStatus($event)"
                    (onLink)="handlePreview($event)"
                    (onHistory)="handleHistory($event)"
+                   (onPageIndexChange)="onPageIndexChange($event)"
 ></app-generic-table>
 
 
