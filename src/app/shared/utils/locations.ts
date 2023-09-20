@@ -1,8 +1,8 @@
 export const LOCATIONS = [
-  'Caracas',
+  // 'Caracas',
   'Carabobo',
   'Cojedes',
-  'Aragua'
+  // 'Aragua'
 ]
 
 export const LOCATIONS_DETAIL = {

@@ -65,7 +65,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getAllies() {
     this.loading = true;
-    this.alliesService.getAll(this.pageIndex, this.pageSize ).subscribe(data => {
+    this.alliesService.getAllPaginated(this.pageIndex, this.pageSize ).subscribe(data => {
         this.totalItems = data.count;
         this.data = data.rows.map(element => ({
           id: element.id,
@@ -73,7 +73,7 @@ export class MainComponent implements OnInit, AfterViewInit {
           lastName: element.lastName,
           phone: element.phone,
           email: element.email,
-          customBirthdate: moment(element.birthDate).calendar(),
+          customBirthdate: element.birthDate ? moment(element.birthDate).calendar() : '-',
         }));
         const headers = setHeaders([
           {key: 'firstName', displayName: 'Nombre'},

@@ -18,6 +18,9 @@ export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('dataTable') dataTable!: GenericTableComponent;
   data: Partial<Owner>[]  = [];
   headers: any[] = [];
+  pageIndex = 1;
+  totalItems = 1;
+  pageSize = 10;
   constructor(
     private router: Router,
     private modal: NzModalService,
@@ -62,16 +65,16 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getOwners() {
     this.loading = true;
-    this.ownerService.getAllPaginated(1, 10).subscribe(data => {
-      console.log(data);
+    this.ownerService.getAllPaginated(this.pageIndex, this.pageSize).subscribe(data => {
+        this.totalItems = data.count;
         this.data = data.rows.map(element => ({
           id: element.id,
           firstName: element.firstName,
           lastName: element.lastName,
           phone: element.phone,
           email: element.email,
-          customBirthdate: moment(element.birthdate).calendar(),
-          isInvestor: element.isInvestor
+          customBirthdate: element.birthdate ? moment(element.birthdate).calendar() : '-',
+          customIsInvestor: element.isInvestor ? 'Si' : 'No'
         }));
         const headers = setHeaders([
           {key: 'firstName', displayName: 'Nombre'},
@@ -79,7 +82,7 @@ export class MainComponent implements OnInit, AfterViewInit {
           {key: 'phone', displayName: 'Telefono'},
           {key: 'email', displayName: 'Correo'},
           {key: 'customBirthdate', displayName: 'Fecha de cumpleanos'},
-          {key: 'isInvestor', displayName: 'Es inversor?'},
+          {key: 'customIsInvestor', displayName: 'Es inversor?'},
         ]);
 
         this.dataTable.render(headers, this.data);
@@ -92,4 +95,10 @@ export class MainComponent implements OnInit, AfterViewInit {
       }
     )
   }
+
+  handlePageIndexChange(pageIndex: number) {
+    this.pageIndex = pageIndex;
+    this.getOwners();
+  }
+
 }

@@ -8,6 +8,8 @@
   [title]="'Asesores externos'"
   [buttonText]="'Nuevo asesor'"
   (onRefresh)="getAdvisers()"
+  [showTotal]="true"
+  [totalValue]="loading ? '...' : totalItems"
   (onNewElement)="handleNewAdviser()"
 ></app-section-title>
 <app-generic-table #dataTable

@@ -8,6 +8,8 @@
   [title]="'Aliados'"
   [buttonText]="'Nuevo aliado'"
   (onRefresh)="getAllies()"
+  [showTotal]="true"
+  [totalValue]="loading ? '...' : totalItems"
   (onNewElement)="handleNewAlly()"
 ></app-section-title>
 <app-generic-table #dataTable

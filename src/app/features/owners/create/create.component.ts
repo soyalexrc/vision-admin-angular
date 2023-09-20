@@ -29,7 +29,7 @@ export class CreateComponent implements OnInit{
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       phone: ['', Validators.required],
-      birthdate: ['', Validators.required],
+      birthdate: [null],
       isInvestor: [false, Validators.required],
       id: [null]
     })
@@ -46,7 +46,7 @@ export class CreateComponent implements OnInit{
     if (this.form.valid) {
       this.loading = true;
       const data = this.form.value;
-      data.birthdate = moment(data.birthdate).format('YYYY-MM-DD');
+      data.birthdate = data.birthdate ? moment(data.birthdate).format('YYYY-MM-DD') : null;
       if (this.isEditing) {
         this.ownerService.update(data).subscribe(result => {
           this.uiService.createMessage('success', result.message);

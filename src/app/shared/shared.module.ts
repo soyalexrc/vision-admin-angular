@@ -7,7 +7,7 @@ import {NzButtonModule} from "ng-zorro-antd/button";
 import { GenericTableComponent } from './components/generic-table/generic-table.component';
 import {NzSpinModule} from "ng-zorro-antd/spin";
 import {NzToolTipModule} from "ng-zorro-antd/tooltip";
-import { RegisterOwnerModalComponent } from './components/register-client-modal/register-owner-modal.component';
+import { RegisterOwnerModalComponent } from './components/register-owner-modal/register-owner-modal.component';
 import {NzModalModule} from "ng-zorro-antd/modal";
 import {NzFormModule} from "ng-zorro-antd/form";
 import {NzSelectModule} from "ng-zorro-antd/select";
@@ -21,6 +21,7 @@ import {NzInputModule} from "ng-zorro-antd/input";
 import { TextShortenerPipe } from './pipes/text-shortener.pipe';
 import { CurrencyInputDirective } from './directives/currency-input.directive';
 import { SlugTransformDirective } from './directives/slug-transform.directive';
+import { RegisterAllyModalComponent } from './components/register-ally-modal/register-ally-modal.component';
 
 
 
@@ -34,6 +35,7 @@ import { SlugTransformDirective } from './directives/slug-transform.directive';
     TextShortenerPipe,
     CurrencyInputDirective,
     SlugTransformDirective,
+    RegisterAllyModalComponent,
   ],
   exports: [
     SectionTitleComponent,
@@ -44,6 +46,7 @@ import { SlugTransformDirective } from './directives/slug-transform.directive';
     CurrencyInputDirective,
     SlugTransformDirective,
     SlugTransformDirective,
+    RegisterAllyModalComponent,
   ],
   imports: [
     CommonModule,

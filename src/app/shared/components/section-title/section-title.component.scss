@@ -1,8 +1,7 @@
 .header-section {
-
-
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
   margin: 1rem 0;
 
@@ -18,7 +17,24 @@
 
   .info {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    gap: 1rem;
+
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
     gap: 1rem
   }
+}
+
+@media screen and (max-width: 716px) {
+ .info {
+   margin-bottom: 1rem;
+ }
+  .header-section {
+    display: block;
+  }
+
 }

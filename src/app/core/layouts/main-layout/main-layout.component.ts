@@ -4,8 +4,11 @@ import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {Router} from "@angular/router";
 import {UiService} from "../../services/ui.service";
 import {UserService} from "../../services/user.service";
-import {Subscription} from "rxjs";
+import {distinctUntilChanged, Subscription} from "rxjs";
 import {User} from "../../interfaces/user";
+import {BreakpointObserver} from "@angular/cdk/layout";
+import {CustomBreakpoints} from "../../constants/custom-breakpoints";
+import {tap} from "rxjs/operators";
 
 @Component({
   selector: 'app-main-layout',
@@ -21,16 +24,33 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private userSubscription = new Subscription();
   canSeeDashboard!: boolean;
 
+  readonly breakpoint$ = this.breakpointObserver.observe(
+    [
+      CustomBreakpoints.FOLD,
+      CustomBreakpoints.PHONE,
+      CustomBreakpoints.TABLET,
+      CustomBreakpoints.DESKTOP,
+    ])
+    .pipe(
+      tap(value => {}),
+      distinctUntilChanged()
+    );
+
   constructor(
     private auth: AuthService,
     private modal: NzModalService,
     private router: Router,
     private uiService: UiService,
-    private userService: UserService
+    private userService: UserService,
+    private breakpointObserver: BreakpointObserver,
+
   ) {
   }
 
   ngOnInit() {
+    this.breakpoint$.subscribe((data) => {
+      this.breakpointChanged()
+    });
     this.uiService.isLayoutDrawerVisible.subscribe(value => {
       this.visible = value;
     });
@@ -79,5 +99,20 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   validateAccess(route: string) {
     return this.userService.checkAllowedRouteByUserRole(route);
+  }
+
+  private breakpointChanged() {
+    if (this.breakpointObserver.isMatched(CustomBreakpoints.FOLD_WRAPPED)) {
+      this.uiService.updateScreenBreakpoint(CustomBreakpoints.FOLD_WRAPPED)
+    } else if (this.breakpointObserver.isMatched(CustomBreakpoints.PHONE)) {
+      this.uiService.updateScreenBreakpoint(CustomBreakpoints.PHONE)
+    }  else if (this.breakpointObserver.isMatched(CustomBreakpoints.FOLD)) {
+      this.uiService.updateScreenBreakpoint(CustomBreakpoints.FOLD)
+    } else  if (this.breakpointObserver.isMatched(CustomBreakpoints.TABLET)) {
+      this.uiService.updateScreenBreakpoint(CustomBreakpoints.TABLET)
+    } else  if (this.breakpointObserver.isMatched(CustomBreakpoints.DESKTOP)) {
+      this.uiService.updateScreenBreakpoint(CustomBreakpoints.DESKTOP)
+    }
+
   }
 }

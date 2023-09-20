@@ -81,7 +81,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     private router: Router,
     private modal: NzModalService,
     private cashFlowService: CashFlowService,
-    private uiService: UiService,
+    public uiService: UiService,
     private propertyService: PropertyService,
     private servicesService: ServicesService,
     private fb: FormBuilder,
@@ -95,7 +95,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.getCashFlowPeople();
     this.getProperties()
     this.transactionForm = this.fb.group({
-      amount: ['', [Validators.required, Validators.minLength(3)]],
+      amount: ['', [Validators.required, Validators.minLength(4)]],
       reason: ['', Validators.required],
       entityFrom: ['', Validators.required],
       entityTo: ['', Validators.required],
