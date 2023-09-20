@@ -6,6 +6,8 @@ export interface User {
   mainPhone: string;
   secondaryPhone?: string;
   email: string;
+  corporateEmail: string;
+  joinDate: Date;
   birthDate: Date;
   userType: string;
   password: string;

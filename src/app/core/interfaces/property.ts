@@ -25,7 +25,6 @@ export interface PropertyReview {
   nomenclature: string;
   footageGround: string;
   footageBuilding: string;
-  distributionComments: string;
 }
 
 export interface GetAllPreviews {
@@ -99,7 +98,6 @@ export interface GeneralInformation {
   nomenclature: string;
   footageGround: string;
   footageBuilding: string;
-  distributionComments: string;
   description: string;
   operationType: string;
   propertyType: string;

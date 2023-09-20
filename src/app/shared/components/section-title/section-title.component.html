@@ -1,10 +1,14 @@
 <div class="header-section">
   <div class="info">
-    <h1>{{title}}</h1>
+    <div>
+      <h1>{{title}}</h1>
+      <h3 *ngIf="showTotal">Total: <b>{{totalValue}}</b></h3>
+    </div>
     <button
       *ngIf="hasRefresh"
       (click)="onRefresh.emit()"
       nz-tooltip="true"
+      style="margin-top: .5rem"
       nzTooltipTitle="Refrescar"
       nz-button
       nzType="default"

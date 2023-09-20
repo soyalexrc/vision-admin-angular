@@ -8,10 +8,16 @@
   [title]="'Propietarios'"
   [buttonText]="'Nuevo propietario'"
   (onRefresh)="getOwners()"
+  [showTotal]="true"
+  [totalValue]="loading ? '...' : totalItems"
   (onNewElement)="handleNewOwner()"
 ></app-section-title>
 <app-generic-table #dataTable
                    [canDelete]="true"
+                   [totalItems]="totalItems"
+                   [pageIndex]="pageIndex"
+                   [pageSize]="pageSize"
+                   (onPageIndexChange)="handlePageIndexChange($event)"
                    [loading]="loading"
                    (onEdit)="handleEdit($event)"
                    (onDelete)="handleDelete($event)"

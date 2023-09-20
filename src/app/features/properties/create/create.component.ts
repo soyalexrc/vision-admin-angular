@@ -66,6 +66,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   locationsDetail = LOCATIONS_DETAIL;
 
   showRegisterOwnersModal = false;
+  showRegisterAlliesModal = false;
   ownersLoading = true;
   firstRender = false;
   creatingFromStoredData = false;
@@ -112,31 +113,31 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.getPropertyById(this.id)
       this.firstRender = true;
     } else {
-      this.routerSubscription = this.router.events
-        .pipe(filter((event: RouterEvent | any) => event instanceof NavigationStart))
-        .subscribe((event: NavigationStart) => {
-          this.saveTemporalChanges()
-        });
+      // this.routerSubscription = this.router.events
+      //   .pipe(filter((event: RouterEvent | any) => event instanceof NavigationStart))
+      //   .subscribe((event: NavigationStart) => {
+      //     this.saveTemporalChanges()
+      //   });
       this.getAutomaticPropertyCode();
-      if (localStorage.getItem('property_create_temporal')) {
-        this.modal.confirm({
-          nzClosable: false,
-          nzCloseIcon: '',
-          nzWidth: '600px',
-          nzTitle: 'Atencion',
-          nzContent: 'Existe informacion de la ultima propiedad que intentaste registrar, pero no completaste el proceso. Te gustaria completarlo ahora?. Si la respuesta es NO, se eliminaran los cambios guardados',
-          nzCancelText: 'No, Eliminar cambios guardados',
-          nzOkText: 'Si, Completar ahora',
-          nzOnOk: () => new Promise((resolve, reject) => {
-            this.recoverDataFromStorage();
-            setTimeout(() => resolve(), 500);
-          }),
-          nzOnCancel: () => new Promise((resolve, reject) => {
-            this.clearStorageData()
-            setTimeout(() => resolve(), 500);
-          }),
-        })
-      }
+      // if (localStorage.getItem('property_create_temporal')) {
+      //   this.modal.confirm({
+      //     nzClosable: false,
+      //     nzCloseIcon: '',
+      //     nzWidth: '600px',
+      //     nzTitle: 'Atencion',
+      //     nzContent: 'Existe informacion de la ultima propiedad que intentaste registrar, pero no completaste el proceso. Te gustaria completarlo ahora?. Si la respuesta es NO, se eliminaran los cambios guardados',
+      //     nzCancelText: 'No, Eliminar cambios guardados',
+      //     nzOkText: 'Si, Completar ahora',
+      //     nzOnOk: () => new Promise((resolve, reject) => {
+      //       this.recoverDataFromStorage();
+      //       setTimeout(() => resolve(), 500);
+      //     }),
+      //     nzOnCancel: () => new Promise((resolve, reject) => {
+      //       this.clearStorageData()
+      //       setTimeout(() => resolve(), 500);
+      //     }),
+      //   })
+      // }
     }
 
 
@@ -170,7 +171,6 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.generalForm = this.fb.group({
       code: [{value: '', disabled: true}],
       description: ['', Validators.required],
-      distributionComments: [''],
       publicationTitle: ['', Validators.required],
       footageBuilding: [''],
       footageGround: [''],
@@ -251,10 +251,10 @@ export class CreateComponent implements OnInit, OnDestroy {
       delete data.negotiationInformation.ally;
       delete data.negotiationInformation.user;
       delete data.generalInformation.publicationTitle;
+      localStorage.removeItem('property_create_temporal')
 
       if (this.isEditing) {
         this.propertyService.update(data as PropertyFull).subscribe(result => {
-          localStorage.removeItem('property_create_temporal')
           this.uiService.createMessage('success', 'Se edito la propiedad con exito!')
           this.router.navigate(['/propiedades'])
         }, () => {
@@ -264,7 +264,6 @@ export class CreateComponent implements OnInit, OnDestroy {
         })
       } else {
         this.propertyService.createOne(data as PropertyFull).subscribe(result => {
-          localStorage.removeItem('property_create_temporal')
           this.uiService.createMessage('success', 'Se creo la propiedad con exito!')
           this.router.navigate(['/propiedades'])
         }, () => {
@@ -288,7 +287,6 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.generalForm.get('nomenclature')?.patchValue(result.generalInformation.nomenclature);
       this.generalForm.get('footageBuilding')?.patchValue(result.generalInformation.footageBuilding);
       this.generalForm.get('footageGround')?.patchValue(result.generalInformation.footageGround);
-      this.generalForm.get('distributionComments')?.patchValue(result.generalInformation.distributionComments);
       this.generalForm.get('description')?.patchValue(result.generalInformation.description);
       this.generalForm.get('propertyType')?.patchValue(result.generalInformation.propertyType);
       this.generalForm.get('operationType')?.patchValue(result.generalInformation.operationType);
@@ -376,7 +374,6 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.generalForm.get('nomenclature')?.patchValue(data.generalInformation.nomenclature);
     this.generalForm.get('footageBuilding')?.patchValue(data.generalInformation.footageBuilding);
     this.generalForm.get('footageGround')?.patchValue(data.generalInformation.footageGround);
-    this.generalForm.get('distributionComments')?.patchValue(data.generalInformation.distributionComments);
     this.generalForm.get('description')?.patchValue(data.generalInformation.description);
     this.generalForm.get('propertyType')?.patchValue(data.generalInformation.propertyType);
     this.generalForm.get('operationType')?.patchValue(data.generalInformation.operationType);
@@ -677,8 +674,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   getAllies() {
-    this.allyService.getAll(1, 1).subscribe(result => {
-      this.allies = result.rows;
+    this.allyService.getAll().subscribe(result => {
+      this.allies = result;
     })
   }
 
@@ -689,7 +686,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   getAdvisers() {
-    this.userService.getAdvisers('vision').subscribe(result => {
+    this.userService.getAdvisers().subscribe(result => {
       this.advisers = result;
     })
   }

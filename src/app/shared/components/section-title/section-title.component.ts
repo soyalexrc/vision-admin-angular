@@ -23,6 +23,8 @@ export class SectionTitleComponent {
   @Output() onNewElement: EventEmitter<any> = new EventEmitter<any>()
   @Output() onRefresh: EventEmitter<any> = new EventEmitter<any>()
   @Output() onAdditionalAction: EventEmitter<any> = new EventEmitter<any>()
+  @Input() showTotal = false;
+  @Input() totalValue: any;
 
   constructor(public uiService: UiService) {
   }

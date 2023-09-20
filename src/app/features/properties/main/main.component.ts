@@ -15,6 +15,7 @@ import {
 import {PropertyService} from "../../../core/services/property.service";
 import * as moment from 'moment';
 import {FileService} from "../../../core/services/file.service";
+import {CurrencyPipe} from "@angular/common";
 
 @Component({
   selector: 'app-main',
@@ -36,6 +37,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   currentProperty!: PropertyReview;
   pageIndex = 1;
   pageSize = 10;
+  totalItems = 1;
   user: Partial<User> = {};
 
   constructor(
@@ -45,6 +47,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     private uiService: UiService,
     private userService: UserService,
     private fileService: FileService,
+    private currencyPipe: CurrencyPipe,
   ) {
   }
 
@@ -112,14 +115,15 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.loading = true;
     if (this.user.userType === 'Administrador') {
       this.propertyService.getPreviewsPaginated(this.pageSize, this.pageIndex).subscribe(data => {
+          this.totalItems = data.count;
           this.data = data.rows.map(element => ({
             id: element.id,
             code: element.code,
             created_date: moment(element.createdAt).calendar(),
             propertyType: element.propertyType,
             customLocation: `${element.country} - ${element.city} - ${element.state} - ${element.municipality}`,
-            price: element.price,
-            minimumNegotiation: element.minimumNegotiation,
+            price: this.currencyPipe.transform(element.price, 'USD', 'symbol', '1.2-2')!,
+            minimumNegotiation: this.currencyPipe.transform(element.minimumNegotiation, 'USD', 'symbol', '1.2-2')!,
             owner: element.owner_id,
             operationType: element.operationType,
             ally: element.ally_id,
@@ -307,5 +311,10 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   isAdmin() {
     return this.user.userType === 'Administrador';
+  }
+
+  onPageIndexChange(pageIndex: number) {
+    this.pageIndex = pageIndex;
+    this.getPropertiesPreview();
   }
 }
