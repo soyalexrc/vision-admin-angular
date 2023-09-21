@@ -1,10 +1,19 @@
+import {Service, SubService} from "./service";
+
 export interface Client {
   id: number;
+  service_id: number;
+  subService_id: number;
+  serviceName: string;
+  subServiceName: string;
   property_id: null;
   name: string;
+  occupation: string;
   contactFrom: string;
   requirementStatus: string;
   user_id: number;
+  subService: SubService;
+  service: Service;
   phone: string;
   operationType: string;
   propertyOfInterest: string;
@@ -32,7 +41,6 @@ export interface Client {
   personHeadquarters: null;
   personLocation: null;
   createdAt: Date;
-  service: string;
   referrer: string;
   location: string;
   company: string;
