@@ -54,7 +54,7 @@
         <h3>Opciones de servicio</h3>
         <nz-spin nzTip="Cargando informacion..." [nzSpinning]="loadingSubServices">
           <ng-container formArrayName="subServices">
-            <div *ngFor="let subService of subServices.controls; index as i">
+            <div *ngFor="let _ of subServices.controls; index as i">
               <div style="display: flex;">
                 <nz-form-item style="flex: 1" [formGroupName]="i">
                   <nz-form-control>

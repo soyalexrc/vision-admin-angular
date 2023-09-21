@@ -19,7 +19,6 @@ import {NzStepsModule} from "ng-zorro-antd/steps";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
 import {NzSkeletonModule} from "ng-zorro-antd/skeleton";
 import { RegisterPersonModalComponent } from './register-person-modal/register-person-modal.component';
-import { ConfigServicesModalComponent } from './config-services-modal/config-services-modal.component';
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {NzSpinModule} from "ng-zorro-antd/spin";
 import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
@@ -34,42 +33,41 @@ import { CloseCashFlowComponent } from './close-cash-flow/close-cash-flow.compon
 
 
 @NgModule({
-  declarations: [
-    MainComponent,
-    OperationsResumeComponent,
-    CreateComponent,
-    RegisterPersonModalComponent,
-    ConfigServicesModalComponent,
-    TotalAvailableComponent,
-    CloseCashFlowComponent,
-  ],
-  imports: [
-    CommonModule,
-    CashFlowRoutingModule,
-    NzBreadCrumbModule,
-    SharedModule,
-    NzGridModule,
-    NzButtonModule,
-    FormsModule,
-    NzRadioModule,
-    NzModalModule,
-    NzSelectModule,
-    NzIconModule,
-    NzFormModule,
-    NzInputModule,
-    ReactiveFormsModule,
-    NzStepsModule,
-    NzDatePickerModule,
-    NzSkeletonModule,
-    NzDividerModule,
-    NzSpinModule,
-    NzCheckboxModule,
-    NzDrawerModule,
-    NzToolTipModule,
-    HighchartsChartModule,
-    NzSegmentedModule,
-    NzSpaceModule
-  ],
-  providers: [CurrencyPipe]
+    declarations: [
+        MainComponent,
+        OperationsResumeComponent,
+        CreateComponent,
+        RegisterPersonModalComponent,
+        TotalAvailableComponent,
+        CloseCashFlowComponent,
+    ],
+    imports: [
+        CommonModule,
+        CashFlowRoutingModule,
+        NzBreadCrumbModule,
+        SharedModule,
+        NzGridModule,
+        NzButtonModule,
+        FormsModule,
+        NzRadioModule,
+        NzModalModule,
+        NzSelectModule,
+        NzIconModule,
+        NzFormModule,
+        NzInputModule,
+        ReactiveFormsModule,
+        NzStepsModule,
+        NzDatePickerModule,
+        NzSkeletonModule,
+        NzDividerModule,
+        NzSpinModule,
+        NzCheckboxModule,
+        NzDrawerModule,
+        NzToolTipModule,
+        HighchartsChartModule,
+        NzSegmentedModule,
+        NzSpaceModule
+    ],
+    providers: [CurrencyPipe]
 })
 export class CashFlowModule { }

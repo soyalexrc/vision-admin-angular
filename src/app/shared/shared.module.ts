@@ -22,6 +22,8 @@ import { TextShortenerPipe } from './pipes/text-shortener.pipe';
 import { CurrencyInputDirective } from './directives/currency-input.directive';
 import { SlugTransformDirective } from './directives/slug-transform.directive';
 import { RegisterAllyModalComponent } from './components/register-ally-modal/register-ally-modal.component';
+import {ConfigServicesModalComponent} from "./components/config-services-modal/config-services-modal.component";
+import {NzDividerModule} from "ng-zorro-antd/divider";
 
 
 
@@ -36,6 +38,7 @@ import { RegisterAllyModalComponent } from './components/register-ally-modal/reg
     CurrencyInputDirective,
     SlugTransformDirective,
     RegisterAllyModalComponent,
+    ConfigServicesModalComponent
   ],
   exports: [
     SectionTitleComponent,
@@ -47,6 +50,8 @@ import { RegisterAllyModalComponent } from './components/register-ally-modal/reg
     SlugTransformDirective,
     SlugTransformDirective,
     RegisterAllyModalComponent,
+    ConfigServicesModalComponent
+
   ],
   imports: [
     CommonModule,
@@ -64,7 +69,8 @@ import { RegisterAllyModalComponent } from './components/register-ally-modal/reg
     FormsModule,
     NzCheckboxModule,
     NzDatePickerModule,
-    NzInputModule
+    NzInputModule,
+    NzDividerModule
   ]
 })
 export class SharedModule { }
