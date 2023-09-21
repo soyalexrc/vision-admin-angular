@@ -4,6 +4,8 @@ import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ClientService} from "../../../core/services/client.service";
 import {UserService} from "../../../core/services/user.service";
+import {Service, SubService} from "../../../core/interfaces/service";
+import {ServicesService} from "../../../core/services/services.service";
 
 interface Steps {
   first: string,
@@ -24,13 +26,19 @@ export class CreateComponent implements OnInit {
   id: any;
   index = 0;
   operationOptions: any[] = [];
+  showConfigServicesModal = false;
+  services: Service[] = []
+  servicesLoading = false;
+  subServicesLoading = false
+  subServices: SubService[] = [];
 
   constructor(
     private fb: FormBuilder,
     private clientService: ClientService,
-    private uiService: UiService,
+    public uiService: UiService,
     private router: Router,
     private userService: UserService,
+    private servicesService: ServicesService,
     private route: ActivatedRoute
   ) {
 
@@ -38,6 +46,7 @@ export class CreateComponent implements OnInit {
 
   ngOnInit() {
     this.buildForms();
+    this.getServices();
     if (!this.router.url.includes('crear')) {
       this.isEditing = true;
       this.id = this.route.snapshot.paramMap.get('id')!;
@@ -48,22 +57,70 @@ export class CreateComponent implements OnInit {
     }
   }
 
+  buildForms() {
+    this.generalForm = this.fb.group({
+      name: ['', Validators.required],
+      phone: ['', Validators.required],
+      contactFrom: ['', Validators.required],
+      user_id: [null],
+      isPotentialInvestor: [false],
+      service_id: [null, Validators.required],
+      serviceName: [''],
+      referrer: ['']
+    })
+
+    this.operationForm = this.fb.group({
+      subService_id: [null, Validators.required],
+      subServiceName: ['', Validators.required],
+      propertyOfInterest: [''],
+      propertyLocation: [''],
+      typeOfCapture: [''],
+      aspiredPrice: [''],
+      typeOfBusiness: [''],
+      note: [''],
+      amountOfPeople: [null],
+      amountOfPets: [null],
+      amountOfYounger: [null],
+      arrivingDate: [null],
+      interestDate: [null],
+      appointmentDate: [null],
+      inspectionDate: [null],
+      checkoutDate: [null],
+      amountOfNights: [null],
+      reasonOfStay: [''],
+      usageProperty: [''],
+      occupation: [''],
+      specificRequirement: [''],
+      location: [''],
+      company: [''],
+      typeOfPerson: [''],
+      personEntry: [''],
+      personHeadquarters: [''],
+      personLocation: [''],
+      zonesOfInterest: this.fb.array([]),
+      essentialFeatures: this.fb.array([])
+    })
+  }
+
   getClient(id: number | string) {
     this.clientService.getById(id).subscribe(result => {
       this.generalForm.get('name')?.patchValue(result.name);
       this.generalForm.get('phone')?.patchValue(result.phone);
       this.generalForm.get('contactFrom')?.patchValue(result.contactFrom);
       this.generalForm.get('isPotentialInvestor')?.patchValue(result.isPotentialInvestor);
-      this.generalForm.get('service')?.patchValue(result.service);
+      this.generalForm.get('service_id')?.patchValue(result.service_id);
+      this.generalForm.get('serviceName')?.patchValue(result.serviceName);
       this.generalForm.get('referrer')?.patchValue(result.referrer);
 
-      this.operationForm.get('operationType')?.patchValue(result.operationType);
+      this.operationForm.get('subServiceName')?.patchValue(result.subServiceName);
+      this.operationForm.get('subService_id')?.patchValue(result.subService_id);
       this.operationForm.get('propertyOfInterest')?.patchValue(result.propertyOfInterest);
       this.operationForm.get('propertyLocation')?.patchValue(result.propertyLocation);
       this.operationForm.get('typeOfCapture')?.patchValue(result.typeOfCapture);
       this.operationForm.get('aspiredPrice')?.patchValue(result.aspiredPrice);
       this.operationForm.get('typeOfBusiness')?.patchValue(result.typeOfBusiness);
       this.operationForm.get('note')?.patchValue(result.note);
+      this.operationForm.get('occupation')?.patchValue(result.occupation);
       this.operationForm.get('amountOfPeople')?.patchValue(result.amountOfPeople);
       this.operationForm.get('amountOfNights')?.patchValue(result.amountOfNights);
       this.operationForm.get('amountOfPets')?.patchValue(result.amountOfPets);
@@ -99,47 +156,6 @@ export class CreateComponent implements OnInit {
     })
   }
 
-  buildForms() {
-    this.generalForm = this.fb.group({
-      name: ['', Validators.required],
-      phone: ['', Validators.required],
-      contactFrom: ['', Validators.required],
-      user_id: [null],
-      isPotentialInvestor: [false],
-      service: ['', Validators.required],
-      referrer: ['']
-    })
-
-    this.operationForm = this.fb.group({
-      operationType: ['', Validators.required],
-      propertyOfInterest: [''],
-      propertyLocation: [''],
-      typeOfCapture: [''],
-      aspiredPrice: ['', Validators.minLength(3)],
-      typeOfBusiness: [''],
-      note: [''],
-      amountOfPeople: [null],
-      amountOfPets: [null],
-      amountOfYounger: [null],
-      arrivingDate: [null],
-      interestDate: [null],
-      appointmentDate: [null],
-      inspectionDate: [null],
-      checkoutDate: [null],
-      amountOfNights: [null],
-      reasonOfStay: [''],
-      usageProperty: [''],
-      specificRequirement: [''],
-      location: [''],
-      company: [''],
-      typeOfPerson: [''],
-      personEntry: [''],
-      personHeadquarters: [''],
-      personLocation: [''],
-      zonesOfInterest: this.fb.array([]),
-      essentialFeatures: this.fb.array([])
-    })
-  }
 
   onIndexChange(index: number): void {
     this.index = index;
@@ -211,16 +227,25 @@ export class CreateComponent implements OnInit {
       data.zonesOfInterest = data.zonesOfInterest.map((zone: { value: string }) => zone.value);
       data.essentialFeatures = data.essentialFeatures.map((feature: { value: string }) => feature.value);
       data.user_id = this.userService.currentUser?.value.id;
-      data.requirementStatus = true;
+      data.requirementStatus = 'Activo';
       data.aspiredPrice = !data.aspiredPrice ? '0' : data.aspiredPrice.replace(/[^0-9.]+/g, '').trim()
 
-      if (this.isEditing) {
 
+      if (this.isEditing) {
+        data.id = this.id;
+        this.clientService.updateOne(data).subscribe(result => {
+          this.uiService.createMessage('success', result.message)
+          this.router.navigate(['/clientes'])
+        }, (error) => {
+          this.loading = false;
+          this.uiService.createMessage('error', error.error.message)
+        }, () => {
+          this.loading = false;
+        } )
       } else {
         this.clientService.createOne(data).subscribe(result => {
           this.uiService.createMessage('success', result.message)
           this.router.navigate(['/clientes'])
-
         }, (error) => {
           this.uiService.createMessage('error', error.error.message)
           this.loading = false;
@@ -260,101 +285,117 @@ export class CreateComponent implements OnInit {
     return bool;
   }
 
-  handleServiceSelection(value: string) {
-    if (value === 'Inmobiliario') {
-      this.operationOptions = [
-        'Alquiler residencial',
-        'Alquiler comercial / industrial',
-        'Alquiler vacacional',
-        'Captacion'
-      ]
-    } else if (value === 'Administrativo') {
-      this.operationOptions = [
-        'Administracion de inmueble alquilado',
-        'Administracion de empresa'
-      ]
-    } else if (value === 'Limpieza (Ama de llaves)') {
-      this.operationOptions = [
-        'Limpieza de inmuevbe vacacional',
-        'Limpieza inmueble no vacacional',
-        'Paquete basico',
-        'Paquete flexible',
-        'Paquete plus',
-        'Paquete premium',
-        'Lavanderia',
-        'Planchado',
-        'Cocina',
-        'Organizacion de espacios',
-        'Jardineria'
-      ]
-    } else if (value === 'Mantenimiento') {
-      this.operationOptions = [
-        'Albañilería',
-        'Plomería'
-      ]
-    } else if (value === 'Remodelacion') {
-      this.operationOptions = [
-        'Remodelacion',
-      ]
-    } else if (value === 'Contabilidad') {
-      this.operationOptions = [
-        'Contabilidad Seniat',
-        'Contabilidad Seniat Parafiscales',
-        'Contabilidad Seniat Alcaldia Parafiscales',
-        'Declaracion ISLR',
-        'Declaracion definitiva patente',
-        'Carta de comisario',
-        'Balance de apertura',
-        'Informes de aprobacion estado financiero',
-        'Estados financieros historicos',
-        'Estados financieros reexpresados',
-        'Certificacion de ingresos',
-      ]
-    } else if (value === 'Legal') {
-      this.operationOptions = [
-        'Contrato de arrendamiento privado',
-        'Contrato de arrendamiento notariado',
-        'Finiquito visado',
-        'Finiquito sin visado',
-        'Compraventa registrada',
-        'Promesa bilateral de compraventa',
-        'Cedula catastral Naguanagua',
-        'Cedula catastral Valencia',
-        'Cedula catastral San Diego',
-        'Constitucion de empresa CA',
-        'Constitucion de empresa Pyme',
-        'Constitucion de Firma Personal',
-        'Acta de asamblea',
-        'Permisos de apertura de negocio Naguanagua',
-        'Permisos de apertura de negocio Valencia',
-        'Permisos de apertura de negocio San Diego',
-        'Bomberos Naguanagua',
-        'Uso conforme Naguanagua',
-        'Licencia de actividades economicas Naguanagua',
-        'Licencia de licores Naguanagua',
-        'Publicidad Naguanagua',
-        'Poder registrado',
-        'Declaracion sucesoral',
-        'Liberacion de hipoteca',
-        'Permiso de viaje',
-        'Liberacion de enajenacion tribunales',
-        'Titulo supletorio',
-        'Registro de marca SAPI Caracas',
-        'Inscripcion parafiscales',
-      ]
-    }
+  handleServiceSelection(id: number) {
+    this.handleChangeService(id!)
+    this.generalForm.get('serviceName')?.patchValue(this.getServiceName(id))
+    this.operationForm.get('subServiceName')?.patchValue('');
+    this.operationForm.get('subService_id')?.patchValue('');
+    // if (id === 'Inmobiliario') {
+    //   this.operationOptions = [
+    //     'Alquiler residencial',
+    //     'Alquiler comercial / industrial',
+    //     'Alquiler vacacional',
+    //     'Captacion'
+    //   ]
+    // } else if (id === 'Administrativo') {
+    //   this.operationOptions = [
+    //     'Administracion de inmueble alquilado',
+    //     'Administracion de empresa'
+    //   ]
+    // } else if (id === 'Limpieza (Ama de llaves)') {
+    //   this.operationOptions = [
+    //     'Limpieza de inmueble vacacional',
+    //     'Limpieza inmueble no vacacional',
+    //     'Paquete basico',
+    //     'Paquete flexible',
+    //     'Paquete plus',
+    //     'Paquete premium',
+    //     'Lavanderia',
+    //     'Planchado',
+    //     'Cocina',
+    //     'Organizacion de espacios',
+    //     'Jardineria'
+    //   ]
+    // } else if (id === 'Mantenimiento') {
+    //   this.operationOptions = [
+    //     'Albañilería',
+    //     'Plomería'
+    //   ]
+    // } else if (id === 'Remodelacion') {
+    //   this.operationOptions = [
+    //     'Remodelacion',
+    //   ]
+    // } else if (id === 'Contabilidad') {
+    //   this.operationOptions = [
+    //     'Contabilidad Seniat',
+    //     'Contabilidad Seniat Parafiscales',
+    //     'Contabilidad Seniat Alcaldia Parafiscales',
+    //     'Declaracion ISLR',
+    //     'Declaracion definitiva patente',
+    //     'Carta de comisario',
+    //     'Balance de apertura',
+    //     'Informes de aprobacion estado financiero',
+    //     'Estados financieros historicos',
+    //     'Estados financieros reexpresados',
+    //     'Certificacion de ingresos',
+    //   ]
+    // } else if (id === 'Legal') {
+    //   this.operationOptions = [
+    //     'Contrato de arrendamiento privado',
+    //     'Contrato de arrendamiento notariado',
+    //     'Finiquito visado',
+    //     'Finiquito sin visado',
+    //     'Compraventa registrada',
+    //     'Promesa bilateral de compraventa',
+    //     'Cedula catastral Naguanagua',
+    //     'Cedula catastral Valencia',
+    //     'Cedula catastral San Diego',
+    //     'Constitucion de empresa CA',
+    //     'Constitucion de empresa Pyme',
+    //     'Constitucion de Firma Personal',
+    //     'Acta de asamblea',
+    //     'Permisos de apertura de negocio Naguanagua',
+    //     'Permisos de apertura de negocio Valencia',
+    //     'Permisos de apertura de negocio San Diego',
+    //     'Bomberos Naguanagua',
+    //     'Uso conforme Naguanagua',
+    //     'Licencia de actividades economicas Naguanagua',
+    //     'Licencia de licores Naguanagua',
+    //     'Publicidad Naguanagua',
+    //     'Poder registrado',
+    //     'Declaracion sucesoral',
+    //     'Liberacion de hipoteca',
+    //     'Permiso de viaje',
+    //     'Liberacion de enajenacion tribunales',
+    //     'Titulo supletorio',
+    //     'Registro de marca SAPI Caracas',
+    //     'Inscripcion parafiscales',
+    //   ]
+    // }
   }
 
   get serviceType() {
-    return this.generalForm.get('service')?.value;
+    return this.generalForm.get('service_id')?.value;
   }
 
-  get operationType() {
-    return this.operationForm.get('operationType')?.value;
+  get subService() {
+    return this.operationForm.get('subService_id')?.value;
+  }
+
+  get serviceName() {
+    return this.generalForm.get('serviceName')?.value;
+  }
+
+  get subServiceName() {
+    return this.operationForm.get('subServiceName')?.value;
   }
 
   get personType() {
     return this.operationForm.get('typeOfPerson')?.value;
+  }
+
+  get personHeadquarters() {
+    return this.operationForm.get('personHeadquarters')?.value;
   }
 
   get typeOfCapture() {
@@ -374,86 +415,78 @@ export class CreateComponent implements OnInit {
   }
 
 
-  handleOperationTypeSelect(value: string) {
+  handleOperationTypeSelect(id: number) {
     this.resetOperationForm();
-    if (this.serviceType === 'Inmobiliario') {
-      if (value === 'Alquiler residencial') {
-        this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
-        this.operationForm.get('aspiredPrice')?.setValidators([Validators.required]);
-        this.operationForm.get('typeOfPerson')?.setValidators([Validators.required]);
-        this.operationForm.get('amountOfPeople')?.setValidators([Validators.required]);
-        this.operationForm.get('amountOfYounger')?.setValidators([Validators.required]);
-        this.operationForm.get('amountOfPets')?.setValidators([Validators.required]);
-      } else if (value === 'Captacion') {
-        this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
-        this.operationForm.get('location')?.setValidators([Validators.required]);
-        this.operationForm.get('aspiredPrice')?.setValidators([Validators.required]);
-        this.operationForm.get('typeOfCapture')?.setValidators([Validators.required]);
-      } else if (value === 'Alquiler vacacional') {
-        this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
-        this.operationForm.get('amountOfPeople')?.setValidators([Validators.required]);
-        this.operationForm.get('amountOfNights')?.setValidators([Validators.required]);
-        this.operationForm.get('arrivingDate')?.setValidators([Validators.required]);
-        this.operationForm.get('checkoutDate')?.setValidators([Validators.required]);
-        this.operationForm.get('reasonOfStay')?.setValidators([Validators.required]);
-      } else if (value === 'Alquiler comercial / industrial') {
-        this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
-        this.operationForm.get('aspiredPrice')?.setValidators([Validators.required]);
-        this.operationForm.get('typeOfPerson')?.setValidators([Validators.required]);
-        this.operationForm.get('usageProperty')?.setValidators([Validators.required]);
-      }
-    }
-    if (this.serviceType === 'Administrativo') {
-      if (value === 'Administracion de inmueble alquilado') {
-        this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
-        this.operationForm.get('location')?.setValidators([Validators.required]);
-
-      } else if (value === 'Administracion de empresa') {
-        this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
-        this.operationForm.get('location')?.setValidators([Validators.required]);
-        this.operationForm.get('company')?.setValidators([Validators.required]);
-      }
-    }
-    if (this.serviceType === 'Limpieza (Ama de llaves)') {
+    this.operationForm.get('subServiceName')?.patchValue(this.getSubServiceName(id))
+    if (id === 35) {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('aspiredPrice')?.setValidators([Validators.required, Validators.minLength(3)]);
+      this.operationForm.get('typeOfPerson')?.setValidators([Validators.required]);
+      this.operationForm.get('amountOfPeople')?.setValidators([Validators.required]);
+      this.operationForm.get('amountOfYounger')?.setValidators([Validators.required]);
+      this.operationForm.get('amountOfPets')?.setValidators([Validators.required]);
+    } else if (id === 72) {
       this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
       this.operationForm.get('location')?.setValidators([Validators.required]);
-      this.operationForm.get('interestDate')?.setValidators([Validators.required]);
-    }
-    if (this.serviceType === 'Mantenimiento') {
+      this.operationForm.get('aspiredPrice')?.setValidators([Validators.required, Validators.minLength(3)]);
+      this.operationForm.get('typeOfCapture')?.setValidators([Validators.required]);
+    } else if (id === 73) {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('amountOfPeople')?.setValidators([Validators.required]);
+      this.operationForm.get('amountOfNights')?.setValidators([Validators.required]);
+      this.operationForm.get('reasonOfStay')?.setValidators([Validators.required]);
+    } else if (id === 74) {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('aspiredPrice')?.setValidators([Validators.required, Validators.minLength(3)]);
+      this.operationForm.get('typeOfPerson')?.setValidators([Validators.required]);
+      this.operationForm.get('usageProperty')?.setValidators([Validators.required]);
+    } else if (id === 75) {
       this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
       this.operationForm.get('location')?.setValidators([Validators.required]);
-      this.operationForm.get('specificRequirement')?.setValidators([Validators.required]);
-      this.operationForm.get('appointmentDate')?.setValidators([Validators.required]);
-    }
-    if (this.serviceType === 'Remodelacion') {
-      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
-      this.operationForm.get('location')?.setValidators([Validators.required]);
-      this.operationForm.get('specificRequirement')?.setValidators([Validators.required]);
-      this.operationForm.get('appointmentDate')?.setValidators([Validators.required]);
-    }
-    if (this.serviceType === 'Contabilidad') {
+    } else if (id === 76) {
       this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
       this.operationForm.get('location')?.setValidators([Validators.required]);
       this.operationForm.get('company')?.setValidators([Validators.required]);
-      this.operationForm.get('appointmentDate')?.setValidators([Validators.required]);
-    }
-    if (this.serviceType === 'Legal') {
+    } else if (this.generalForm.get('service_id')?.value === 7) {
       this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
       this.operationForm.get('location')?.setValidators([Validators.required]);
-      this.operationForm.get('appointmentDate')?.setValidators([Validators.required]);
+      this.operationForm.get('interestDate')?.setValidators([Validators.required]);
+    } else if (this.generalForm.get('service_id')?.value === 9) {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('location')?.setValidators([Validators.required]);
+      this.operationForm.get('specificRequirement')?.setValidators([Validators.required]);
+    } else if (this.generalForm.get('service_id')?.value === 8) {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('location')?.setValidators([Validators.required]);
+      this.operationForm.get('specificRequirement')?.setValidators([Validators.required]);
+    } else if (this.generalForm.get('service_id')?.value === 5) {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('location')?.setValidators([Validators.required]);
+      this.operationForm.get('company')?.setValidators([Validators.required]);
+    } else if (this.generalForm.get('service')?.value === 2) {
+      this.operationForm.get('propertyOfInterest')?.setValidators([Validators.required]);
+      this.operationForm.get('location')?.setValidators([Validators.required]);
+    } else {
+      // this.operationForm.get('subService_id')?.patchValue(null);
     }
+
   }
 
   handlePersonTypeSelection(value: string) {
     if (value === 'Juridica') {
-      this.operationForm.get('personLocation')?.setValidators([Validators.required]);
       this.operationForm.get('personEntry')?.setValidators([Validators.required]);
       this.operationForm.get('personHeadquarters')?.setValidators([Validators.required]);
+      this.operationForm.get('occupation')?.clearValidators();
+      this.operationForm.get('occupation')?.reset();
     } else {
-      this.operationForm.get('personLocation')?.clearValidators();
+      this.operationForm.get('occupation')?.setValidators([Validators.required])
       this.operationForm.get('personEntry')?.clearValidators();
       this.operationForm.get('personHeadquarters')?.clearValidators();
+      this.operationForm.get('personEntry')?.reset();
+      this.operationForm.get('personHeadquarters')?.reset();
     }
+
+
   }
 
   addZone() {
@@ -488,9 +521,9 @@ export class CreateComponent implements OnInit {
     }
   }
 
-  checkService(serviceType: string, operationType?: string) {
-    if (operationType) {
-      return this.serviceType === serviceType && this.operationType === operationType
+  checkService(serviceType: number, subService?: number) {
+    if (subService) {
+      return this.serviceType === serviceType && this.subService === subService
     } else {
       return this.serviceType === serviceType
     }
@@ -501,12 +534,13 @@ export class CreateComponent implements OnInit {
     this.essentialFeatures.reset()
     Object.keys(this.operationForm.controls).forEach(controlName => {
       const control = this.operationForm.get(controlName);
-      if (controlName !== 'operationType') {
+      if (controlName !== 'subService_id' &&   controlName !== 'subServiceName') {
         control?.clearValidators()
         control?.reset();
         control?.removeValidators(Validators.required)
       }
     });
+
   }
 
   logMissingFields() {
@@ -517,4 +551,34 @@ export class CreateComponent implements OnInit {
       }
     });
   }
+
+  getServices() {
+    this.servicesLoading = true;
+    this.servicesService.getAll().subscribe(result => {
+      this.services = result;
+    }, error => {
+      this.servicesLoading = false;
+    }, () => {
+      this.servicesLoading = false;
+    })
+  }
+
+
+  handleChangeService(serviceId: number) {
+    this.subServicesLoading = true;
+    this.servicesService.getSubServicesByServiceId(serviceId).subscribe(result => {
+        this.subServices = result;
+      }, _ => this.subServicesLoading = false,
+      () => this.subServicesLoading = false)
+  }
+
+  getServiceName(id: number) {
+    return this.services.find(ser => ser.id === id)?.title
+  }
+
+  getSubServiceName(id: number) {
+    return this.subServices.find(sub => sub.id === id)?.title
+  }
+
+
 }

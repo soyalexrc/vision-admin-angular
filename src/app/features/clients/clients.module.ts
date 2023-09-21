@@ -20,6 +20,7 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzModalModule} from "ng-zorro-antd/modal";
 import {NzTagModule} from "ng-zorro-antd/tag";
+import {CashFlowModule} from "../cash-flow/cash-flow.module";
 
 
 @NgModule({
@@ -27,28 +28,29 @@ import {NzTagModule} from "ng-zorro-antd/tag";
     MainComponent,
     CreateComponent
   ],
-  imports: [
-    CommonModule,
-    ClientsRoutingModule,
-    NzBreadCrumbModule,
-    SharedModule,
-    NzButtonModule,
-    NzCheckboxModule,
-    NzDatePickerModule,
-    NzFormModule,
-    NzGridModule,
-    NzInputModule,
-    NzWaveModule,
-    ReactiveFormsModule,
-    NzStepsModule,
-    NzSelectModule,
-    NzIconModule,
-    NzDividerModule,
-    FormsModule,
-    NzDrawerModule,
-    NzModalModule,
-    NzTagModule
-  ]
+    imports: [
+        CommonModule,
+        ClientsRoutingModule,
+        NzBreadCrumbModule,
+        SharedModule,
+        NzButtonModule,
+        NzCheckboxModule,
+        NzDatePickerModule,
+        NzFormModule,
+        NzGridModule,
+        NzInputModule,
+        NzWaveModule,
+        ReactiveFormsModule,
+        NzStepsModule,
+        NzSelectModule,
+        NzIconModule,
+        NzDividerModule,
+        FormsModule,
+        NzDrawerModule,
+        NzModalModule,
+        NzTagModule,
+        CashFlowModule
+    ]
 })
 export class ClientsModule {
 }

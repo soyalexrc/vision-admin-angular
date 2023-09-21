@@ -20,22 +20,23 @@ export class ClientService {
   getAllPaginated(
     pageIndex: number,
     pageSize: number,
-    service: string,
-    operationType: string,
+    service_id: string,
+    subService_id: string,
     dateFrom: string,
     dateTo: string,
     status: string,
     contactFrom: string,
+    isPotentialInvestor: string,
   ) : Observable<GetAllClients> {
-    return this.http.get<GetAllClients>(`client/getPreviews?pageIndex=${pageIndex}&pageSize=${pageSize}&service=${service}&operationType=${operationType}&dateFrom=${dateFrom}&dateTo=${dateTo}&requirementStatus=${status}&contactFrom=${contactFrom}`)
+    return this.http.get<GetAllClients>(`client/getPreviews?pageIndex=${pageIndex}&pageSize=${pageSize}&service_id=${service_id}&subService_id=${subService_id}&dateFrom=${dateFrom}&dateTo=${dateTo}&requirementStatus=${status}&contactFrom=${contactFrom}&isPotentialInvestor=${isPotentialInvestor}`)
   }
 
   deleteOne(id: number): Observable<DeleteResult> {
     return this.http.delete<DeleteResult>(`client/${id}`)
   }
 
-  updateOne(data: Client) {
-
+  updateOne(data: Client): Observable<CreateEditClientResponse> {
+    return this.http.put<CreateEditClientResponse>(`client/${data.id}`, data)
   }
 
   getById(id: number | string): Observable<Client> {

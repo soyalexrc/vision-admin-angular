@@ -24,11 +24,12 @@ export class MainComponent implements OnInit, AfterViewInit {
   totalItems = 1;
   pageSize = 10;
   date: any = '';
-  service = '';
+  service_id = '';
   status = '';
   operationOptions: string[] = [];
-  operationType = '';
+  subService_id = '';
   contactFrom = '';
+  isPotentialInvestor = '';
   showFiltersDrawer = false;
   currentClient: Partial<Client> = {};
   showChangeStatusModal = false;
@@ -85,32 +86,34 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.clientService.getAllPaginated(
       this.pageIndex,
       this.pageSize,
-      this.service,
-      this.operationType,
+      this.service_id,
+      this.subService_id,
       this.date[0] ? this.date[0] : '',
       this.date[1] ? this.date[1] : '',
       this.status,
-      this.contactFrom
+      this.contactFrom,
+      this.isPotentialInvestor,
     ).subscribe(data => {
-        console.log(data);
         this.totalItems = data.count;
         this.data = data.rows.map(element => ({
           id: element.id,
           date: moment(element.createdAt).calendar(),
           name: element.name,
           phone: element.phone,
+          isInvestor: element.isPotentialInvestor ? 'Si' : 'No',
           contactFrom: element.contactFrom,
           requirementStatus: element.requirementStatus,
-          operationType: element.operationType.toUpperCase(),
-          service: element.service?.toUpperCase(),
+          subServiceName: element.subServiceName.toUpperCase(),
+          serviceName: element.serviceName.toUpperCase(),
         }));
         const headers = setHeaders([
           {key: 'date', displayName: 'Fecha de registro'},
           {key: 'name', displayName: 'Nombre'},
           {key: 'phone', displayName: 'Telefono'},
           {key: 'contactFrom', displayName: 'De dónde nos contacta'},
-          {key: 'service', displayName: 'Servicio'},
-          {key: 'operationType', displayName: 'Tipo de operacion'},
+          {key: 'serviceName', displayName: 'Servicio'},
+          {key: 'subServiceName', displayName: 'Tipo de operacion'},
+          {key: 'isInvestor', displayName: 'Es Potencial inversionista'},
           {key: 'requirementStatus', displayName: 'Estatus de la solicitud'},
         ]);
 
@@ -131,7 +134,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   handleSelectService(value: string) {
-    this.operationType = '';
+    this.subService_id = '';
     if (value === '') {
       this.operationOptions = [];
     } else if (value === 'Inmobiliario') {
@@ -148,17 +151,19 @@ export class MainComponent implements OnInit, AfterViewInit {
       ]
     } else if (value === 'Limpieza (Ama de llaves)') {
       this.operationOptions = [
-        'Limpieza de inmuevbe vacacional',
+        'Limpieza de inmueble vacacional',
         'Limpieza inmueble no vacacional',
-        'Paquete basico',
-        'Paquete flexible',
-        'Paquete plus',
-        'Paquete premium',
+        'Paquete basico (2 dias)',
+        'Paquete flexible (3 dias)',
+        'Paquete plus (4 dias)',
+        'Paquete premium (5 dias)',
         'Lavanderia',
         'Planchado',
         'Cocina',
         'Organizacion de espacios',
-        'Jardineria'
+        'Jardineria',
+        'Condominio comercial',
+        'Condominio residencial',
       ]
     } else if (value === 'Mantenimiento') {
       this.operationOptions = [

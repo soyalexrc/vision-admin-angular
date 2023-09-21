@@ -48,7 +48,7 @@
         </div>
         <div style="margin-bottom: 1rem">
           <p>Servicio</p>
-          <nz-select nzShowSearch [(ngModel)]="service" class="filter-select" nzAllowClear
+          <nz-select nzShowSearch [(ngModel)]="service_id" class="filter-select" nzAllowClear
                      (ngModelChange)="handleSelectService($event)">
             <nz-option nzValue="Inmobiliario" nzLabel="Inmobiliario"></nz-option>
             <nz-option nzValue="Administrativo" nzLabel="Administrativo"></nz-option>
@@ -62,7 +62,7 @@
 
         <div style="margin-bottom: 1rem">
           <p>Tipo de operacion</p>
-          <nz-select nzShowSearch [(ngModel)]="operationType" class="filter-select" nzAllowClear >
+          <nz-select nzShowSearch [(ngModel)]="subService_id" class="filter-select" nzAllowClear >
             <nz-option *ngFor="let option of operationOptions" [nzValue]="option" [nzLabel]="option"></nz-option>
           </nz-select>
         </div>
@@ -87,6 +87,13 @@
             <nz-option nzValue="Pagina web" nzLabel="Pagina web"></nz-option>
             <nz-option nzValue="Cliente recurrente" nzLabel="Cliente recurrente"></nz-option>
             <nz-option nzValue="Referido" nzLabel="Referido"></nz-option>
+          </nz-select>
+        </div>
+        <div style="margin-bottom: 1rem">
+          <p>Es potencial inversionista</p>
+          <nz-select nzShowSearch [(ngModel)]="isPotentialInvestor" class="filter-select" nzAllowClear >
+            <nz-option nzValue="true" nzLabel="Si"></nz-option>
+            <nz-option nzValue="false" nzLabel="No"></nz-option>
           </nz-select>
         </div>
       </div>
