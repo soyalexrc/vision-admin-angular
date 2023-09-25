@@ -78,6 +78,9 @@ export class CreateComponent implements OnInit {
       aspiredPrice: [''],
       typeOfBusiness: [''],
       note: [''],
+      propertyDistribution: [''],
+      m2: [''],
+      remodeledAreas: [''],
       amountOfPeople: [null],
       amountOfPets: [null],
       amountOfYounger: [null],
@@ -116,6 +119,9 @@ export class CreateComponent implements OnInit {
       this.operationForm.get('subService_id')?.patchValue(result.subService_id);
       this.operationForm.get('propertyOfInterest')?.patchValue(result.propertyOfInterest);
       this.operationForm.get('propertyLocation')?.patchValue(result.propertyLocation);
+      this.operationForm.get('propertyDistribution')?.patchValue(result.propertyDistribution);
+      this.operationForm.get('remodeledAreas')?.patchValue(result.remodeledAreas);
+      this.operationForm.get('m2')?.patchValue(result.m2);
       this.operationForm.get('typeOfCapture')?.patchValue(result.typeOfCapture);
       this.operationForm.get('aspiredPrice')?.patchValue(result.aspiredPrice);
       this.operationForm.get('typeOfBusiness')?.patchValue(result.typeOfBusiness);
@@ -515,9 +521,11 @@ export class CreateComponent implements OnInit {
 
   handleContactFromSelection(value: string) {
     if (value === 'Referido') {
-      this.generalForm.get('contactFrom')?.setValidators([Validators.required])
+      this.generalForm.get('referrer')?.setValidators([Validators.required])
     } else {
-      this.generalForm.get('contactFrom')?.clearValidators()
+      this.generalForm.get('referrer')?.clearValidators()
+      this.generalForm.get('referrer')?.reset()
+      this.generalForm.get('referrer')?.removeValidators(Validators.required)
     }
   }
 

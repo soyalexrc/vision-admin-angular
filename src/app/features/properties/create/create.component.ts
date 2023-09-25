@@ -40,9 +40,9 @@ export class CreateComponent implements OnInit, OnDestroy {
   generalForm!: FormGroup;
   locationForm!: FormGroup;
   attributesForm!: FormGroup;
+  distributionForm!: FormGroup;
   negotiationForm!: FormGroup;
   documentsForm!: FormGroup;
-  publicationSourceForm!: FormGroup;
   loading = false;
   loadingImage = false;
   loadingDocument = false;
@@ -159,14 +159,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   private buildForms() {
-    this.publicationSourceForm = this.fb.group({
-      conlallave: [false],
-      facebook: [false],
-      instagram: [false],
-      mercadolibre: [false],
-      whatsapp: [false],
-      tiktok: [false],
-    })
+
 
     this.generalForm = this.fb.group({
       code: [{value: '', disabled: true}],
@@ -179,15 +172,21 @@ export class CreateComponent implements OnInit, OnDestroy {
       operationType: ['', Validators.required],
       status: ['Incompleto'],
       propertyType: ['', Validators.required],
+      conlallave: [false],
+      facebook: [false],
+      instagram: [false],
+      mercadolibre: [false],
+      whatsapp: [false],
+      tiktok: [false],
     })
 
     this.locationForm = this.fb.group({
       country: ['Venezuela', Validators.required],
       state: ['', Validators.required],
       city: ['', Validators.required],
-      municipality: ['', Validators.required],
-      avenue: ['', Validators.required],
-      street: ['', Validators.required],
+      municipality: [''],
+      avenue: [''],
+      street: [''],
       howToGet: [''],
       parkingLevel: [''],
       parkingNumber: [''],
@@ -195,23 +194,27 @@ export class CreateComponent implements OnInit, OnDestroy {
       trunkNumber: [''],
       referencePoint: [''],
       floor: [''],
-      location: ['A pie de calle', Validators.required],
-      buildingNumber: [''],
-      isClosedStreet: ['No'],
+      amountOfFloors: [''],
+      location: [''],
+      isClosedStreet: [''],
     })
 
     this.attributesForm = this.fb.group({
       attributes: this.fb.array([])
     })
 
+    this.distributionForm = this.fb.group({
+
+    })
+
     this.negotiationForm = this.fb.group({
-      price: ['', [Validators.required, Validators.minLength(3)]],
+      price: ['', [Validators.required, Validators.minLength(1)]],
       owner: [{value: null, disabled: false}, Validators.required],
       attorneyPhone: [''],
       attorneyEmail: ['', Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)],
       attorneyFirstName: [''],
       attorneyLastName: [''],
-      minimumNegotiation: ['', Validators.minLength(3)],
+      minimumNegotiation: ['', Validators.minLength(1)],
       reasonToSellOrRent: [''],
       externalAdviser: [null],
       ally: [null],
@@ -220,7 +223,20 @@ export class CreateComponent implements OnInit, OnDestroy {
     })
 
     this.documentsForm = this.fb.group({
-      files: this.fb.array([])
+      propertyDoc: [false],
+      CIorRIF: [false],
+      ownerCIorRIF: [false],
+      spouseCIorRIF: [false],
+      mortgageRelease: ['N/A'],
+      power: ['N/A'],
+      successionDeclaration: ['N/A'],
+      courtRulings: ['N/A'],
+      cadastralRecordYear: [''],
+      isCadastralRecordSameOwner: [false],
+      realStateTaxYear: [''],
+      condominiumSolvency: [false],
+      condominiumSolvencyDetails: [''],
+      mainProperty: [false],
     })
   }
 
@@ -235,7 +251,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         images: this.images,
         publicationTitle: this.generalForm.get('publicationTitle')?.value,
         files: this.documents,
-        publicationSource: this.publicationSourceForm.value,
+        documentsInformation: this.documentsForm.value,
         attributes: this.attributes.value,
         user_id: this.negotiationForm.get('user')?.value,
         external_adviser_id: this.negotiationForm.get('externalAdviser')?.value,
@@ -292,15 +308,36 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.generalForm.get('operationType')?.patchValue(result.generalInformation.operationType);
       this.generalForm.get('publicationTitle')?.patchValue(result.publicationTitle);
       this.generalForm.get('propertyCondition')?.patchValue(result.generalInformation.propertyCondition);
+      this.generalForm.get('conlallave')?.patchValue(result.generalInformation.conlallave)
+      this.generalForm.get('facebook')?.patchValue(result.generalInformation.facebook)
+      this.generalForm.get('instagram')?.patchValue(result.generalInformation.instagram)
+      this.generalForm.get('tiktok')?.patchValue(result.generalInformation.tiktok)
+      this.generalForm.get('mercadolibre')?.patchValue(result.generalInformation.mercadolibre)
+      this.generalForm.get('whatsapp')?.patchValue(result.generalInformation.whatsapp)
+
+      this.documentsForm.get('propertyDoc')?.patchValue(result.documentsInformation.propertyDoc)
+      this.documentsForm.get('CIorRIF')?.patchValue(result.documentsInformation.CIorRIF)
+      this.documentsForm.get('ownerCIorRIF')?.patchValue(result.documentsInformation.ownerCIorRIF)
+      this.documentsForm.get('spouseCIorRIF')?.patchValue(result.documentsInformation.spouseCIorRIF)
+      this.documentsForm.get('mortgageRelease')?.patchValue(result.documentsInformation.mortgageRelease)
+      this.documentsForm.get('power')?.patchValue(result.documentsInformation.power)
+      this.documentsForm.get('successionDeclaration')?.patchValue(result.documentsInformation.successionDeclaration)
+      this.documentsForm.get('courtRulings')?.patchValue(result.documentsInformation.courtRulings)
+      this.documentsForm.get('cadastralRecordYear')?.patchValue(result.documentsInformation.cadastralRecordYear)
+      this.documentsForm.get('isCadastralRecordSameOwner')?.patchValue(result.documentsInformation.isCadastralRecordSameOwner)
+      this.documentsForm.get('realStateTaxYear')?.patchValue(result.documentsInformation.realStateTaxYear)
+      this.documentsForm.get('condominiumSolvency')?.patchValue(result.documentsInformation.condominiumSolvency)
+      this.documentsForm.get('condominiumSolvencyDetails')?.patchValue(result.documentsInformation.condominiumSolvencyDetails)
+      this.documentsForm.get('mainProperty')?.patchValue(result.documentsInformation.mainProperty)
 
       this.locationForm.get('city')?.patchValue(result.locationInformation.city);
       this.locationForm.get('state')?.patchValue(result.locationInformation.state);
+      this.locationForm.get('amountOfFloors')?.patchValue(result.locationInformation.amountOfFloors);
       this.locationForm.get('country')?.patchValue(result.locationInformation.country);
       this.locationForm.get('municipality')?.patchValue(result.locationInformation.municipality);
       this.locationForm.get('avenue')?.patchValue(result.locationInformation.avenue);
       this.locationForm.get('street')?.patchValue(result.locationInformation.street);
       this.locationForm.get('floor')?.patchValue(result.locationInformation.floor);
-      this.locationForm.get('buildingNumber')?.patchValue(result.locationInformation.buildingNumber);
       this.locationForm.get('howToGet')?.patchValue(result.locationInformation.howToGet);
       this.locationForm.get('urbanization')?.patchValue(result.locationInformation.urbanization);
       this.locationForm.get('trunkNumber')?.patchValue(result.locationInformation.trunkNumber);
@@ -355,12 +392,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         this.fileService.storeDocument(file);
       });
 
-      this.publicationSourceForm.get('conlallave')?.patchValue(result.publicationSource.conlallave)
-      this.publicationSourceForm.get('facebook')?.patchValue(result.publicationSource.facebook)
-      this.publicationSourceForm.get('instagram')?.patchValue(result.publicationSource.instagram)
-      this.publicationSourceForm.get('tiktok')?.patchValue(result.publicationSource.tiktok)
-      this.publicationSourceForm.get('mercadolibre')?.patchValue(result.publicationSource.mercadolibre)
-      this.publicationSourceForm.get('whatsapp')?.patchValue(result.publicationSource.whatsapp)
+
     })
   }
 
@@ -378,15 +410,22 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.generalForm.get('propertyType')?.patchValue(data.generalInformation.propertyType);
     this.generalForm.get('operationType')?.patchValue(data.generalInformation.operationType);
     this.generalForm.get('propertyCondition')?.patchValue(data.generalInformation.propertyCondition);
+    this.generalForm.get('conlallave')?.patchValue(data.generalInformation.conlallave)
+    this.generalForm.get('facebook')?.patchValue(data.generalInformation.facebook)
+    this.generalForm.get('instagram')?.patchValue(data.generalInformation.instagram)
+    this.generalForm.get('tiktok')?.patchValue(data.generalInformation.tiktok)
+    this.generalForm.get('mercadolibre')?.patchValue(data.generalInformation.mercadolibre)
+    this.generalForm.get('whatsapp')?.patchValue(data.generalInformation.whatsapp)
+
 
     this.locationForm.get('city')?.patchValue(data.locationInformation.city);
     this.locationForm.get('state')?.patchValue(data.locationInformation.state);
+    this.locationForm.get('amountOfFloors')?.patchValue(data.locationInformation.amountOfFloors);
     this.locationForm.get('country')?.patchValue(data.locationInformation.country);
     this.locationForm.get('municipality')?.patchValue(data.locationInformation.municipality);
     this.locationForm.get('avenue')?.patchValue(data.locationInformation.avenue);
     this.locationForm.get('street')?.patchValue(data.locationInformation.street);
     this.locationForm.get('floor')?.patchValue(data.locationInformation.floor);
-    this.locationForm.get('buildingNumber')?.patchValue(data.locationInformation.buildingNumber);
     this.locationForm.get('hotToGet')?.patchValue(data.locationInformation.howToGet);
     this.locationForm.get('urbanization')?.patchValue(data.locationInformation.urbanization);
     this.locationForm.get('trunkNumber')?.patchValue(data.locationInformation.trunkNumber);
@@ -405,12 +444,6 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.negotiationForm.get('contactLastName')?.patchValue(data.negotiationInformation.contactLastName);
     this.negotiationForm.get('contactPhone')?.patchValue(data.negotiationInformation.contactPhone);
 
-    this.publicationSourceForm.get('conlallave')?.patchValue(data.publicationSource.conlallave)
-    this.publicationSourceForm.get('facebook')?.patchValue(data.publicationSource.facebook)
-    this.publicationSourceForm.get('instagram')?.patchValue(data.publicationSource.instagram)
-    this.publicationSourceForm.get('tiktok')?.patchValue(data.publicationSource.tiktok)
-    this.publicationSourceForm.get('mercadolibre')?.patchValue(data.publicationSource.mercadolibre)
-    this.publicationSourceForm.get('whatsapp')?.patchValue(data.publicationSource.whatsapp)
 
     data.files.forEach((file: string) => {
       this.fileService.storeDocument(file);
@@ -510,7 +543,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       fourth: 'finish',
       fifth: 'finish',
       sixth: 'process',
-      last: 'wait'
+      last: 'wait',
     }
     if (index === 6) steps = {
       first: 'finish',
@@ -519,7 +552,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       fourth: 'finish',
       fifth: 'finish',
       sixth: 'finish',
-      last: 'process'
+      last: 'process',
     }
 
 
@@ -527,20 +560,18 @@ export class CreateComponent implements OnInit, OnDestroy {
     if (this.generalForm.dirty && this.generalForm.invalid) steps.first = 'error'
     if (this.locationForm.dirty && this.locationForm.invalid) steps.second = 'error'
     if (this.images.length < 1 && this.visitedImages) steps.third = 'error'
-    if (this.attributesForm.dirty && this.attributesForm.invalid) steps.fourth = 'error'
-    if (this.negotiationForm.dirty && this.negotiationForm.invalid) steps.fifth = 'error'
-    if (this.documentsForm.dirty && this.documentsForm.invalid) steps.sixth = 'error'
-    if (this.publicationSourceForm.dirty && this.publicationSourceForm.invalid) steps.last = 'error'
+    if (this.attributesForm.dirty && this.attributesForm.invalid) steps.fifth = 'error'
+    if (this.negotiationForm.dirty && this.negotiationForm.invalid) steps.sixth = 'error'
+    if (this.documentsForm.dirty && this.documentsForm.invalid) steps.last = 'error'
 
     //  Form finished and valid
 
     if (this.generalForm.dirty && this.generalForm.valid) steps.first = 'finish'
     if (this.locationForm.dirty && this.locationForm.valid) steps.second = 'finish'
     if (this.images.length > 0) steps.third = 'finish'
-    if (this.attributesForm.dirty && this.attributesForm.valid) steps.fourth = 'finish'
-    if (this.negotiationForm.dirty && this.negotiationForm.valid) steps.fifth = 'finish'
-    if (this.documentsForm.dirty && this.documentsForm.valid) steps.sixth = 'finish'
-    if (this.publicationSourceForm.dirty && this.publicationSourceForm.valid) steps.last = 'finish'
+    if (this.attributesForm.dirty && this.attributesForm.valid) steps.fifth = 'finish'
+    if (this.negotiationForm.dirty && this.negotiationForm.valid) steps.sixth = 'finish'
+    if (this.documentsForm.dirty && this.documentsForm.valid) steps.last = 'finish'
 
 
     return steps
@@ -557,6 +588,10 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   get attributes() {
     return this.attributesForm.controls["attributes"] as FormArray;
+  }
+
+  get operationType() {
+    return this.generalForm.get('operationType')?.value;
   }
 
   async handleUploadFile(event: any, type: TypeOptions) {
@@ -720,10 +755,14 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
 
     if (this.index === 4) {
-      bool = this.negotiationForm.invalid;
+      bool = false
     }
 
     if (this.index === 5) {
+      bool = this.negotiationForm.invalid;
+    }
+
+    if (this.index === 6) {
       bool = false
     }
 
@@ -737,10 +776,9 @@ export class CreateComponent implements OnInit, OnDestroy {
       negotiationInformation: this.negotiationForm.value,
       images: this.images,
       files: this.documents,
-      publicationSource: this.publicationSourceForm.value,
       attributes: this.attributes.value
     };
-    if (!this.isEditing && (this.generalForm.touched || this.locationForm.touched || this.negotiationForm.touched || this.publicationSourceForm.touched || this.attributesForm.touched)) {
+    if (!this.isEditing && (this.generalForm.touched || this.locationForm.touched || this.negotiationForm.touched || this.attributesForm.touched)) {
       localStorage.setItem('property_create_temporal', JSON.stringify(data));
     }
   }
