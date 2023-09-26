@@ -54,6 +54,8 @@ export interface PropertyFull {
   generalInformation: GeneralInformation;
   locationInformation: LocationInformation;
   negotiationInformation: NegotiationInformation;
+  distribution: Distribution[];
+  equipment: Equipment[]
   client?: null | Client;
 }
 
@@ -71,6 +73,18 @@ export interface Attribute {
   placeholder: null | string;
   options: null | string;
   value: null;
+}
+export interface Distribution {
+  type: FormType;
+  label: string;
+  placeholder: null | string;
+  options: null | string;
+  value: null | string | boolean;
+}
+
+export interface Equipment {
+  name: string;
+  brand: string;
 }
 
 export type Category = "General" | "Custom" | "Property" | "Furniture";
@@ -101,13 +115,17 @@ export interface GeneralInformation {
   description: string;
   operationType: string;
   propertyType: string;
+  propertyExclusivity: string;
   propertyCondition: string;
   instagram: boolean;
   facebook: boolean;
   tiktok: boolean;
   mercadolibre: boolean;
   whatsapp: boolean;
+  publicationOnBuilding: boolean;
+  termsAndConditionsAccepted: boolean;
   conlallave: boolean;
+  handoverKeys: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

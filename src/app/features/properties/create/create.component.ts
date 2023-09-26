@@ -1,5 +1,5 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AbstractControl, Form, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, NavigationEnd, NavigationStart, Router, RouterEvent} from "@angular/router";
 import {PropertyService} from "../../../core/services/property.service";
@@ -41,6 +41,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   locationForm!: FormGroup;
   attributesForm!: FormGroup;
   distributionForm!: FormGroup;
+  equipmentForm!: FormGroup;
   negotiationForm!: FormGroup;
   documentsForm!: FormGroup;
   loading = false;
@@ -118,6 +119,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       //   .subscribe((event: NavigationStart) => {
       //     this.saveTemporalChanges()
       //   });
+      this.populateDistributionWhenCreate()
       this.getAutomaticPropertyCode();
       // if (localStorage.getItem('property_create_temporal')) {
       //   this.modal.confirm({
@@ -178,6 +180,10 @@ export class CreateComponent implements OnInit, OnDestroy {
       mercadolibre: [false],
       whatsapp: [false],
       tiktok: [false],
+      publicationOnBuilding: [false],
+      handoverKeys: [false],
+      propertyExclusivity: [''],
+      termsAndConditionsAccepted: [false],
     })
 
     this.locationForm = this.fb.group({
@@ -204,7 +210,10 @@ export class CreateComponent implements OnInit, OnDestroy {
     })
 
     this.distributionForm = this.fb.group({
-
+      distribution: this.fb.array([])
+    })
+    this.equipmentForm = this.fb.group({
+      equipment: this.fb.array([])
     })
 
     this.negotiationForm = this.fb.group({
@@ -253,6 +262,8 @@ export class CreateComponent implements OnInit, OnDestroy {
         files: this.documents,
         documentsInformation: this.documentsForm.value,
         attributes: this.attributes.value,
+        equipment: this.equipment.value,
+        distribution: this.distribution.value,
         user_id: this.negotiationForm.get('user')?.value,
         external_adviser_id: this.negotiationForm.get('externalAdviser')?.value,
         owner_id: this.negotiationForm.get('owner')?.value,
@@ -305,6 +316,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.generalForm.get('footageGround')?.patchValue(result.generalInformation.footageGround);
       this.generalForm.get('description')?.patchValue(result.generalInformation.description);
       this.generalForm.get('propertyType')?.patchValue(result.generalInformation.propertyType);
+      this.generalForm.get('propertyType')?.disable();
       this.generalForm.get('operationType')?.patchValue(result.generalInformation.operationType);
       this.generalForm.get('publicationTitle')?.patchValue(result.publicationTitle);
       this.generalForm.get('propertyCondition')?.patchValue(result.generalInformation.propertyCondition);
@@ -312,8 +324,12 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.generalForm.get('facebook')?.patchValue(result.generalInformation.facebook)
       this.generalForm.get('instagram')?.patchValue(result.generalInformation.instagram)
       this.generalForm.get('tiktok')?.patchValue(result.generalInformation.tiktok)
+      this.generalForm.get('propertyExclusivity')?.patchValue(result.generalInformation.propertyExclusivity)
       this.generalForm.get('mercadolibre')?.patchValue(result.generalInformation.mercadolibre)
       this.generalForm.get('whatsapp')?.patchValue(result.generalInformation.whatsapp)
+      this.generalForm.get('publicationOnBuilding')?.patchValue(result.generalInformation.publicationOnBuilding)
+      this.generalForm.get('termsAndConditionsAccepted')?.patchValue(result.generalInformation.termsAndConditionsAccepted)
+      this.generalForm.get('handoverKeys')?.patchValue(result.generalInformation.handoverKeys)
 
       this.documentsForm.get('propertyDoc')?.patchValue(result.documentsInformation.propertyDoc)
       this.documentsForm.get('CIorRIF')?.patchValue(result.documentsInformation.CIorRIF)
@@ -346,17 +362,17 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.locationForm.get('buildingShoppingcenter')?.patchValue(result.locationInformation.buildingShoppingCenter);
 
       const attrs = result.attributes.sort((a , b) => {
-        const formTypeA = a.formType.toUpperCase();
-        const formTypeB = b.formType.toUpperCase();
+        // Compare 'formType' first
 
-        if (formTypeA > formTypeB) {
-          return -1;
-        }
-        if (formTypeA > formTypeB) {
-          return 1;
+        const formTypeComparison = a.formType.localeCompare(b.formType);
+
+        // If 'formType' is the same, compare 'label'
+        if (formTypeComparison === 0) {
+          return a.label.localeCompare(b.label);
         }
 
-        return 0;
+        return formTypeComparison; // Return the result of 'formType' comparison
+
       })
 
       attrs.forEach(attr => {
@@ -372,6 +388,25 @@ export class CreateComponent implements OnInit, OnDestroy {
         }))
       })
 
+
+      result.distribution.forEach(dist => {
+        this.distribution.push(this.fb.group({
+          type: [dist.type],
+          label: [dist.label],
+          placeholder: [dist.placeholder],
+          options: [dist.options],
+          value: [dist.value],
+        }))
+      })
+
+
+      result.equipment.forEach(eq => {
+        this.equipment.push(this.fb.group({
+          name: [eq.name],
+          brand: [eq.brand],
+        }))
+      })
+
       result.images.forEach(image => {
         this.fileService.storeImage(image);
       });
@@ -381,7 +416,9 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.negotiationForm.get('minimumNegotiation')?.patchValue(result.negotiationInformation.minimumNegotiation);
       this.negotiationForm.get('reasonToSellOrRent')?.patchValue(result.negotiationInformation.reasonToSellOrRent);
       this.negotiationForm.get('ally')?.patchValue(result.ally_id);
+      this.negotiationForm.get('ally')?.disable();
       this.negotiationForm.get('externalAdviser')?.patchValue(result.external_adviser_id);
+      this.negotiationForm.get('externalAdviser')?.disable();
       this.negotiationForm.get('owner')?.patchValue(result.owner_id);
       this.negotiationForm.get('contactEmail')?.patchValue(result.negotiationInformation.contactEmail);
       this.negotiationForm.get('contactFirstName')?.patchValue(result.negotiationInformation.contactFirstName);
@@ -590,6 +627,13 @@ export class CreateComponent implements OnInit, OnDestroy {
     return this.attributesForm.controls["attributes"] as FormArray;
   }
 
+  get distribution() {
+    return this.distributionForm.controls['distribution'] as FormArray;
+  }
+  get equipment() {
+    return this.equipmentForm.controls['equipment'] as FormArray;
+  }
+
   get operationType() {
     return this.generalForm.get('operationType')?.value;
   }
@@ -654,7 +698,9 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   handleSelectPropertyType(propertyType: PropertyType) {
+    console.log(this.attributes)
     this.clearFormArray(this.attributes);
+    console.log(this.attributes)
     if (!propertyType || this.firstRender || this.creatingFromStoredData) return;
     this.propertyService.getAttributesByPropertyType(propertyType).subscribe(result => {
       this.firstRender = false;
@@ -810,5 +856,52 @@ export class CreateComponent implements OnInit, OnDestroy {
     if (value === 'Cojedes') {
       this.cities = this.locationsDetail.cojedes
     }
+  }
+
+  populateDistributionWhenCreate() {
+    const data = [
+      {label: 'Habitaciones', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Bano completo', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Medio bano', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Puestos de estacionamiento', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Sala / comedor', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Cocina empotrada', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Porche', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Patio', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Lavadero', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Terraza', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Balcon', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Estudio', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Recepcion', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Cubiculos', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Kichinnet', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Otras areas', value: null, type: 'text', options: '', placeholder: 'Especificar'},
+    ];
+
+    data.forEach(item => {
+      this.distribution.push(
+        this.fb.group({
+          label: item.label,
+          placeholder: item.placeholder,
+          value: item.value,
+          type: item.type,
+          options: item.options
+        })
+      )
+    })
+
+  }
+
+  addEquipment() {
+    this.equipment.push(
+      this.fb.group({
+        name: [''],
+        brand: ['']
+      })
+    )
+  }
+
+  deleteEquipment(i: number) {
+    this.equipment.removeAt(i);
   }
 }

@@ -6,6 +6,8 @@ import {ClientService} from "../../../core/services/client.service";
 import {UserService} from "../../../core/services/user.service";
 import {Service, SubService} from "../../../core/interfaces/service";
 import {ServicesService} from "../../../core/services/services.service";
+import {Subscription} from "rxjs";
+import * as moment from 'moment';
 
 interface Steps {
   first: string,
@@ -31,6 +33,7 @@ export class CreateComponent implements OnInit {
   servicesLoading = false;
   subServicesLoading = false
   subServices: SubService[] = [];
+  subscription = new Subscription();
 
   constructor(
     private fb: FormBuilder,
@@ -55,6 +58,15 @@ export class CreateComponent implements OnInit {
       // this.addZone();
       // this.addFeature()
     }
+
+    this.subscription = this.operationForm.valueChanges.subscribe(form => {
+      if (form.arrivingDate && form.checkoutDate) {
+        const arrivingDate = moment(form.arrivingDate)
+        const checkoutDate = moment(form.checkoutDate)
+        const diff = checkoutDate.diff(arrivingDate, 'days')
+        this.operationForm.get('amountOfNights')?.patchValue(diff);
+      }
+    })
   }
 
   buildForms() {
@@ -89,7 +101,7 @@ export class CreateComponent implements OnInit {
       appointmentDate: [null],
       inspectionDate: [null],
       checkoutDate: [null],
-      amountOfNights: [null],
+      amountOfNights: [{value: null, disabled: true}],
       reasonOfStay: [''],
       usageProperty: [''],
       occupation: [''],
