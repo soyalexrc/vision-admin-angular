@@ -80,10 +80,10 @@
         <ng-container *ngIf="contactFrom === 'Referido' ">
           <div nz-col [nzSpan]="8">
             <nz-form-item>
-              <nz-form-label nzRequired nzFor="referrer">Referido</nz-form-label>
+              <nz-form-label nzRequired nzFor="referrer">Aliado</nz-form-label>
               <nz-form-control [nzErrorTip]="referrerErrTemp">
                 <input type="text" style="width: 100%" nz-input formControlName="referrer"
-                       placeholder="Referido"/>
+                       placeholder="Aliado"/>
                 <ng-template #referrerErrTemp let-control>
                   <ng-container *ngIf="control.hasError('required')">Debes ingresar un telefono!</ng-container>
                 </ng-template>
@@ -463,9 +463,38 @@
               </nz-form-item>
             </div>
           </ng-container>
+          <div nz-col [nzSpan]="6">
+            <nz-form-item>
+              <nz-form-label  nzFor="propertyDistribution">Distribucion de propiedad</nz-form-label>
+              <nz-form-control >
+                <input type="text" style="width: 100%" nz-input formControlName="propertyDistribution"
+                       placeholder="Distribucion de propiedad"/>
+
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="6">
+            <nz-form-item>
+              <nz-form-label  nzFor="remodeledAreas">Areas remodeladas</nz-form-label>
+              <nz-form-control >
+                <input type="text" style="width: 100%" nz-input formControlName="remodeledAreas"
+                       placeholder="Areas remodeladas"/>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="6">
+            <nz-form-item>
+              <nz-form-label  nzFor="m2">Metros cuadrados (m2)</nz-form-label>
+              <nz-form-control >
+                <input type="text" style="width: 100%" nz-input formControlName="m2"
+                       placeholder="Rubro"/>
+
+              </nz-form-control>
+            </nz-form-item>
+          </div>
         </div>
 
-        <nz-divider *ngIf="checkService(3)" style="margin-bottom: 1rem"></nz-divider>
+        <nz-divider *ngIf="checkService(3, 35)" style="margin-bottom: 1rem"></nz-divider>
 
         <div nz-row class="row" [nzGutter]="16" style="margin-bottom: 1rem">
           <div nz-col [nzSpan]="10" *ngIf="checkService(3, 35) || checkService(3, 73) || checkService(3, 74)">

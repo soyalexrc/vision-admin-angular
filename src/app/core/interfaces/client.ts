@@ -18,6 +18,9 @@ export interface Client {
   operationType: string;
   propertyOfInterest: string;
   propertyLocation: string;
+  remodeledAreas: string;
+  propertyDistribution: string;
+  m2: string;
   typeOfCapture: string;
   specificRequirement: string;
   interestDate: null | Date;
