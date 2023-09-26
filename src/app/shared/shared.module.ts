@@ -51,7 +51,6 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
     SlugTransformDirective,
     RegisterAllyModalComponent,
     ConfigServicesModalComponent
-
   ],
   imports: [
     CommonModule,

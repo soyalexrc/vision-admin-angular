@@ -89,11 +89,10 @@ export class FileService {
   }
 
   deleteDocument(file: string) {
-    const index = this.currentImages.value.findIndex((i) => i === file);
-    const fileToDelete = this.currentImages.value[index];
-    const fileCode = fileToDelete.split('properties')[1].split('/')[1];
-    const fileName = fileToDelete.split('properties')[1].split('/')[3]
-    this.removePropertyFile(fileCode, fileName).subscribe(res => {
+    const index = this.currentDocuments.value.findIndex((i) => i === file);
+    const fileToDelete = this.currentDocuments.value[index].split('genericStaticFileAsset/')[1];
+    const pathToFile = fileToDelete.split('/').join('+')
+    this.removeFile(pathToFile).subscribe(res => {
       this.currentDocuments.value.splice(index, 1);
       this.uiService.createMessage('success', res.message)
     }, (error) => {

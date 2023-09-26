@@ -13,10 +13,10 @@
   index === 0 ? 'generales' :
     index === 1 ? 'de ubicacion' :
       index === 2 ? 'visuales' :
-        index === 3 ? 'de distribucion' :
-          index === 4 ? 'de negociacion' :
-            index === 5 ? 'de documentos' :
-              'de fuente de publicacion'
+        index === 3 ? 'de distribucion y equipos' :
+          index === 4 ? 'de attributos' :
+            index === 5 ? 'de negociacion' :
+              'de documentos'
   }} de propiedad
 </h2>
 
@@ -24,10 +24,10 @@
   <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
   <nz-step nzTitle="Ubicacion" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
   <nz-step nzTitle="Fotografias" [nzStatus]="getStatusBasedOnIndex(index).third"></nz-step>
-  <nz-step nzTitle="Distribucion" [nzStatus]="getStatusBasedOnIndex(index).fourth"></nz-step>
-  <nz-step nzTitle="Negociacion" [nzStatus]="getStatusBasedOnIndex(index).fifth"></nz-step>
-  <nz-step nzTitle="Documentos" [nzStatus]="getStatusBasedOnIndex(index).sixth"></nz-step>
-  <nz-step nzTitle="Publicacion" [nzStatus]="getStatusBasedOnIndex(index).last"></nz-step>
+  <nz-step nzTitle="Dist. y equipos" [nzStatus]="getStatusBasedOnIndex(index).fourth"></nz-step>
+  <nz-step nzTitle="Atributos" [nzStatus]="getStatusBasedOnIndex(index).fifth"></nz-step>
+  <nz-step nzTitle="Negociacion" [nzStatus]="getStatusBasedOnIndex(index).sixth"></nz-step>
+  <nz-step nzTitle="Documentos" [nzStatus]="getStatusBasedOnIndex(index).last"></nz-step>
 </nz-steps>
 
 <ng-container *ngIf="index === 0">
@@ -127,8 +127,29 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzFor="propertyExclusivity">Exclusividad de inmueble</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="propertyExclusivity">
+                <nz-option nzValue="30 dias" nzLabel="30 dias"></nz-option>
+                <nz-option nzValue="45 dias" nzLabel="45 dias"></nz-option>
+                <nz-option nzValue="60 dias" nzLabel="60 dias"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="24">
+          <label nz-checkbox formControlName="handoverKeys">Se entregaron llaves a Vision Inmobiliaria</label>
+        </div>
+        <div style="margin: 1rem 0"></div>
+        <div nz-col [nzSpan]="24">
+          <label nz-checkbox formControlName="termsAndConditionsAccepted">Se aceptan los terminos y condiciones de la
+            ficha tecnica</label>
+        </div>
       </div>
+
+      <nz-divider></nz-divider>
 
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="24">
@@ -160,6 +181,18 @@
 
 
       </div>
+
+
+      <nz-divider></nz-divider>
+
+      <h3 style="font-weight: bold; margin-bottom: 1rem;">Este inmueble esta publicado en</h3>
+      <label nz-checkbox formControlName="facebook">Facebook</label> <br>
+      <label style="margin: 1rem 0" nz-checkbox formControlName="conlallave">Conlallave</label> <br>
+      <label nz-checkbox formControlName="instagram">Instagram</label> <br>
+      <label style="margin: 1rem 0" nz-checkbox formControlName="mercadolibre">Mercadolibre</label> <br>
+      <label nz-checkbox formControlName="whatsapp">Whatsapp</label> <br>
+      <label style="margin: 1rem 0" nz-checkbox formControlName="tiktok">TikTok</label> <br>
+      <label nz-checkbox formControlName="publicationOnBuilding">Publicacion en fachada</label>
 
     </div>
   </form>
@@ -213,13 +246,10 @@
         </div>
         <div nz-col [nzSpan]="6">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="municipality">Urbanizacion</nz-form-label>
-            <nz-form-control [nzErrorTip]="municipalityErrTemp">
+            <nz-form-label nzFor="municipality">Urbanizacion</nz-form-label>
+            <nz-form-control>
               <input type="text" style="width: 100%" nz-input formControlName="municipality"
                      placeholder="Urbanizacion"/>
-              <ng-template #municipalityErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar una urbanizacion!</ng-container>
-              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -228,25 +258,19 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="avenue">Avenida</nz-form-label>
-            <nz-form-control [nzErrorTip]="avenueErrTemp">
+            <nz-form-label nzFor="avenue">Avenida</nz-form-label>
+            <nz-form-control>
               <input type="text" style="width: 100%" nz-input formControlName="avenue"
                      placeholder="Avenida"/>
-              <ng-template #avenueErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar una avenida!</ng-container>
-              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="street">Calle</nz-form-label>
-            <nz-form-control [nzErrorTip]="streetErrTemp">
+            <nz-form-label nzFor="street">Calle</nz-form-label>
+            <nz-form-control>
               <input type="text" style="width: 100%" nz-input formControlName="street"
                      placeholder="Calle"/>
-              <ng-template #streetErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar una calle!</ng-container>
-              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -255,52 +279,46 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="6">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="isClosedStreet">Es calle cerrada ?</nz-form-label>
-            <nz-form-control [nzErrorTip]="isClosedStreetErrTemp">
+            <nz-form-label nzFor="isClosedStreet">Es calle cerrada ?</nz-form-label>
+            <nz-form-control>
               <nz-select formControlName="isClosedStreet">
                 <nz-option nzValue="Si" nzLabel="Si"></nz-option>
                 <nz-option nzValue="No" nzLabel="No"></nz-option>
               </nz-select>
-              <ng-template #isClosedStreetErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar una opcion!</ng-container>
-              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
 
         <div nz-col [nzSpan]="6">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="location">Ubicacion</nz-form-label>
-            <nz-form-control [nzErrorTip]="locationErrTemp">
+            <nz-form-label nzFor="location">Ubicacion</nz-form-label>
+            <nz-form-control>
               <nz-select formControlName="location">
                 <nz-option nzValue="A pie de calle" nzLabel="A pie de calle"></nz-option>
                 <nz-option nzValue="Centro comercial" nzLabel="Centro comercial"></nz-option>
                 <nz-option nzValue="Conjunto residencial" nzLabel="Conjunto residencial"></nz-option>
                 <nz-option nzValue="Torre de oficinas" nzLabel="Torre de oficinas"></nz-option>
               </nz-select>
-              <ng-template #locationErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar una opcion!</ng-container>
-              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
 
         <div nz-col [nzSpan]="6">
           <nz-form-item>
-            <nz-form-label nzFor="buildingNumber">Numero</nz-form-label>
-            <nz-form-control>
-              <input type="text" style="width: 100%" nz-input formControlName="buildingNumber"
-                     placeholder="Ciudad"/>
-
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="6">
-          <nz-form-item>
-            <nz-form-label nzFor="floor">Piso</nz-form-label>
+            <nz-form-label nzFor="floor">No. Piso</nz-form-label>
             <nz-form-control>
               <input type="text" style="width: 100%" nz-input formControlName="floor"
-                     placeholder="Piso"/>
+                     placeholder="No. Piso"/>
+
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzFor="amountOfFloors">Pisos / Niveles comprendidos</nz-form-label>
+            <nz-form-control>
+              <input type="text" style="width: 100%" nz-input formControlName="amountOfFloors"
+                     placeholder="Pisos / Niveles comprendidos"/>
 
             </nz-form-control>
           </nz-form-item>
@@ -413,6 +431,127 @@
 </ng-container>
 
 <ng-container *ngIf="index === 3">
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="distributionForm">
+    <div class="content">
+      <h3>Distribucion</h3>
+      <ng-container formArrayName="distribution">
+
+        <div nz-row class="row" [nzGutter]="16">
+          <div nz-col [nzSpan]="8" *ngFor="let distributionForm of distribution.controls, index as i">
+            <nz-form-item [formGroup]="getFormGroup(distributionForm)">
+              <p *ngIf="distributionForm.value.type !== 'check'"
+                 style="font-size: 12px !important; font-weight: bold">{{distributionForm.value.label}}: </p>
+              <nz-form-control>
+                <ng-container *ngIf="distributionForm.value.type === 'check'">
+                  <label nz-checkbox formControlName="value">
+                    <span style="font-size: 12px !important; font-weight: bold">{{distributionForm.value.label}} </span>
+                  </label>
+                </ng-container>
+                <ng-container *ngIf="distributionForm.value.type === 'text'">
+                  <input
+                    type="text"
+                    style="width: 200px"
+                    nz-input
+                    formControlName="value"
+                    [placeholder]="distributionForm.value.placeholder"/>
+                </ng-container>
+                <ng-container
+                  *ngIf="distributionForm.value.type === 'select'">
+                  <nz-radio-group formControlName="value">
+                    <label *ngFor="let option of distributionForm.value.options.split('#')" nz-radio
+                           [nzValue]="option">{{option}}</label>
+                  </nz-radio-group>
+                </ng-container>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </form>
+  <nz-divider></nz-divider>
+
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="equipmentForm">
+    <div class="content">
+      <h3>Equipos</h3>
+      <nz-empty
+        *ngIf="equipment.controls.length < 1"
+        nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+        [nzNotFoundContent]="contentTpl"
+        [nzNotFoundFooter]="footerTpl"
+      >
+        <ng-template #contentTpl>
+        <span>
+          No has agregado equipos en esta propiedad
+        </span>
+        </ng-template>
+        <ng-template #footerTpl>
+          <button nz-button nzType="primary" (click)="addEquipment()">Agregar un equipo</button>
+        </ng-template>
+      </nz-empty>
+      <div class="mt-3"></div>
+
+      <ng-container formArrayName="equiment">
+        <div nz-row class="row" style="display: flex; align-items: center" [nzGutter]="16"
+             *ngFor="let equipmentForm of equipment.controls, index as i">
+          <div nz-col [nzSpan]="11">
+            <nz-form-item [formGroup]="getFormGroup(equipmentForm)">
+              <p style="font-size: 12px !important; font-weight: bold">Nombre</p>
+              <nz-form-control>
+                <ng-container>
+                  <input
+                    type="text"
+                    style="width: 100%"
+                    nz-input
+                    formControlName="name"
+                    placeholder="Nombre de equipo"/>
+                </ng-container>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="11">
+            <nz-form-item [formGroup]="getFormGroup(equipmentForm)">
+              <p style="font-size: 12px !important; font-weight: bold">Marca</p>
+              <nz-form-control>
+                <ng-container>
+                  <input
+                    type="text"
+                    style="width: 100%"
+                    nz-input
+                    formControlName="brand"
+                    placeholder="Nombre de equipo"/>
+                </ng-container>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="2">
+            <button
+              style="margin-left: 1rem;"
+              (click)="deleteEquipment(i)"
+              nz-button
+              nzType="default"
+              nzShape="circle">
+                    <span
+                      [nzTheme]="'twotone'"
+                      [nzTwotoneColor]="'#ff4d4f'"
+                      nz-icon
+                      nzType="delete">
+                    </span>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+      <div style="display: flex; justify-content: center" *ngIf="equipment.controls.length > 0">
+        <button (click)="addEquipment()" nz-button nzSize="small" nzType="primary">
+          <span nz-icon nzType="plus"></span>
+          Agregar equipo
+        </button>
+      </div>
+    </div>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="index === 4">
   <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="attributesForm">
     <div class="content">
       <div *ngIf="generalForm.value['propertyType'] === '' " style="margin-top: 5rem">
@@ -444,7 +583,7 @@
       </div>
       <ng-container formArrayName="attributes">
         <div nz-row class="row" [nzGutter]="16">
-          <div nz-col [nzSpan]="12" *ngFor="let attributeForm of attributes.controls, index as i">
+          <div nz-col [nzSpan]="24" *ngFor="let attributeForm of attributes.controls, index as i">
             <nz-form-item [formGroup]="getFormGroup(attributeForm)">
               <p *ngIf="attributeForm.value.formType !== 'check'"
                  style="font-size: 12px !important; font-weight: bold">{{attributeForm.value.label}}: </p>
@@ -457,7 +596,7 @@
                 <ng-container *ngIf="attributeForm.value.formType === 'text'">
                   <input
                     type="text"
-                    style="width: 100%"
+                    style="width: 200px"
                     nz-input
                     formControlName="value"
                     [placeholder]="attributeForm.value.placeholder"/>
@@ -485,7 +624,7 @@
   </form>
 </ng-container>
 
-<ng-container *ngIf="index === 4">
+<ng-container *ngIf="index === 5">
   <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="negotiationForm">
     <div class="content">
       <div nz-row class="row" [nzGutter]="16">
@@ -666,9 +805,113 @@
   </form>
 </ng-container>
 
-<ng-container *ngIf="index === 5">
-  <form class="form mt-3" nz-form nzLayout="vertical">
+<ng-container *ngIf="index === 6">
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="documentsForm">
     <div class="content">
+
+
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="8">
+          <label nz-checkbox formControlName="propertyDoc">Documento de propiedad</label> <br>
+          <label style="margin: 1rem 0" nz-checkbox formControlName="ownerCIorRIF">C.I / RIF propietario</label> <br>
+          <label nz-checkbox formControlName="spouseCIorRIF">C.I / RIF Conyuge</label> <br>
+        </div>
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzFor="power">Poder</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="power">
+                <nz-option nzValue="N/A" nzLabel="N/A"></nz-option>
+                <nz-option nzValue="Por tramitar" nzLabel="Por tramitar"></nz-option>
+                <nz-option nzValue="Notariado" nzLabel="Notariado"></nz-option>
+                <nz-option nzValue="Registrado" nzLabel="Registrado"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <label nz-checkbox formControlName="CIorRIF">C.I / RIF</label> <br>
+
+        </div>
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzFor="mortgageRelease">Liberacion de hipoteca</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="mortgageRelease">
+                <nz-option nzValue="N/A" nzLabel="N/A"></nz-option>
+                <nz-option nzValue="Por tramitar" nzLabel="Por tramitar"></nz-option>
+                <nz-option nzValue="Registrado" nzLabel="Registrado"></nz-option>
+                <nz-option nzValue="Solo finiquito" nzLabel="Solo finiquito"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label nzFor="successionDeclaration">Declaracion sucesoral</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="successionDeclaration">
+                <nz-option nzValue="N/A" nzLabel="N/A"></nz-option>
+                <nz-option nzValue="Por tramitar" nzLabel="Por tramitar"></nz-option>
+                <nz-option nzValue="Declaracion" nzLabel="Declaracion"></nz-option>
+                <nz-option nzValue="Solvencia" nzLabel="Solvencia"></nz-option>
+                <nz-option nzValue="RIF" nzLabel="RIF"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzFor="courtRulings">Sentencias tribunales</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="courtRulings">
+                <nz-option nzValue="N/A" nzLabel="N/A"></nz-option>
+                <nz-option nzValue="Por tramitar" nzLabel="Por tramitar"></nz-option>
+                <nz-option nzValue="Registradas" nzLabel="Registradas"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+
+        </div>
+
+      </div>
+
+      <nz-divider></nz-divider>
+
+      <h3 style="font-weight: bold; margin: 1rem 0; text-align: center">{{operationType}} de propiedad</h3>
+
+      <div nz-row [nzGutter]="16">
+        <div nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label nzFor="cadastralRecordYear"> Cedula catastral</nz-form-label>
+            <nz-form-control>
+              <input type="text" appOnlyNumbers maxlength="4" style="width: 100%; max-width: 100px; margin-bottom: 1rem"
+                     nz-input
+                     formControlName="cadastralRecordYear"
+                     placeholder="Ano"/>
+              <br>
+              <label nz-checkbox formControlName="isCadastralRecordSameOwner">A nombre de propietario</label> <br>
+              <label nz-checkbox formControlName="mainProperty" style="margin-top: 1rem"
+                     *ngIf="operationType === 'Venta'">Vivienda principal</label> <br>
+
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label nzFor="cadastralRecordYear">Impuesto inmobiliario</nz-form-label>
+            <nz-form-control>
+              <input type="text" appOnlyNumbers maxlength="4" style="width: 100%; max-width: 100px; margin-bottom: 1rem"
+                     nz-input
+                     formControlName="cadastralRecordYear"
+                     placeholder="Ano"/>
+              <br>
+              <label nz-checkbox formControlName="condominiumSolvency">Solvencia de condominio y otros</label> <br>
+
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+
+      <nz-divider></nz-divider>
+
       <button nz-button nzBlock type="button" [nzLoading]="loadingDocument" (click)="clickInputFile('document')">
         <span nz-icon nzType="upload"></span>
         Agregar documento
@@ -691,19 +934,6 @@
         (onSortElements)="handleSortElements($event, 'document')"
       >
       </app-draggable-grid>
-    </div>
-  </form>
-</ng-container>
-
-<ng-container *ngIf="index === 6">
-  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="publicationSourceForm">
-    <div class="content" style="display: flex; justify-content: center">
-      <label nz-checkbox formControlName="facebook">Facebook</label>
-      <label nz-checkbox formControlName="conlallave">Conlallave</label>
-      <label nz-checkbox formControlName="instagram">Instagram</label>
-      <label nz-checkbox formControlName="mercadolibre">Mercadolibre</label>
-      <label nz-checkbox formControlName="whatsapp">Whatsapp</label>
-      <label nz-checkbox formControlName="tiktok">TikTok</label>
     </div>
   </form>
 </ng-container>

@@ -6,6 +6,8 @@ import {ClientService} from "../../../core/services/client.service";
 import {UserService} from "../../../core/services/user.service";
 import {Service, SubService} from "../../../core/interfaces/service";
 import {ServicesService} from "../../../core/services/services.service";
+import {Subscription} from "rxjs";
+import * as moment from 'moment';
 
 interface Steps {
   first: string,
@@ -31,6 +33,7 @@ export class CreateComponent implements OnInit {
   servicesLoading = false;
   subServicesLoading = false
   subServices: SubService[] = [];
+  subscription = new Subscription();
 
   constructor(
     private fb: FormBuilder,
@@ -55,6 +58,15 @@ export class CreateComponent implements OnInit {
       // this.addZone();
       // this.addFeature()
     }
+
+    this.subscription = this.operationForm.valueChanges.subscribe(form => {
+      if (form.arrivingDate && form.checkoutDate) {
+        const arrivingDate = moment(form.arrivingDate)
+        const checkoutDate = moment(form.checkoutDate)
+        const diff = checkoutDate.diff(arrivingDate, 'days')
+        this.operationForm.get('amountOfNights')?.patchValue(diff);
+      }
+    })
   }
 
   buildForms() {
@@ -78,6 +90,9 @@ export class CreateComponent implements OnInit {
       aspiredPrice: [''],
       typeOfBusiness: [''],
       note: [''],
+      propertyDistribution: [''],
+      m2: [''],
+      remodeledAreas: [''],
       amountOfPeople: [null],
       amountOfPets: [null],
       amountOfYounger: [null],
@@ -86,7 +101,7 @@ export class CreateComponent implements OnInit {
       appointmentDate: [null],
       inspectionDate: [null],
       checkoutDate: [null],
-      amountOfNights: [null],
+      amountOfNights: [{value: null, disabled: true}],
       reasonOfStay: [''],
       usageProperty: [''],
       occupation: [''],
@@ -116,6 +131,9 @@ export class CreateComponent implements OnInit {
       this.operationForm.get('subService_id')?.patchValue(result.subService_id);
       this.operationForm.get('propertyOfInterest')?.patchValue(result.propertyOfInterest);
       this.operationForm.get('propertyLocation')?.patchValue(result.propertyLocation);
+      this.operationForm.get('propertyDistribution')?.patchValue(result.propertyDistribution);
+      this.operationForm.get('remodeledAreas')?.patchValue(result.remodeledAreas);
+      this.operationForm.get('m2')?.patchValue(result.m2);
       this.operationForm.get('typeOfCapture')?.patchValue(result.typeOfCapture);
       this.operationForm.get('aspiredPrice')?.patchValue(result.aspiredPrice);
       this.operationForm.get('typeOfBusiness')?.patchValue(result.typeOfBusiness);
@@ -515,9 +533,11 @@ export class CreateComponent implements OnInit {
 
   handleContactFromSelection(value: string) {
     if (value === 'Referido') {
-      this.generalForm.get('contactFrom')?.setValidators([Validators.required])
+      this.generalForm.get('referrer')?.setValidators([Validators.required])
     } else {
-      this.generalForm.get('contactFrom')?.clearValidators()
+      this.generalForm.get('referrer')?.clearValidators()
+      this.generalForm.get('referrer')?.reset()
+      this.generalForm.get('referrer')?.removeValidators(Validators.required)
     }
   }
 

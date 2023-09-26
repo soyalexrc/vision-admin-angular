@@ -1,8 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {CashFlowService} from "../../../core/services/cash-flow.service";
 import {UiService} from "../../../core/services/ui.service";
-import {SERVICE_OPTIONS} from "../../../shared/utils/services";
+import {SERVICE_OPTIONS} from "../../utils/services";
 import {ServicesService} from "../../../core/services/services.service";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {UserService} from "../../../core/services/user.service";
@@ -12,7 +11,7 @@ import {UserService} from "../../../core/services/user.service";
   templateUrl: './config-services-modal.component.html',
   styleUrls: ['./config-services-modal.component.scss']
 })
-export class ConfigServicesModalComponent implements OnInit{
+export class ConfigServicesModalComponent implements OnInit {
   form!: FormGroup;
   loading = false;
   @Output() onFinished: EventEmitter<any> = new EventEmitter<any>();
@@ -77,7 +76,7 @@ export class ConfigServicesModalComponent implements OnInit{
       Object.values(this.form.controls).forEach(control => {
         if (control.invalid) {
           control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
+          control.updateValueAndValidity({onlySelf: true});
         }
       });
     }
@@ -141,7 +140,7 @@ export class ConfigServicesModalComponent implements OnInit{
     } else {
       const optionName = this.subServices.at(position).value.title;
       const id = this.subServices.at(position).value.id;
-    //   TODO servicio de eliminado de subservice con pop confirm
+      //   TODO servicio de eliminado de subservice con pop confirm
       this.modal.confirm({
         nzTitle: 'Atencion',
         nzAutofocus: 'ok',
@@ -151,17 +150,17 @@ export class ConfigServicesModalComponent implements OnInit{
         nzOnOk: () => new Promise((resolve, reject) => {
           this.loadingSubServices = true;
           this.servicesService.deleteSubService(id).subscribe(result => {
-            this.subServices.clear()
-            this.handleSelectService(this.form.get('serviceId')?.value);
-            this.uiService.createMessage('success', result.message);
+              this.subServices.clear()
+              this.handleSelectService(this.form.get('serviceId')?.value);
+              this.uiService.createMessage('success', result.message);
               setTimeout(() => resolve(), 500)
-          }, (error) => {
+            }, (error) => {
               this.uiService.createMessage('error', error.error.message);
               setTimeout(() => resolve(), 500)
               this.loadingSubServices = false
             },
             () => {
-            this.loadingSubServices = false
+              this.loadingSubServices = false
             })
         })
       });
