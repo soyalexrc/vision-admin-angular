@@ -15,6 +15,7 @@ export interface CashFlowRegister {
   cashflow_person_id: number | null;
   person: any;
   property_id: number | null;
+  attachments: string[]
   canon?: string;
   guarantee?:  string;
   internalProperty?:  string;
@@ -134,6 +135,20 @@ export interface CashFlowTotalsByEntities {
   totalOfiSanCar: CashFlowTotal;
   totalBanInTer: CashFlowTotal;
 }
+
+export interface CloseCashFlows {
+  data: any,
+  createdAt: Date,
+  updatedAt: Date,
+  id: number | string;
+}
+
+
+export interface GetAllCloseCashFlows {
+  count: number;
+  rows: CloseCashFlows[]
+}
+
 
 export interface CashFlowTotal {
   bs: number | null;

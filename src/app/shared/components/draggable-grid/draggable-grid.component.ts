@@ -2,7 +2,7 @@ import {AfterViewInit, Component, EventEmitter, Input, Output, ViewChild} from '
 import {NzImageService} from "ng-zorro-antd/image";
 import {CdkDrag, CdkDragMove, CdkDropList, CdkDropListGroup, moveItemInArray} from "@angular/cdk/drag-drop";
 import {ViewportRuler} from "@angular/cdk/overlay";
-import {isDocument, isImage, isOtherFileType, isSpreadSheet} from "../../../shared/utils/validateFileType";
+import {isDocument, isImage, isOtherFileType, isSpreadSheet} from "../../utils/validateFileType";
 
 @Component({
   selector: 'app-draggable-grid',
@@ -12,6 +12,7 @@ import {isDocument, isImage, isOtherFileType, isSpreadSheet} from "../../../shar
 export class DraggableGridComponent implements AfterViewInit {
 
   @Input() elements: string[] = [];
+  @Input() canDelete = true;
   @Output() onDeleteElement: EventEmitter<string> = new EventEmitter<string>()
   @Output() onSortElements: EventEmitter<string[]> = new EventEmitter<string[]>()
 

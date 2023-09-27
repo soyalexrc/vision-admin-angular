@@ -24,6 +24,7 @@ import { SlugTransformDirective } from './directives/slug-transform.directive';
 import { RegisterAllyModalComponent } from './components/register-ally-modal/register-ally-modal.component';
 import {ConfigServicesModalComponent} from "./components/config-services-modal/config-services-modal.component";
 import {NzDividerModule} from "ng-zorro-antd/divider";
+import {DraggableGridComponent} from "./components/draggable-grid/draggable-grid.component";
 
 
 
@@ -38,7 +39,8 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
     CurrencyInputDirective,
     SlugTransformDirective,
     RegisterAllyModalComponent,
-    ConfigServicesModalComponent
+    ConfigServicesModalComponent,
+    DraggableGridComponent
   ],
   exports: [
     SectionTitleComponent,
@@ -50,7 +52,9 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
     SlugTransformDirective,
     SlugTransformDirective,
     RegisterAllyModalComponent,
-    ConfigServicesModalComponent
+    ConfigServicesModalComponent,
+    DraggableGridComponent
+
   ],
   imports: [
     CommonModule,

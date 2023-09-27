@@ -19,7 +19,6 @@ import {NzToolTipModule} from "ng-zorro-antd/tooltip";
 import {NzEmptyModule} from "ng-zorro-antd/empty";
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {CdkDrag, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
-import { DraggableGridComponent } from './draggable-grid/draggable-grid.component';
 import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
 import {NzModalModule} from "ng-zorro-antd/modal";
 import { StatusHistoryComponent } from './status-history/status-history.component';
@@ -37,7 +36,6 @@ import {NzRadioModule} from "ng-zorro-antd/radio";
     MainComponent,
     CreateComponent,
     PreviewComponent,
-    DraggableGridComponent,
     StatusHistoryComponent,
     StatusBadgeComponent,
     CommissionConfigModalComponent,

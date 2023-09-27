@@ -39,6 +39,7 @@ type FileType = 'dir' | 'file'
 export class FileService {
 
   currentImages: BehaviorSubject<string[]> = new BehaviorSubject<string[]>( [])
+  currentImagesArray: BehaviorSubject<string[][]> = new BehaviorSubject<string[][]>( [[]])
   currentDocuments: BehaviorSubject<string[]> = new BehaviorSubject<string[]>( [])
 
   constructor(
@@ -75,6 +76,23 @@ export class FileService {
   storeImage(image: string) {
     this.currentImages.next([...this.currentImages.value, image])
   }
+  storeImageInArray(image: string, indexCollection: number) {
+    const currentArray = this.currentImagesArray.value;
+
+    console.log(currentArray);
+    console.log(image, indexCollection);
+
+    console.log(currentArray[indexCollection]);
+
+    while (currentArray.length <= indexCollection) {
+      currentArray.push([]); // Add empty rows if necessary
+    }
+
+    currentArray[indexCollection].push(image);
+
+
+    this.currentImagesArray.next(currentArray)
+  }
 
   setReorderImages(images: string[]) {
     this.currentImages.next(images);
@@ -106,6 +124,19 @@ export class FileService {
     const pathToImage = imageToDelete.split('/').join('+')
     this.removeFile(pathToImage).subscribe(res => {
       this.currentImages.value.splice(index, 1);
+      this.uiService.createMessage('success', res.message)
+    }, (error) => {
+      this.uiService.createMessage('error', error.error.message)
+    })
+  }
+
+  deleteImageInArray(image: string, indexCollection: number,) {
+    const currentArray = this.currentImagesArray.value[indexCollection];
+    const indexImage = currentArray.findIndex((i) => i === image);
+    const imageToDelete = this.currentImages.value[indexImage].split('genericStaticFileAsset/')[1];
+    const pathToImage = imageToDelete.split('/').join('+')
+    this.removeFile(pathToImage).subscribe(res => {
+      this.currentImages.value.splice(indexImage, 1);
       this.uiService.createMessage('success', res.message)
     }, (error) => {
       this.uiService.createMessage('error', error.error.message)

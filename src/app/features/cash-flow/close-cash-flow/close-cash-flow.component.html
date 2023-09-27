@@ -9,4 +9,20 @@
 
 <app-section-title
   title="Cierre de caja"
+  (onRefresh)="getCloseCashFlows()"
+  [showTotal]="true"
+  [totalValue]="loading ? '...' : totalItems"
 ></app-section-title>
+
+<app-generic-table #dataTable
+                   xScroll="1000px"
+                   [hasDelete]="false"
+                   [hasEdit]="false"
+                   [hasEye]="true"
+                   (onEye)="goToDetail($event)"
+                   [loading]="loading"
+                   [pageIndex]="pageIndex"
+                   [totalItems]="totalItems"
+                   [pageSize]="pageSize"
+                   (onPageIndexChange)="onPageIndexChange($event)"
+></app-generic-table>
