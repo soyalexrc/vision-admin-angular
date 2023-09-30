@@ -343,15 +343,19 @@ export class CreateComponent implements OnInit, OnDestroy {
   async handleUploadFile(event: any) {
     this.loadingImage = true;
 
+
     const {files} = event.target;
+    console.log(files);
 
     const forLoop = async () => {
+      const month = MONTHS[new Date().getMonth()]
       for (let i = 0; i < files.length; i++) {
         try {
           const reader = new FileReader();
           reader.readAsDataURL(files[i]);
           reader.onload = async () => {
-            const path = `servicio-contable+flujos-de-caja+${new Date().getTime()}`
+            // const path = `flujo-de-caja+${month}+${new Date().getTime()}`
+            const path = `flujo-de-caja+${month}`;
             this.fileService.uploadGenericStaticFile(files[i], path).subscribe(result => {
                 this.fileService.storeImageInArray(result.secureUrl, this.index)
               },
