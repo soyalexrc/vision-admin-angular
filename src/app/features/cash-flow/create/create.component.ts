@@ -309,10 +309,10 @@ export class CreateComponent implements OnInit, OnDestroy {
       taxPayer: [params?.taxPayer || ''],
       amount: [params?.amount || '', [Validators.minLength(3)]],
       currency: [params?.currency || '$'],
-      wayToPay: [params?.wayToPay || 'Efectivo'],
+      wayToPay: [params?.wayToPay || ''],
       transactionType: [params?.transactionType || 'Ingreso'],
       totalDue: [params?.totalDue || ''],
-      entity: [params?.entity || 'Tesorería'],
+      entity: [params?.entity || ''],
       pendingToCollect: [params?.pendingToCollect || ''],
       observation: [params?.observations || ''],
       proofOfPayment: [params?.proofOfPayment || this.fb.array([])]
