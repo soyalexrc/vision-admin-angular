@@ -28,6 +28,8 @@ import { CommissionConfigModalComponent } from './commission-config-modal/commis
 import {NzSwitchModule} from "ng-zorro-antd/switch";
 import { ReorderImagesModalComponent } from './reorder-images-modal/reorder-images-modal.component';
 import {NzRadioModule} from "ng-zorro-antd/radio";
+import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
 
 
 
@@ -67,7 +69,9 @@ import {NzRadioModule} from "ng-zorro-antd/radio";
         FormsModule,
         NzTagModule,
         NzSwitchModule,
-        NzRadioModule
+        NzRadioModule,
+        NzDatePickerModule,
+        NzDrawerModule
     ],
   providers: [CurrencyPipe]
 })
