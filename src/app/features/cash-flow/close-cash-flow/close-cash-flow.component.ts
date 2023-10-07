@@ -21,6 +21,9 @@ export class CloseCashFlowComponent implements AfterViewInit{
   pageIndex = 1;
   pageSize = 10;
   totalItems = 1;
+  detailModal = false;
+  detailModalTitle = '';
+  detail: any;
 
   constructor(
     private router: Router,
@@ -41,6 +44,7 @@ export class CloseCashFlowComponent implements AfterViewInit{
         this.data = result.rows.map(element => ({
           id: element.id,
           date: moment(element.createdAt).format('DD MMMM  YYYY, h:mm:ss a'),
+          data: element.data,
         }));
         const headers = setHeaders([
           {key: 'date', displayName: 'Fecha de registro'},
@@ -64,6 +68,10 @@ export class CloseCashFlowComponent implements AfterViewInit{
   }
 
   goToDetail(value: any) {
+    this.detail = this.data.find((d: any) => d.id === value);
+    console.log(this.detail);
+    this.detailModalTitle = this.detail.date;
+    this.detailModal = true;
     console.log(value);
   }
 }

@@ -1,0 +1,42 @@
+.amount-line {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid lightgray;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: .5rem 0;
+  padding: .3rem 0;
+
+
+
+  .amount-line-right {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+
+  h3 {
+    font-weight: bold;
+    margin: 0;
+  }
+
+  h4 {
+    margin: 0;
+  }
+
+
+}
+
+
+@media screen and (max-width: 500px) {
+  .amount-line {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .amount-line-right {
+    display: block !important;
+  }
+}
