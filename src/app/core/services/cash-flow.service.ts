@@ -11,7 +11,7 @@ import {
   CashFlowTotals,
   GetAllCashFlowRegister,
   GetAllTemporalTransaction,
-  CreateEditCashFlowResponse, CashFlowPerson, CashFlowTotal, CashFlowTotalsByEntities,
+  CreateEditCashFlowResponse, CashFlowPerson, CashFlowTotal, CashFlowTotalsByEntities, GetAllCloseCashFlows,
 } from "../interfaces/cashFlow";
 import {DeleteResult} from "../interfaces/generics";
 
@@ -78,6 +78,9 @@ export class CashFlowService {
 
   getTotalAvailableByEntities(dateFrom: string, dateTo: string): Observable<CashFlowTotalsByEntities> {
     return this.http.get<CashFlowTotalsByEntities>(`cashFlow/getTotalAvailableByEntities?dateFrom=${dateFrom}&dateTo=${dateTo}`)
+  }
+  getCloseCashFlows(pageIndex: number, pageSize: number): Observable<GetAllCloseCashFlows> {
+    return this.http.get<GetAllCloseCashFlows>(`cashFlow/getCloseCashFlows?pageIndex=${pageIndex}&pageSize=${pageSize}`)
   }
 
   getPeople(): Observable<CashFlowPerson[]> {

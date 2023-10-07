@@ -11,6 +11,10 @@
   [showTotal]="true"
   [totalValue]="loading ? '...' : totalItems"
   (onNewElement)="handleNewOwner()"
+  [additionalButton]="true"
+  additionalButtonText="Filtros"
+  additionalButtonIcon="filter"
+  (onAdditionalAction)="showFiltersDrawer = true"
 ></app-section-title>
 <app-generic-table #dataTable
                    [canDelete]="true"
@@ -22,3 +26,32 @@
                    (onEdit)="handleEdit($event)"
                    (onDelete)="handleDelete($event)"
 ></app-generic-table>
+
+<nz-drawer
+  [nzClosable]="false"
+  [nzVisible]="showFiltersDrawer"
+  nzPlacement="right"
+  nzTitle="Filtros"
+  (nzOnClose)="closeFilterModal()"
+>
+  <ng-container *nzDrawerContent>
+    <div class="button-group">
+      <div>
+        <div style="margin-bottom: 1rem">
+          <p>Fecha de registro</p>
+          <nz-range-picker class="filter-select" [(ngModel)]="date" (ngModelChange)="onChangeDate($event)"></nz-range-picker>
+        </div>
+        <div style="margin-bottom: 1rem">
+          <p>Es inversor?</p>
+          <nz-select nzShowSearch [(ngModel)]="isInvestor" class="filter-select" nzAllowClear>
+            <nz-option [nzValue]="true" nzLabel="Si, Es inversor."></nz-option>
+            <nz-option [nzValue]="false" nzLabel="No, No es inversor."></nz-option>
+
+          </nz-select>
+        </div>
+
+      </div>
+      <button nz-button nzBlock nzType="primary" (click)="getOwners()"> Buscar</button>
+    </div>
+  </ng-container>
+</nz-drawer>

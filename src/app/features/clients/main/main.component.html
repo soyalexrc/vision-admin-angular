@@ -48,22 +48,17 @@
         </div>
         <div style="margin-bottom: 1rem">
           <p>Servicio</p>
-          <nz-select nzShowSearch [(ngModel)]="service_id" class="filter-select" nzAllowClear
+          <nz-select nzShowSearch [nzLoading]="servicesLoading" [(ngModel)]="service_id" class="filter-select" nzAllowClear
                      (ngModelChange)="handleSelectService($event)">
-            <nz-option nzValue="Inmobiliario" nzLabel="Inmobiliario"></nz-option>
-            <nz-option nzValue="Administrativo" nzLabel="Administrativo"></nz-option>
-            <nz-option nzValue="Mantenimiento" nzLabel="Mantenimiento"></nz-option>
-            <nz-option nzValue="Remodelacion" nzLabel="Remodelacion"></nz-option>
-            <nz-option nzValue="Contabilidad" nzLabel="Contabilidad"></nz-option>
-            <nz-option nzValue="Legal" nzLabel="Legal"></nz-option>
-            <nz-option nzValue="Limpieza (Ama de llaves)" nzLabel="Limpieza (Ama de llaves)"></nz-option>
+            <nz-option *ngFor="let service of services" [nzValue]="service.id" [nzLabel]="service.title"></nz-option>
+
           </nz-select>
         </div>
 
         <div style="margin-bottom: 1rem">
           <p>Tipo de operacion</p>
-          <nz-select nzShowSearch [(ngModel)]="subService_id" class="filter-select" nzAllowClear >
-            <nz-option *ngFor="let option of operationOptions" [nzValue]="option" [nzLabel]="option"></nz-option>
+          <nz-select nzShowSearch [nzLoading]="serviceTypesLoading" [disabled]="!service_id" [(ngModel)]="subService_id" class="filter-select" nzAllowClear >
+            <nz-option *ngFor="let option of serviceTypes" [nzValue]="option.id" [nzLabel]="option.title"></nz-option>
           </nz-select>
         </div>
 

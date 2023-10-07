@@ -16,6 +16,8 @@ import {PropertyService} from "../../../core/services/property.service";
 import * as moment from 'moment';
 import {FileService} from "../../../core/services/file.service";
 import {CurrencyPipe} from "@angular/common";
+import formatDatesFilter from "../../../shared/utils/formatDatesFilter";
+import {PROPERTY_TYPES} from "../../../shared/utils/property-types";
 
 @Component({
   selector: 'app-main',
@@ -39,6 +41,13 @@ export class MainComponent implements OnInit, AfterViewInit {
   pageSize = 10;
   totalItems = 1;
   user: Partial<User> = {};
+  showFiltersDrawer = false;
+  date: any = '';
+  code = '';
+  propertyType = '';
+  operationType = '';
+  propertyTypes = PROPERTY_TYPES;
+  status = '';
 
   constructor(
     private router: Router,
@@ -114,7 +123,16 @@ export class MainComponent implements OnInit, AfterViewInit {
   getPropertiesPreview() {
     this.loading = true;
     if (this.user.userType === 'Administrador') {
-      this.propertyService.getPreviewsPaginated(this.pageSize, this.pageIndex).subscribe(data => {
+      this.propertyService.getPreviewsPaginated(
+        this.pageSize,
+        this.pageIndex,
+        this.date[0] ? this.date[0] : '',
+        this.date[1] ? this.date[1] : '',
+        this.status ? this.status : '',
+        this.code ? `VINM-${this.code}` : '',
+        this.propertyType ? this.propertyType : '',
+        this.operationType ? this.operationType : '',
+      ).subscribe(data => {
           this.totalItems = data.count;
           this.data = data.rows.map(element => ({
             id: element.id,
@@ -316,5 +334,17 @@ export class MainComponent implements OnInit, AfterViewInit {
   onPageIndexChange(pageIndex: number) {
     this.pageIndex = pageIndex;
     this.getPropertiesPreview();
+  }
+
+  closeFilterModal() {
+    this.showFiltersDrawer = false;
+  }
+
+  onChangeDate(date: any[]) {
+    if (date.length < 1) {
+      this.date = '';
+    } else {
+      this.date = formatDatesFilter(date);
+    }
   }
 }

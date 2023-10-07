@@ -25,8 +25,8 @@ export class OwnerService {
     return this.http.get<Owner[]>(`owner`)
   }
 
-  getAllPaginated(pageIndex: number, pageSize: number): Observable<GetAllOwners> {
-    return this.http.get<GetAllOwners>(`owner/paginated?pageIndex=${pageIndex}&pageSize=${pageSize}`)
+  getAllPaginated(pageIndex: number, pageSize: number, dateFrom: string, dateTo: string, isInvestor: any): Observable<GetAllOwners> {
+    return this.http.get<GetAllOwners>(`owner/paginated?pageIndex=${pageIndex}&pageSize=${pageSize}&dateFrom=${dateFrom}&dateTo=${dateTo}&isInvestor=${isInvestor}`)
   }
 
   createOne(owner: Owner): Observable<CreateEditOwnerResponse> {

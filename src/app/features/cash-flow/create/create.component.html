@@ -85,7 +85,7 @@
     <div formArrayName="payments">
       <div *ngFor="let item of payments.controls; let i = index" [formGroupName]="i">
         <div style="display: flex; justify-content: space-between; ">
-          <h2>Detalle de pago #{{i + 1}}</h2>
+          <h2>Detalle de pago {{!isEditing ? '#' + (i + 1)  : ''}}</h2>
           <button
             style="margin-left: 1rem;"
             (click)="removePayment(i)"
@@ -217,7 +217,7 @@
         </div>
 
 
-        <h2 style="margin-top: 1rem; text-align: left">Datos de servicio #{{i + 1}}</h2>
+        <h2 style="margin-top: 1rem; text-align: left">Datos de servicio {{!isEditing ? '#' + (i + 1)  : ''}}</h2>
 
 
         <div style="display: flex" [ngStyle]="{'justify-content': uiService.isPhoneScreen() ? 'center': 'flex-end', 'margin-bottom': uiService.isPhoneScreen() ? '1rem' : '0' }">
@@ -299,14 +299,24 @@
               </nz-form-control>
             </nz-form-item>
           </div>
+
+          <div nz-col [nzSpan]="24">
+            <h2 style="text-align: left">Comprobantes de pago  {{!isEditing ? '#' + (i + 1)  : ''}}</h2>
+          </div>
+
+          <div nz-col [nzSpan]="24">
+            <app-draggable-grid [canDelete]="!isEditing" [elements]="images[i]" (onDeleteElement)="handleDeleteImage($event, i)"></app-draggable-grid>
+          </div>
+
+
           <div nz-col *ngIf="!uiService.isPhoneScreen()" [nzSpan]="12" [nzOffset]="6">
-            <button nz-button nzBlock nzType="primary" type="button" [nzLoading]="loadingImage" (click)="clickInputFile()">
+            <button nz-button nzBlock nzType="primary" type="button" [nzLoading]="loadingImage" (click)="clickInputFile(i)">
               <span nz-icon nzType="upload"></span>
               Agregar comprobante de pago
             </button>
           </div>
 
-          <button *ngIf="uiService.isPhoneScreen()" nz-button nzBlock nzType="primary" type="button" [nzLoading]="loadingImage" (click)="clickInputFile()">
+          <button *ngIf="uiService.isPhoneScreen()" nz-button nzBlock nzType="primary" type="button" [nzLoading]="loadingImage" (click)="clickInputFile(i)">
             <span nz-icon nzType="upload"></span>
             Agregar comprobante de pago
           </button>

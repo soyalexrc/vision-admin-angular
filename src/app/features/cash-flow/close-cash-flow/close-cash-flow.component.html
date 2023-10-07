@@ -9,4 +9,289 @@
 
 <app-section-title
   title="Cierre de caja"
+  (onRefresh)="getCloseCashFlows()"
+  [showTotal]="true"
+  [totalValue]="loading ? '...' : totalItems"
 ></app-section-title>
+
+<app-generic-table #dataTable
+                   xScroll="1000px"
+                   [hasDelete]="false"
+                   [hasEdit]="false"
+                   [hasEye]="true"
+                   eyeTitle="Ver detalle"
+                   (onEye)="goToDetail($event)"
+                   [loading]="loading"
+                   [pageIndex]="pageIndex"
+                   [totalItems]="totalItems"
+                   [pageSize]="pageSize"
+                   (onPageIndexChange)="onPageIndexChange($event)"
+></app-generic-table>
+
+
+
+<nz-modal
+  [(nzVisible)]="detailModal"
+  [nzTitle]="detailModalTitle"
+  (nzOnCancel)="detailModal = false"
+  nzOkText="Ok"
+  nzCancelText="Volver"
+  (nzOnOk)="detailModal = false">
+  <ng-container *nzModalContent>
+    <h2 style="text-align: center">Totales del dia</h2>
+    <h4>Por entidad</h4>
+
+    <div class="amount-line">
+      <h4>Tesoreria:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalTesoreria.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalTesoreria.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalTesoreria.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Oficina San Carlos:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalOfiSanCar.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalOfiSanCar.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalOfiSanCar.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Oficina Paseo la Granja:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalOfiPaseo.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalOfiPaseo.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalOfiPaseo.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Banco Nacional de Credito (BNc):</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBnc.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBnc.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBnc.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Banesco Venezuela:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanVen.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanVen.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanVen.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+
+    <div class="amount-line">
+      <h4>Banesco Panama:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanPan.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanPan.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanPan.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Banco Nacional de Terceros:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanNacTer.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanNacTer.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanNacTer.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Banco Internacional de Terceros:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanInTer.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanInTer.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntitiesToday.totalBanInTer.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <div class="amount-line">
+      <h4>Ingreso:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[0].ingreso.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[0].ingreso.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[0].ingreso.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+    <div class="amount-line">
+      <h4>Egreso:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[0].egreso.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[0].egreso.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[0].egreso.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+    <div class="amount-line">
+      <h4>Cuentas por pagar:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[0].cuentasPorPagar.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[0].cuentasPorPagar.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[0].cuentasPorPagar.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+    <div class="amount-line">
+      <h4>Cuentas por cobrar:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[0].cuentasPorCobrar.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[0].cuentasPorCobrar.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[0].cuentasPorCobrar.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+    <div class="amount-line">
+      <h4>Ingreso a cuenta <br> de terceros</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[0].ingresoCuentaTerceros.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[0].ingresoCuentaTerceros.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[0].ingresoCuentaTerceros.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+    <div class="amount-line">
+      <h4>Disponible</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[0].totalDisponible.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[0].totalDisponible.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[0].totalDisponible.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <h2 style="text-align: center">Totales generales</h2>
+    <h4>Por entidad</h4>
+
+    <div class="amount-line">
+      <h4>Tesoreria:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntities.totalTesoreria.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalTesoreria.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalTesoreria.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Oficina San Carlos:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntities.totalOfiSanCar.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalOfiSanCar.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalOfiSanCar.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Oficina Paseo la Granja:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntities.totalOfiPaseo.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalOfiPaseo.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalOfiPaseo.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Banco Nacional de Credito (BNc):</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntities.totalBnc.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalBnc.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalBnc.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Banesco Venezuela:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanVen.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanVen.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanVen.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+
+    <div class="amount-line">
+      <h4>Banesco Panama:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanPan.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanPan.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanPan.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Banco Nacional de Terceros:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanNacTer.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanNacTer.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanNacTer.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <div class="amount-line">
+      <h4>Banco Internacional de Terceros:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanInTer.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanInTer.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totalAvailableByEntities.totalBanInTer.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <div class="amount-line">
+      <h4>Ingreso:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[1].ingreso.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[1].ingreso.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[1].ingreso.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+    <div class="amount-line">
+      <h4>Egreso:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[1].egreso.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[1].egreso.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[1].egreso.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+    <div class="amount-line">
+      <h4>Cuentas por pagar:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[1].cuentasPorPagar.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[1].cuentasPorPagar.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[1].cuentasPorPagar.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+    <div class="amount-line">
+      <h4>Cuentas por cobrar:</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[1].cuentasPorCobrar.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[1].cuentasPorCobrar.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[1].cuentasPorCobrar.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+    <div class="amount-line">
+      <h4>Ingreso a cuenta de terceros</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[1].ingresoCuentaTerceros.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[1].ingresoCuentaTerceros.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[1].ingresoCuentaTerceros.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+    <div class="amount-line">
+      <h4>Disponible</h4>
+      <div class="amount-line-right">
+        <h3>{{ detail.data.totals[1].totalDisponible.bs ?? 0 | currency: 'Bs. ' }}</h3>
+        <h3>{{ detail.data.totals[1].totalDisponible.usd ?? 0 | currency: '$ ' }}</h3>
+        <h3>{{ detail.data.totals[1].totalDisponible.eur ?? 0 | currency: '€ ' }}</h3>
+      </div>
+    </div>
+  </ng-container>
+</nz-modal>
