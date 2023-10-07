@@ -7,6 +7,7 @@ import {Owner} from "../../../core/interfaces/owner";
 import {OwnerService} from "../../../core/services/owner.service";
 import {UiService} from "../../../core/services/ui.service";
 import * as moment from 'moment';
+import formatDatesFilter from "../../../shared/utils/formatDatesFilter";
 
 @Component({
   selector: 'app-main',
@@ -21,6 +22,9 @@ export class MainComponent implements OnInit, AfterViewInit {
   pageIndex = 1;
   totalItems = 1;
   pageSize = 10;
+  showFiltersDrawer = false
+  date: any = '';
+  isInvestor = null;
   constructor(
     private router: Router,
     private modal: NzModalService,
@@ -65,7 +69,13 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getOwners() {
     this.loading = true;
-    this.ownerService.getAllPaginated(this.pageIndex, this.pageSize).subscribe(data => {
+    this.ownerService.getAllPaginated(
+      this.pageIndex,
+      this.pageSize,
+      this.date[0] ? this.date[0] : '',
+      this.date[1] ? this.date[1] : '',
+      this.isInvestor === null ? '' : this.isInvestor,
+    ).subscribe(data => {
         this.totalItems = data.count;
         this.data = data.rows.map(element => ({
           id: element.id,
@@ -101,4 +111,15 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.getOwners();
   }
 
+  closeFilterModal() {
+    this.showFiltersDrawer = false;
+  }
+
+  onChangeDate(date: any[]) {
+    if (date.length < 1) {
+      this.date = '';
+    } else {
+      this.date = formatDatesFilter(date);
+    }
+  }
 }
