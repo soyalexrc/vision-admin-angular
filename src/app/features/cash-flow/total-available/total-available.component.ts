@@ -35,36 +35,40 @@ export class TotalAvailableComponent implements OnInit {
     legend: {
       enabled: false,
     },
-    plotOptions: {
-      series: {
-        borderWidth: 0,
-        colorByPoint: true,
-        type: 'pie',
-        size: '100%',
-        innerSize: '80%',
-        dataLabels: {
-          enabled: true,
-          crop: false,
-          distance: '-10%',
-          style: {
-            fontWeight: 'bold',
-            fontSize: '16px'
-          },
-          connectorWidth: 0
-        }
-      }
-      // series: {
-      //   borderWidth: 0,
-      //   dataLabels: {
-      //     enabled: true,
-      //     crop: false,
-      //     style: {
-      //       fontWeight: 'bold',
-      //       fontSize: '16px'
-      //     },
-      //   }
-      // }
+    credits: {
+      enabled: false,
     },
+
+    // plotOptions: {
+    //   series: {
+    //     borderWidth: 0,
+    //     colorByPoint: true,
+    //     type: 'pie',
+    //     size: '100%',
+    //     innerSize: '80%',
+    //     dataLabels: {
+    //       enabled: true,
+    //       crop: false,
+    //       distance: '-10%',
+    //       style: {
+    //         fontWeight: 'bold',
+    //         fontSize: '16px'
+    //       },
+    //       connectorWidth: 0
+    //     }
+    //   }
+    //   // series: {
+    //   //   borderWidth: 0,
+    //   //   dataLabels: {
+    //   //     enabled: true,
+    //   //     crop: false,
+    //   //     style: {
+    //   //       fontWeight: 'bold',
+    //   //       fontSize: '16px'
+    //   //     },
+    //   //   }
+    //   // }
+    // },
     series: [{
       data: [],
       type: 'pie',
@@ -138,23 +142,36 @@ export class TotalAvailableComponent implements OnInit {
       //   verticalAlign: 'middle',
       //   y: 10
       // },
-      legend: {
-        enabled: false,
-      },
+
       tooltip: {
         pointFormat: this.currentCurrency === 0 ? ' $ <b>{point.y}</b> <br> Bs <b>{point.bs} </b> <br> € <b>{point.eur}</b>' : this.currentCurrency === 1 ? ' Bs <b>{point.y}</b> <br> $ <b>{point.usd} </b> <br> € <b>{point.eur}</b>' : ' €  <b>{point.eur}</b> <br> Bs <b>{point.bs} </b> <br> $ <b>{point.usd}</b>'
       },
+      chart: {
+        type: 'pie',
+        borderRadius: 5,
+        spacingLeft: 70,
+        spacingRight: 70,
+      },
+      accessibility: {
+        announceNewData: {
+          enabled: true,
+        },
+      },
       plotOptions: {
+        pie: {
+          size: '75%',
+          innerSize: 200,
+        },
         series: {
           borderWidth: 0,
           colorByPoint: true,
           type: 'pie',
-          size: '100%',
-          innerSize: '80%',
+          // size: '100%',
+          // innerSize: '80%',
           dataLabels: {
             enabled: true,
             crop: false,
-            distance: '-10%',
+            allowOverlap: true,
             style: {
               fontWeight: 'bold',
               fontSize: '16px'
