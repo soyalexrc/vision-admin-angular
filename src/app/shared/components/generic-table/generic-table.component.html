@@ -15,7 +15,7 @@
   <tbody>
   <tr *ngFor="let row of fixedTable.data">
     <td *ngFor="let td of tableData.headers">{{ row[td.key] }}</td>
-    <td [nzRight]="actionsFixed" *ngIf="hasDelete || hasEdit">
+    <td [nzRight]="actionsFixed">
       <div class="actions">
         <a (click)="onEdit.emit(row.id)" *ngIf="hasEdit" nz-tooltip="true" nzTooltipTitle="Editar">
           <span nz-icon nzType="edit" style="font-size: 18px" [nzTheme]="'twotone'"></span>

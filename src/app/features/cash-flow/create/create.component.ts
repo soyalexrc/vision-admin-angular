@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Form, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PropertyService} from "../../../core/services/property.service";
 import {PropertyReview} from "../../../core/interfaces/property";
@@ -13,6 +13,7 @@ import {ServicesService} from "../../../core/services/services.service";
 import {User} from "../../../core/interfaces/user";
 import {UserService} from "../../../core/services/user.service";
 import {FileService} from "../../../core/services/file.service";
+import {Subscription} from "rxjs";
 
 interface Steps {
   first: string,
@@ -25,7 +26,7 @@ interface Steps {
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit {
+export class CreateComponent implements OnInit, OnDestroy {
   isEditing = false;
   form!: FormGroup;
   loading = false;
@@ -33,6 +34,7 @@ export class CreateComponent implements OnInit {
   id: any;
   index = 0;
 
+  images: string[][] = [];
   properties: PropertyReview[] = []
   people: CashFlowPerson[] = [];
   showRegisterPersonModal = false;
@@ -42,6 +44,7 @@ export class CreateComponent implements OnInit {
   subServicesLoading = false;
   subServices: SubService[] = [];
   loadingImage = false;
+  imagesSubscription = new Subscription();
   @ViewChild('inputFile') inputFile!: ElementRef<HTMLInputElement>
 
   constructor(
@@ -62,6 +65,11 @@ export class CreateComponent implements OnInit {
 
     this.propertyService.getAllPreviews().subscribe(result => {
       this.properties = result.rows;
+    })
+
+    this.imagesSubscription = this.fileService.currentImagesArray.subscribe(images => {
+      this.images = images;
+      console.log(this.images);
     })
 
     this.getPeople();
@@ -99,6 +107,10 @@ export class CreateComponent implements OnInit {
 
   }
 
+  ngOnDestroy() {
+    this.imagesSubscription.unsubscribe();
+    this.images = [];
+  }
 
   private buildForms() {
     this.form = this.fb.group({
@@ -155,11 +167,12 @@ export class CreateComponent implements OnInit {
     data.client_id = data.person && data.person.includes('Cliente') ? data.person.split('-')[0] : null;
     data.owner_id = data.person && data.person.includes('Propietario') ? data.person.split('-')[0] : null;
     data.cashflow_person_id = data.person && data.person.includes('Administracion interna') ? data.person.split('-')[0] : null;
-    data.payments = data.payments.map((payment: any) => ({
+    data.payments = data.payments.map((payment: any, index: number) => ({
       ...payment,
       amount: !payment.amount ? '0' : payment.amount.replace(/[^0-9.]+/g, '').trim(),
       pendingToCollect: !payment.pendingToCollect ? '0' : payment.pendingToCollect.replace(/[^0-9.]+/g, '').trim(),
       totalDue: !payment.totalDue ? '0' : payment.totalDue.replace(/[^0-9.]+/g, '').trim(),
+      attachments: this.images[index],
     }))
 
     console.log(data);
@@ -204,6 +217,10 @@ export class CreateComponent implements OnInit {
       this.form.get('property_id')?.patchValue(result.property_id);
       this.form.get('location')?.patchValue(result.location);
       this.form.get('id')?.patchValue(this.id);
+
+      result.attachments.forEach(image => {
+        this.fileService.storeImageInArray(image, 0)
+      })
 
       this.addPayment({
         canon: result.canon,
@@ -292,10 +309,10 @@ export class CreateComponent implements OnInit {
       taxPayer: [params?.taxPayer || ''],
       amount: [params?.amount || '', [Validators.minLength(3)]],
       currency: [params?.currency || '$'],
-      wayToPay: [params?.wayToPay || 'Efectivo'],
+      wayToPay: [params?.wayToPay || ''],
       transactionType: [params?.transactionType || 'Ingreso'],
       totalDue: [params?.totalDue || ''],
-      entity: [params?.entity || 'Tesorería'],
+      entity: [params?.entity || ''],
       pendingToCollect: [params?.pendingToCollect || ''],
       observation: [params?.observations || ''],
       proofOfPayment: [params?.proofOfPayment || this.fb.array([])]
@@ -326,17 +343,21 @@ export class CreateComponent implements OnInit {
   async handleUploadFile(event: any) {
     this.loadingImage = true;
 
+
     const {files} = event.target;
+    console.log(files);
 
     const forLoop = async () => {
+      const month = MONTHS[new Date().getMonth()]
       for (let i = 0; i < files.length; i++) {
         try {
           const reader = new FileReader();
           reader.readAsDataURL(files[i]);
           reader.onload = async () => {
-            const path = `servicio-contable+flujos-de-caja+${new Date().getTime()}`
+            // const path = `flujo-de-caja+${month}+${new Date().getTime()}`
+            const path = `flujo-de-caja+${month}`;
             this.fileService.uploadGenericStaticFile(files[i], path).subscribe(result => {
-                this.fileService.storeImage(result.secureUrl)
+                this.fileService.storeImageInArray(result.secureUrl, this.index)
               },
               () => {
                 this.loadingImage = false;
@@ -356,8 +377,15 @@ export class CreateComponent implements OnInit {
     await forLoop();
   }
 
-  clickInputFile() {
+  clickInputFile(i: number) {
+    this.index = i;
     this.inputFile?.nativeElement.click();
+
   }
+
+  handleDeleteImage(image: string, index: number) {
+      this.fileService.deleteImageInArray(image, index);
+  }
+
 
 }

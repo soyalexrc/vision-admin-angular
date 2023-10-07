@@ -19,7 +19,6 @@ import {NzToolTipModule} from "ng-zorro-antd/tooltip";
 import {NzEmptyModule} from "ng-zorro-antd/empty";
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {CdkDrag, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
-import { DraggableGridComponent } from './draggable-grid/draggable-grid.component';
 import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
 import {NzModalModule} from "ng-zorro-antd/modal";
 import { StatusHistoryComponent } from './status-history/status-history.component';
@@ -29,6 +28,8 @@ import { CommissionConfigModalComponent } from './commission-config-modal/commis
 import {NzSwitchModule} from "ng-zorro-antd/switch";
 import { ReorderImagesModalComponent } from './reorder-images-modal/reorder-images-modal.component';
 import {NzRadioModule} from "ng-zorro-antd/radio";
+import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
 
 
 
@@ -37,7 +38,6 @@ import {NzRadioModule} from "ng-zorro-antd/radio";
     MainComponent,
     CreateComponent,
     PreviewComponent,
-    DraggableGridComponent,
     StatusHistoryComponent,
     StatusBadgeComponent,
     CommissionConfigModalComponent,
@@ -69,7 +69,9 @@ import {NzRadioModule} from "ng-zorro-antd/radio";
         FormsModule,
         NzTagModule,
         NzSwitchModule,
-        NzRadioModule
+        NzRadioModule,
+        NzDatePickerModule,
+        NzDrawerModule
     ],
   providers: [CurrencyPipe]
 })

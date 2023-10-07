@@ -6,11 +6,13 @@ import {SharedModule} from "../../shared/shared.module";
 import {NzBreadCrumbModule} from "ng-zorro-antd/breadcrumb";
 import { CreateComponent } from './create/create.component';
 import {NzFormModule} from "ng-zorro-antd/form";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
 import {NzButtonModule} from "ng-zorro-antd/button";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
+import {NzSelectModule} from "ng-zorro-antd/select";
 
 
 
@@ -29,7 +31,10 @@ import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
     NzInputModule,
     NzCheckboxModule,
     NzButtonModule,
-    NzDatePickerModule
+    NzDatePickerModule,
+    NzDrawerModule,
+    NzSelectModule,
+    FormsModule
   ]
 })
 export class OwnersModule { }

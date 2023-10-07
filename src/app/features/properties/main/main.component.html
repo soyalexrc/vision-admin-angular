@@ -10,6 +10,10 @@
   [buttonText]="'Nueva propiedad'"
   (onRefresh)="getPropertiesPreview()"
   (onNewElement)="handleNewProperty()"
+  [additionalButton]="true"
+  additionalButtonText="Filtros"
+  additionalButtonIcon="filter"
+  (onAdditionalAction)="showFiltersDrawer = true"
 ></app-section-title>
 <app-generic-table #dataTable
                    xScroll="4000px"
@@ -20,7 +24,7 @@
                    [canDelete]="isAdmin()"
                    changeActionTitle="Cambiar estatus"
                    linkActionTitle="Ver vista previa"
-                   historyActionTitle="Ver historial de status"
+                   historyActionTitle="Ver historial de estatus"
                    [loading]="loading"
                    [pageIndex]="pageIndex"
                    [totalItems]="totalItems"
@@ -79,4 +83,63 @@
     <nz-tag [nzColor]="getColorByStatus()">{{currentStatus}}</nz-tag>
   </div>
 </ng-template>
+
+
+<nz-drawer
+  [nzClosable]="false"
+  [nzVisible]="showFiltersDrawer"
+  nzPlacement="right"
+  nzTitle="Filtros"
+  (nzOnClose)="closeFilterModal()"
+>
+  <ng-container *nzDrawerContent>
+    <div class="button-group">
+      <div>
+        <div style="margin-bottom: 1rem">
+          <p>Fecha de registro</p>
+          <nz-range-picker class="filter-select" [(ngModel)]="date" (ngModelChange)="onChangeDate($event)"></nz-range-picker>
+        </div>
+        <div style="margin-bottom: 1rem">
+          <p>Codigo</p>
+          <nz-input-group nzPrefix="VINM - " class="filter-select" >
+            <input type="text"  nz-input  [(ngModel)]="code" maxlength="3"
+                   placeholder="001"/>
+          </nz-input-group>
+        </div>
+
+        <div style="margin-bottom: 1rem">
+          <p>Tipo de inmueble</p>
+          <nz-select nzShowSearch [(ngModel)]="propertyType" class="filter-select" nzAllowClear>
+            <nz-option *ngFor="let propertyType of propertyTypes" [nzValue]="propertyType" [nzLabel]="propertyType"></nz-option>
+          </nz-select>
+        </div>
+
+        <div style="margin-bottom: 1rem">
+          <p>Tipo de operacion</p>
+          <nz-select nzShowSearch [(ngModel)]="operationType" class="filter-select" nzAllowClear>
+            <nz-option nzValue="Venta" nzLabel="Venta"></nz-option>
+            <nz-option nzValue="Alquiler" nzLabel="Alquiler"></nz-option>
+            <nz-option nzValue="Traspaso de negocio" nzLabel="Traspaso de negocio"></nz-option>
+          </nz-select>
+        </div>
+
+        <div style="margin-bottom: 1rem">
+          <p>Estatus</p>
+          <nz-select nzShowSearch [(ngModel)]="status" class="filter-select" nzAllowClear>
+            <nz-option nzLabel="Activo" nzValue="Activo"></nz-option>
+            <nz-option nzLabel="Incompleto" nzValue="Incompleto"></nz-option>
+            <nz-option nzLabel="Reservado" nzValue="Reservado"></nz-option>
+            <nz-option nzLabel="Suspendido" nzValue="Suspendido"></nz-option>
+            <nz-option nzLabel="Cerrado por Vision doble punta" nzValue="Cerrado por Vision doble punta"></nz-option>
+            <nz-option nzLabel="Cerrado por Vision (punta única)" nzValue="Cerrado por Vision (punta única)"></nz-option>
+            <nz-option nzLabel="Cerrado fuera de Vision" nzValue="Cerrado fuera de Vision"></nz-option>
+          </nz-select>
+        </div>
+
+      </div>
+      <button nz-button nzBlock nzType="primary" (click)="getPropertiesPreview()"> Buscar</button>
+    </div>
+  </ng-container>
+</nz-drawer>
+
 

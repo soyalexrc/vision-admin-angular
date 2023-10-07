@@ -1,26 +1,4 @@
-<!--<div class="files-grid" cdkDropListGroup>-->
-<!--  <div-->
-<!--    class="img-container"-->
-<!--    cdkDropList-->
-<!--    [cdkDropListEnterPredicate]="dropListEnterPredicate"-->
-<!--    (cdkDropListDropped)="dropListDropped($event)"-->
-<!--    *ngFor="let file of elements; index as i"-->
-<!--  >-->
-<!--    <div  cdkDrag (cdkDragMoved)="dragMoved($event)">-->
-<!--      <img width="200px" class="img-item" height="200px" [src]="setImageUrl(image.imageData)" [alt]="image.imageData">-->
-<!--      <div class="img-overlay">-->
-<!--        <button nz-tooltip="true" (click)="showPreview(image, 'image')" nzTooltipTitle="Ver en pantalla completa" nz-button-->
-<!--                nzShape="circle" type="button" nzType="primary">-->
-<!--          <span nz-icon nzType="fullscreen"></span>-->
-<!--        </button>-->
-<!--        <button nz-tooltip="true" (click)="onDeleteElement.emit(image)" nzTooltipTitle="Eliminar imagen" nz-button-->
-<!--                nzShape="circle" type="button" nzType="primary" nzDanger>-->
-<!--          <span nz-icon nzType="delete"></span>-->
-<!--        </button>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
+
 
 <div class="images-grid" >
   <div class="img-container" *ngFor="let file of elements; index as i">
@@ -47,7 +25,7 @@
                 nzShape="circle" type="button" nzType="primary">
           <span nz-icon nzType="download" nzTheme="outline"></span>
         </button>
-        <button nz-tooltip="true" (click)="onDeleteElement.emit(file)" nzTooltipTitle="Eliminar filen" nz-button
+        <button nz-tooltip="true" *ngIf="canDelete" (click)="onDeleteElement.emit(file)" nzTooltipTitle="Eliminar filen" nz-button
                 nzShape="circle" type="button" nzType="primary" nzDanger>
           <span nz-icon nzType="delete"></span>
         </button>

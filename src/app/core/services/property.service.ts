@@ -39,8 +39,17 @@ export class PropertyService {
     return this.http.get<GetAllPreviews>(`property/previews`)
   }
 
-  getPreviewsPaginated(pageSize: number, pageIndex: number): Observable<GetAllPreviews> {
-    return this.http.get<GetAllPreviews>(`property/previews/paginated?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+  getPreviewsPaginated(
+    pageSize: number,
+    pageIndex: number,
+    dateFrom: string,
+    dateTo: string,
+    status: string,
+    code: string,
+    propertyType: string,
+    operationType: string,
+  ): Observable<GetAllPreviews> {
+    return this.http.get<GetAllPreviews>(`property/previews/paginated?pageSize=${pageSize}&pageIndex=${pageIndex}&dateFrom=${dateFrom}&dateTo=${dateTo}&status=${status}&propertyType=${propertyType}&code=${code}&operationType=${operationType}`)
   }
 
   getPreviewsByUserId(pageSize: number, pageIndex: number, userId: number): Observable<GetAllPreviews> {
