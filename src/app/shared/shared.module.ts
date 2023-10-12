@@ -25,6 +25,7 @@ import { RegisterAllyModalComponent } from './components/register-ally-modal/reg
 import {ConfigServicesModalComponent} from "./components/config-services-modal/config-services-modal.component";
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {DraggableGridComponent} from "./components/draggable-grid/draggable-grid.component";
+import { SignatureCanvasComponent } from './components/signature-canvas/signature-canvas.component';
 
 
 
@@ -40,7 +41,8 @@ import {DraggableGridComponent} from "./components/draggable-grid/draggable-grid
     SlugTransformDirective,
     RegisterAllyModalComponent,
     ConfigServicesModalComponent,
-    DraggableGridComponent
+    DraggableGridComponent,
+    SignatureCanvasComponent
   ],
   exports: [
     SectionTitleComponent,
@@ -53,8 +55,8 @@ import {DraggableGridComponent} from "./components/draggable-grid/draggable-grid
     SlugTransformDirective,
     RegisterAllyModalComponent,
     ConfigServicesModalComponent,
-    DraggableGridComponent
-
+    DraggableGridComponent,
+    SignatureCanvasComponent
   ],
   imports: [
     CommonModule,
