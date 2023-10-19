@@ -25,7 +25,8 @@ import { RegisterAllyModalComponent } from './components/register-ally-modal/reg
 import {ConfigServicesModalComponent} from "./components/config-services-modal/config-services-modal.component";
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {DraggableGridComponent} from "./components/draggable-grid/draggable-grid.component";
-import { SignatureCanvasComponent } from './components/signature-canvas/signature-canvas.component';
+import { DocumentInputDirective } from './directives/document-input.directive';
+import {NzTagModule} from "ng-zorro-antd/tag";
 
 
 
@@ -42,7 +43,7 @@ import { SignatureCanvasComponent } from './components/signature-canvas/signatur
     RegisterAllyModalComponent,
     ConfigServicesModalComponent,
     DraggableGridComponent,
-    SignatureCanvasComponent
+    DocumentInputDirective,
   ],
   exports: [
     SectionTitleComponent,
@@ -56,7 +57,7 @@ import { SignatureCanvasComponent } from './components/signature-canvas/signatur
     RegisterAllyModalComponent,
     ConfigServicesModalComponent,
     DraggableGridComponent,
-    SignatureCanvasComponent
+    DocumentInputDirective,
   ],
   imports: [
     CommonModule,
@@ -75,7 +76,8 @@ import { SignatureCanvasComponent } from './components/signature-canvas/signatur
     NzCheckboxModule,
     NzDatePickerModule,
     NzInputModule,
-    NzDividerModule
+    NzDividerModule,
+    NzTagModule
   ]
 })
 export class SharedModule { }

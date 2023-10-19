@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Host, OnInit, Optional, ViewChild} from '@angular/core';
 import {Router} from "@angular/router";
 import {setHeaders} from "../../../shared/utils/generic-table";
 import {NzModalService} from "ng-zorro-antd/modal";
@@ -8,6 +8,7 @@ import {OwnerService} from "../../../core/services/owner.service";
 import {UiService} from "../../../core/services/ui.service";
 import * as moment from 'moment';
 import formatDatesFilter from "../../../shared/utils/formatDatesFilter";
+import {DocumentInputDirective} from "../../../shared/directives/document-input.directive";
 
 @Component({
   selector: 'app-main',
@@ -29,7 +30,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     private router: Router,
     private modal: NzModalService,
     private ownerService: OwnerService,
-    private uiService: UiService
+    private uiService: UiService,
+    @Host() @Optional() private documentDirective: DocumentInputDirective
   ) {}
 
 
@@ -84,6 +86,7 @@ export class MainComponent implements OnInit, AfterViewInit {
           phone: element.phone,
           email: element.email,
           customBirthdate: element.birthdate ? moment(element.birthdate).calendar() : '-',
+          ci: element.ci ? element.ci : '-',
           customIsInvestor: element.isInvestor ? 'Si' : 'No'
         }));
         const headers = setHeaders([
@@ -91,7 +94,8 @@ export class MainComponent implements OnInit, AfterViewInit {
           {key: 'lastName', displayName: 'Apellido'},
           {key: 'phone', displayName: 'Telefono'},
           {key: 'email', displayName: 'Correo'},
-          {key: 'customBirthdate', displayName: 'Fecha de cumpleanos'},
+          // {key: 'customBirthdate', displayName: 'Fecha de cumpleanos'},
+          {key: 'ci', displayName: 'Cedula de identidad'},
           {key: 'customIsInvestor', displayName: 'Es inversor?'},
         ]);
 

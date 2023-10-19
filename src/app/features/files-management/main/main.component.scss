@@ -38,22 +38,22 @@
       color: #1890ff;
       transition: color 200ms ease-in-out;
 
-      .delete-icon, .edit-icon {
-        display: block;
-      }
+      //.delete-icon, .edit-icon {
+      //  display: block;
+      //}
     }
   }
 
   & .delete-icon {
     font-size: 16px !important;
     color: red !important;
-    display: none;
+    //display: none;
   }
 
   & .edit-icon {
     font-size: 16px !important;
     color:  #1890ff !important;
-    display: none;
+    //display: none;
   }
 
 
@@ -76,6 +76,7 @@
   flex-direction: column;
   align-items: center;
   color: black;
+  padding-top: 1.5rem;
   margin-bottom: 1rem;
 
   & .delete-icon {
@@ -84,7 +85,7 @@
     right: 0;
     font-size: 14px !important;
     color: red !important;
-    display: none;
+    //display: none;
   }
 
   & .edit-icon {
@@ -93,7 +94,7 @@
     right: 20px;
     font-size: 14px !important;
     color:  #1890ff !important;
-    display: none;
+    //display: none;
   }
   & .move-icon {
     position: absolute;
@@ -101,16 +102,24 @@
     right: 40px;
     font-size: 14px !important;
     color:  #1890ff !important;
-    display: none;
+    //display: none;
+  }
+  & .signature-icon {
+    position: absolute;
+    top: 0;
+    right: 60px;
+    font-size: 14px !important;
+    color:  #1890ff !important;
+    //display: none;
   }
 
   &:hover {
     color: #1890ff;
     transition: color 200ms ease-in-out;
-
-    .delete-icon, .edit-icon, .move-icon {
-      display: block;
-    }
+    //
+    //.delete-icon, .edit-icon, .move-icon, .signature-icon {
+    //  display: block;
+    //}
   }
 
   span {
@@ -124,3 +133,9 @@
     margin-top: .5rem;
   }
 }
+
+.filter-select {
+  width: 100%;
+  margin-bottom: .7rem;
+}
+

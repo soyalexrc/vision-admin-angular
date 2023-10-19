@@ -11,13 +11,20 @@ import {NzToolTipModule} from "ng-zorro-antd/tooltip";
 import {NzDropDownModule} from "ng-zorro-antd/dropdown";
 import {NzModalModule} from "ng-zorro-antd/modal";
 import {NzInputModule} from "ng-zorro-antd/input";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NzSpinModule} from "ng-zorro-antd/spin";
 import {NzBadgeModule} from "ng-zorro-antd/badge";
 import { DeleteRequestsComponent } from './delete-requests/delete-requests.component';
 import {SharedModule} from "../../shared/shared.module";
 import {NzListModule} from "ng-zorro-antd/list";
 import { MoveModalComponent } from './move-modal/move-modal.component';
+import { RequireSignatureModalComponent } from './require-signature-modal/require-signature-modal.component';
+import {NzFormModule} from "ng-zorro-antd/form";
+import {NzSelectModule} from "ng-zorro-antd/select";
+import {NzDividerModule} from "ng-zorro-antd/divider";
+import {NzTabsModule} from "ng-zorro-antd/tabs";
+import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
 
 
 
@@ -25,7 +32,8 @@ import { MoveModalComponent } from './move-modal/move-modal.component';
   declarations: [
     MainComponent,
     DeleteRequestsComponent,
-    MoveModalComponent
+    MoveModalComponent,
+    RequireSignatureModalComponent
   ],
     imports: [
         CommonModule,
@@ -43,7 +51,14 @@ import { MoveModalComponent } from './move-modal/move-modal.component';
         NzSpinModule,
         NzBadgeModule,
         SharedModule,
-        NzListModule
+        NzListModule,
+        NzFormModule,
+        NzSelectModule,
+        ReactiveFormsModule,
+        NzDividerModule,
+        NzTabsModule,
+        NzDatePickerModule,
+        NzDrawerModule
     ]
 })
 export class FilesManagementModule { }
