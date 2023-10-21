@@ -30,6 +30,7 @@ export class CreateComponent implements OnInit{
       email: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       phone: ['', Validators.required],
       birthdate: [null],
+      ci: [''],
       isInvestor: [false, Validators.required],
       id: [null]
     })
@@ -47,6 +48,7 @@ export class CreateComponent implements OnInit{
       this.loading = true;
       const data = this.form.value;
       data.birthdate = data.birthdate ? moment(data.birthdate).format('YYYY-MM-DD') : null;
+      data.ci = data.ci.replaceAll(' ', '');
       if (this.isEditing) {
         this.ownerService.update(data).subscribe(result => {
           this.uiService.createMessage('success', result.message);
@@ -86,9 +88,10 @@ export class CreateComponent implements OnInit{
       this.form.get('isInvestor')?.patchValue(result.isInvestor);
       this.form.get('birthdate')?.patchValue(result.birthdate);
       this.form.get('email')?.patchValue(result.email);
+      this.form.get('ci')?.patchValue(result.ci);
       this.form.get('phone')?.patchValue(result.phone);
       this.form.get('id')?.patchValue(result.id);
-    })
+    });
   }
 
 }

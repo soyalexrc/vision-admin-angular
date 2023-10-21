@@ -14,7 +14,30 @@
   </thead>
   <tbody>
   <tr *ngFor="let row of fixedTable.data">
-    <td *ngFor="let td of tableData.headers">{{ row[td.key] }}</td>
+    <td *ngFor="let td of tableData.headers">
+      <ng-container [ngSwitch]="td.key">
+        <div *ngSwitchCase="'filePath'">
+          <a [href]="row[td.key]" target="_blank">Ver documento</a>
+        </div>
+        <div *ngSwitchCase="'signedDocumentPath'">
+          <a *ngIf="row[td.key]; else empty" [href]="row[td.key]" target="_blank">Ver documento</a>
+          <ng-template #empty><p>-</p></ng-template>
+        </div>
+        <div *ngSwitchCase="'requestStatus'">
+          <nz-tag [nzColor]="row[td.key] === 'Pendiente' ? 'warning' : row[td.key] === 'Firmado' ? 'success' : 'red' ">{{row[td.key]}}</nz-tag>
+        </div>
+        <div *ngSwitchDefault>
+          {{ row[td.key] }}
+        </div>
+      </ng-container>
+
+      <div *ngIf="td.key === 'requestStatus'; else dataString">
+
+      </div>
+      <ng-template #dataString>
+
+      </ng-template>
+    </td>
     <td [nzRight]="actionsFixed">
       <div class="actions">
         <a (click)="onEdit.emit(row.id)" *ngIf="hasEdit" nz-tooltip="true" nzTooltipTitle="Editar">

@@ -23,12 +23,39 @@ export interface GetDeleteRequests {
   count: number,
 }
 
+export interface GetDigitalSignatureRequests {
+  rows: DigitalSignatureRequest[],
+  count: number,
+}
+
 export interface DeleteRequest {
   id: number;
   type: string;
   user: string;
   path: string;
   createdAt?: Date;
+}
+
+export interface CreateDigitalSignatureRequestResponse {
+  data: DigitalSignatureRequest;
+  message: string;
+}
+
+export interface DigitalSignatureRequest {
+  id?: string | number;
+  filePath: string;
+  signedDocumentPath: string;
+  expiresAt: Date,
+  createdAt: Date,
+  sendToEmail: string,
+  status: string,
+  requestedBy: string;
+  sendToData: any,
+  clientId: number | null,
+  ownerId: number | null,
+  allyId: number | null,
+  externalAdviserId: number | null,
+
 }
 
 type FileType = 'dir' | 'file'
@@ -216,6 +243,26 @@ export class FileService {
 
   moveFileOrFolder(pathFrom: string, pathTo: string): Observable<DeleteResult> {
     return this.http.post<DeleteResult>(`files/moveFileOrFolder`, {pathFrom, pathTo} )
+  }
+
+  sendDigitalSignatureRequest(sendToData: any, filePath: string, requestedBy: string): Observable<CreateDigitalSignatureRequestResponse> {
+    return this.http.post<CreateDigitalSignatureRequestResponse>(`files/createDigitalSignatureRequest`, {sendToData, filePath, requestedBy})
+  }
+
+  resendDigitalSignatureRequest(id: string | number): Observable<CreateDigitalSignatureRequestResponse> {
+    return this.http.post<CreateDigitalSignatureRequestResponse>(`files/resendDigitalSignatureRequest`, {id})
+  }
+
+  getDigitalSignatureRequests(
+    pageSize: number,
+    pageIndex: number,
+    dateFrom: string,
+    dateTo: string,
+    requestedBy: string,
+    sendToEmail: string,
+    status: string,
+  ): Observable<GetDigitalSignatureRequests> {
+    return this.http.get<GetDigitalSignatureRequests>(`files/getDigitalSignatureRequests?pageSize=${pageSize}&pageIndex=${pageIndex}&dateFrom=${dateFrom}&dateTo=${dateTo}&requestedBy=${requestedBy}&status=${status}&sendToEmail=${sendToEmail}`)
   }
 
 }
