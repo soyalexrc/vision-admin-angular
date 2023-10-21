@@ -1,0 +1,37 @@
+<nz-modal
+  [(nzVisible)]="show"
+  nzTitle="Solicitar firma digital de documento"
+  (nzOnCancel)="onCancel.emit()"
+  [nzOkDisabled]="form.invalid"
+  nzOkText="Enviar solicitud"
+  (nzOnOk)="handleOk()">
+  <ng-container *nzModalContent>
+    <nz-spin nzTip="Cargando..." [nzSpinning]="loading">
+      <form [formGroup]="form">
+        <p>Seleccionar destinatario por</p>
+        <nz-select formControlName="filterBy" style="width: 100%"
+                   (ngModelChange)="handleChangeSelectFilterBy($event)">
+          <nz-option
+            *ngFor="let option of filterByOptions"
+            [nzDisabled]="option !== 'Propietarios'"
+            [nzValue]="option"
+            [nzLabel]="option">
+          </nz-option>
+        </nz-select>
+
+        <nz-divider></nz-divider>
+
+        <ng-container *ngIf="filterBy !== ''">
+          <p>{{getFilterByLabel()}}</p>
+          <nz-select nzShowSearch formControlName="sendTo" style="width: 100%" >
+            <nz-option
+              *ngFor="let option of selectionOptions"
+              [nzValue]="option"
+              [nzLabel]="option.label">
+            </nz-option>
+          </nz-select>
+        </ng-container>
+      </form>
+    </nz-spin>
+  </ng-container>
+</nz-modal>

@@ -4,6 +4,7 @@ export interface Owner {
   lastName: string;
   phone: string;
   email: string;
+  ci: string;
   birthdate: Date;
   property_id: null | number;
   isInvestor: boolean;

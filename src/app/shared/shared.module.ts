@@ -25,6 +25,8 @@ import { RegisterAllyModalComponent } from './components/register-ally-modal/reg
 import {ConfigServicesModalComponent} from "./components/config-services-modal/config-services-modal.component";
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {DraggableGridComponent} from "./components/draggable-grid/draggable-grid.component";
+import { DocumentInputDirective } from './directives/document-input.directive';
+import {NzTagModule} from "ng-zorro-antd/tag";
 
 
 
@@ -40,7 +42,8 @@ import {DraggableGridComponent} from "./components/draggable-grid/draggable-grid
     SlugTransformDirective,
     RegisterAllyModalComponent,
     ConfigServicesModalComponent,
-    DraggableGridComponent
+    DraggableGridComponent,
+    DocumentInputDirective,
   ],
   exports: [
     SectionTitleComponent,
@@ -53,8 +56,8 @@ import {DraggableGridComponent} from "./components/draggable-grid/draggable-grid
     SlugTransformDirective,
     RegisterAllyModalComponent,
     ConfigServicesModalComponent,
-    DraggableGridComponent
-
+    DraggableGridComponent,
+    DocumentInputDirective,
   ],
   imports: [
     CommonModule,
@@ -73,7 +76,8 @@ import {DraggableGridComponent} from "./components/draggable-grid/draggable-grid
     NzCheckboxModule,
     NzDatePickerModule,
     NzInputModule,
-    NzDividerModule
+    NzDividerModule,
+    NzTagModule
   ]
 })
 export class SharedModule { }
