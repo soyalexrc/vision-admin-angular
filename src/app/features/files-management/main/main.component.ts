@@ -185,7 +185,8 @@ export class MainComponent implements OnInit, OnDestroy {
   formatFileName(filename: FilesResult) {
     // const filenameFormatted = filename.file.replaceAll('-', ' ');
     if (filename.type === 'dir') return filename.file;
-    return filename.file.substring(0, 30).concat('...').concat(filename.file.split('.')[1])
+    return filename.file;
+    // return filename.file.substring(0, 30).concat('...').concat(filename.file.split('.')[1])
   }
 
   clickInputFile(type = 'file') {
