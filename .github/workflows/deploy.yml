@@ -25,7 +25,7 @@ jobs:
 
       - name: SSH Connection and Commands
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}" 'cd .. && cd home && cd vision-admin-angular && git checkout main && git pull && npm install && npm run build:prod && docker stop $(docker ps | grep "vision-admin-angular-frontend:latest" | awk "{print \$1}") && docker rm $(docker ps -a | grep "vision-admin-angular-frontend:latest" | awk "{print \$1}") && docker image rm $(docker image ls | grep "pruebacontainerluighi2693/vision-admin-angular-frontend" | grep -v "site" | awk "{print \$3}") && docker run -d -p 3002:80 pruebacontainerluighi2693/vision-admin-angular-frontend:latest'
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}" 'cd .. && cd home && docker stop $(docker ps | grep "vision-admin-angular-frontend:latest" | awk "{print \$1}") && docker rm $(docker ps -a | grep "vision-admin-angular-frontend:latest" | awk "{print \$1}") && docker image rm $(docker image ls | grep "pruebacontainerluighi2693/vision-admin-angular-frontend" | grep -v "site" | awk "{print \$3}") && docker run -d -p 3002:80 pruebacontainerluighi2693/vision-admin-angular-frontend:latest'
 
       - name: Clean up
         run: |
