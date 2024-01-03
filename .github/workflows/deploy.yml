@@ -1,0 +1,33 @@
+name: Deploy Vision Admin Angular
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: SSH Connection and Commands
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p {{ SSH_PORT }} {{ secrets.SSH_USER }}@{{ secrets.SSH_HOST }} 'cd .. && cd home && cd vision-admin-angular && git checkout main && git pull && npm install && npm run build:prod && docker stop $(docker ps | grep "vision-admin-angular-frontend:latest" | awk "{print \$1}") && docker rm $(docker ps -a | grep "vision-admin-angular-frontend:latest" | awk "{print \$1}") && docker image rm $(docker image ls | grep "pruebacontainerluighi2693/vision-admin-angular-frontend" | grep -v "site" | awk "{print \$3}") && docker run -d -p 3002:80 pruebacontainerluighi2693/vision-admin-angular-frontend:latest'
+
+      - name: Clean up
+        run: |
+          # Remove any temporary files or artifacts
+          rm -rf /path/to/temporary/files
+
+          # Stop and remove Docker containers
+          docker stop $(docker ps -q)
+          docker rm $(docker ps -a -q)
+
+          # Optionally, prune Docker images to free up disk space
+          docker image prune -af
