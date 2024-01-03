@@ -7,7 +7,7 @@
     "start:dev": "ng serve --configuration=development",
     "start:prod": "ng serve --configuration=production",
     "build:dev": "ng build --configuration=development",
-    "build:prod": "ng build --configuration=production",
+    "build:prod": "npm --no-git-tag-version version patch && ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "docker:build": "docker build --platform linux/amd64 -t pruebacontainerluighi2693/vision-admin-angular-frontend:latest .",

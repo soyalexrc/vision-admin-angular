@@ -12,6 +12,7 @@ import { RecoverPasswordComponent } from './recover-password/recover-password.co
 import {NzFormModule} from "ng-zorro-antd/form";
 import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzAlertModule} from "ng-zorro-antd/alert";
+import {NzDividerModule} from "ng-zorro-antd/divider";
 
 
 
@@ -21,18 +22,19 @@ import {NzAlertModule} from "ng-zorro-antd/alert";
     ForgotPasswordComponent,
     RecoverPasswordComponent
   ],
-  imports: [
-    CommonModule,
-    AuthRoutingModule,
-    NzIconModule,
-    NzButtonModule,
-    NzCheckboxModule,
-    FormsModule,
-    NzInputModule,
-    ReactiveFormsModule,
-    NzFormModule,
-    NzGridModule,
-    NzAlertModule
-  ]
+    imports: [
+        CommonModule,
+        AuthRoutingModule,
+        NzIconModule,
+        NzButtonModule,
+        NzCheckboxModule,
+        FormsModule,
+        NzInputModule,
+        ReactiveFormsModule,
+        NzFormModule,
+        NzGridModule,
+        NzAlertModule,
+        NzDividerModule
+    ]
 })
 export class AuthModule { }

@@ -5,6 +5,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import {UserService} from "../../../core/services/user.service";
 import {User} from "../../../core/interfaces/user";
 import {UiService} from "../../../core/services/ui.service";
+import {environment} from "../../../../environments/environment";
+
 
 @Component({
   selector: 'app-login',
@@ -17,6 +19,7 @@ export class LoginComponent implements OnInit {
   email: any;
   remember= false
   loading = false;
+  currentApplicationVersion = environment.appVersion;
 
   constructor(
     private router: Router,
