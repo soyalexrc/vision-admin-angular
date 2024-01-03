@@ -1,0 +1,26 @@
+name: Deploy Vision Admin Angular
+
+on:
+  repository_dispatch:
+    types: [manual]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: SSH Connection and Commands
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}" 'cd .. && cd home && docker stop $(docker ps | grep "vision-admin-angular-frontend:latest" | awk "{print \$1}") && docker rm $(docker ps -a | grep "vision-admin-angular-frontend:latest" | awk "{print \$1}") && docker image rm $(docker image ls | grep "pruebacontainerluighi2693/vision-admin-angular-frontend" | grep -v "site" | awk "{print \$3}") && docker run -d -p 3002:80 pruebacontainerluighi2693/vision-admin-angular-frontend:latest'
