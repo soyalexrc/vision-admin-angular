@@ -122,7 +122,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   getPropertiesPreview() {
     this.loading = true;
-    if (this.user.userType === 'Administrador') {
+    if (this.user.userType === 'Administrador' || this.user.userType === 'Asistente operativo') {
       this.propertyService.getPreviewsPaginated(
         this.pageSize,
         this.pageIndex,
