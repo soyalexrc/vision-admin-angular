@@ -3,8 +3,6 @@ import {GenericTableComponent} from "../../../shared/components/generic-table/ge
 import {Router} from "@angular/router";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {CashFlowService} from "../../../core/services/cash-flow.service";
-import {ExportExcelService} from "../../../core/services/export-excel.service";
-import {ExportPdfService} from "../../../core/services/export-pdf.service";
 import * as moment from "moment/moment";
 import {setHeaders} from "../../../shared/utils/generic-table";
 
