@@ -50,32 +50,62 @@
 
 
     </div>
+<!--    <div nz-row class="row" [nzGutter]="16">-->
+<!--      <div nz-col [nzXs]="24" [nzMd]="18">-->
+<!--        <nz-form-item-->
+<!--          *ngIf="!person?.includes('Administracion interna'); else internalAdministration">-->
+<!--          <nz-form-label nzFor="property">Inmueble</nz-form-label>-->
+<!--          <nz-form-control>-->
+<!--            <nz-select formControlName="property_id" style="width: 100%">-->
+<!--              <nz-option-->
+<!--                *ngFor="let property of properties"-->
+<!--                [nzValue]="property.id"-->
+<!--                [nzLabel]="getPropertyLabel(property)">-->
+<!--              </nz-option>-->
+<!--            </nz-select>-->
+<!--          </nz-form-control>-->
+<!--        </nz-form-item>-->
+<!--        <ng-template #internalAdministration>-->
+<!--          <nz-form-item>-->
+<!--            <nz-form-label nzFor="internalProperty">Propiedad de administracion interna</nz-form-label>-->
+<!--            <nz-form-control>-->
+<!--              <nz-select formControlName="internalProperty" style="width: 100%">-->
+<!--                <nz-option nzValue="Oficina paseo la granja" nzLabel="Oficina paseo la granja"></nz-option>-->
+<!--                <nz-option nzValue="Oficina san carlos" nzLabel="Oficina san carlos"></nz-option>-->
+<!--              </nz-select>-->
+<!--            </nz-form-control>-->
+<!--          </nz-form-item>-->
+<!--        </ng-template>-->
+<!--      </div>-->
+<!--      <div nz-col [nzXs]="24" nzMd="6" style="display: flex; justify-content: center; align-items: center">-->
+<!--        <button nz-button nzType="link" (click)="showRegisterPropertyModal = true">-->
+<!--          <span nz-icon nzType="plus" nzTheme="outline"></span>-->
+<!--          Ingresar nueva propiedad-->
+<!--        </button>-->
+<!--      </div>-->
+
+<!--    </div>-->
     <div nz-row class="row" [nzGutter]="16">
-      <div nz-col [nzSpan]="24">
-        <nz-form-item
-          *ngIf="!person?.includes('Administracion interna'); else internalAdministration">
+      <div nz-col [nzXs]="24" [nzMd]="18">
+        <nz-form-item>
           <nz-form-label nzFor="property">Inmueble</nz-form-label>
           <nz-form-control>
-            <nz-select formControlName="property_id" style="width: 100%">
+            <nz-select formControlName="property_id" style="width: 100%" [nzLoading]="propertiesLoading">
               <nz-option
-                *ngFor="let property of properties"
+                *ngFor="let property of cashFlowProperties"
                 [nzValue]="property.id"
-                [nzLabel]="getPropertyLabel(property)">
+                [nzLabel]="property.name">
               </nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
-        <ng-template #internalAdministration>
-          <nz-form-item>
-            <nz-form-label nzFor="internalProperty">Propiedad de administracion interna</nz-form-label>
-            <nz-form-control>
-              <nz-select formControlName="internalProperty" style="width: 100%">
-                <nz-option nzValue="Oficina paseo la granja" nzLabel="Oficina paseo la granja"></nz-option>
-                <nz-option nzValue="Oficina san carlos" nzLabel="Oficina san carlos"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-        </ng-template>
+
+      </div>
+      <div nz-col [nzXs]="24" nzMd="6" style="display: flex; justify-content: center; align-items: center">
+        <button nz-button nzType="link" (click)="showRegisterPropertyModal = true">
+          <span nz-icon nzType="plus" nzTheme="outline"></span>
+          Ingresar nueva propiedad
+        </button>
       </div>
 
     </div>
@@ -358,6 +388,10 @@
 <app-register-person-modal (onClose)="showRegisterPersonModal = false" (onFinished)="getPeople()"
                            (onCancel)="showRegisterPersonModal = $event"
                            [showModal]="showRegisterPersonModal"></app-register-person-modal>
+
+<app-register-property-modal (onClose)="showRegisterPropertyModal = false" (onFinished)="getProperties()"
+                           (onCancel)="showRegisterPropertyModal = $event"
+                           [showModal]="showRegisterPropertyModal"></app-register-property-modal>
 <app-config-services-modal [servicesLoading]="servicesLoading" [services]="services"
                            (onClose)="showConfigServicesModal = false" (onFinished)="getServices()"
                            (onCancel)="showConfigServicesModal = $event"

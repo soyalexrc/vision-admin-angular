@@ -414,14 +414,9 @@
         </ng-container>
       </div>
       <div nz-col [nzSpan]="12">
-        <h2>{{detailModalData.property ? 'Inmueble' : 'Propiedad interna'}}</h2>
-        <ng-container *ngIf="detailModalData.property; else internalProperty">
-          <p><b>Codigo:</b> {{detailModalData.property.generalInformation.code}}</p>
-          <p><b>Detalle:</b> {{detailModalData.property.generalInformation.propertyType}} - {{detailModalData.property.generalInformation.operationType}}</p>
-        </ng-container>
-        <ng-template #internalProperty>
-          <p><b>Detalle:</b> {{detailModalData.internalProperty}}</p>
-        </ng-template>
+        <h2>Inmueble</h2>
+          <p><b>Nombre:</b> {{detailModalData.property.name}}</p>
+          <p><b>Ubicacion:</b> {{detailModalData.property.location}}</p>
        </div>
     </div>
 

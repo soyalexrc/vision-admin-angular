@@ -62,6 +62,11 @@ export interface CreateEditCashFlowResponse {
   data: CashFlowRegister
 }
 
+export interface CreateEditCashFlowPersonResponse {
+  message: string;
+  data: CashFlowProperty
+}
+
 export interface GetAllTemporalTransaction {
   count: number;
   rows: TemporalTransaction[]
@@ -160,6 +165,11 @@ export interface CashFlowPerson {
   id: number;
   name: string;
   type: string;
+}
+export interface CashFlowProperty {
+  id: number;
+  name: string;
+  location: string;
 }
 
 export interface CreateEditCashFlowPeople {
