@@ -29,6 +29,7 @@ import {HighchartsChartModule} from "highcharts-angular";
 import {NzSegmentedModule} from "ng-zorro-antd/segmented";
 import {NzSpaceModule} from "ng-zorro-antd/space";
 import { CloseCashFlowComponent } from './close-cash-flow/close-cash-flow.component';
+import { RegisterPropertyModalComponent } from './register-property-modal/register-property-modal.component';
 
 
 
@@ -40,6 +41,7 @@ import { CloseCashFlowComponent } from './close-cash-flow/close-cash-flow.compon
         RegisterPersonModalComponent,
         TotalAvailableComponent,
         CloseCashFlowComponent,
+        RegisterPropertyModalComponent,
     ],
     imports: [
         CommonModule,

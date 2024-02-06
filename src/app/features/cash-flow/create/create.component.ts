@@ -7,7 +7,7 @@ import * as moment from "moment/moment";
 import {UiService} from "../../../core/services/ui.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MONTHS} from "../../../shared/utils/months";
-import {CashFlowPerson, CashFlowRegister} from "../../../core/interfaces/cashFlow";
+import {CashFlowPerson, CashFlowProperty, CashFlowRegister} from "../../../core/interfaces/cashFlow";
 import {Service, SubService} from "../../../core/interfaces/service";
 import {ServicesService} from "../../../core/services/services.service";
 import {User} from "../../../core/interfaces/user";
@@ -37,9 +37,12 @@ export class CreateComponent implements OnInit, OnDestroy {
   images: string[][] = [];
   properties: PropertyReview[] = []
   people: CashFlowPerson[] = [];
+  cashFlowProperties: CashFlowProperty[] = [];
   showRegisterPersonModal = false;
+  showRegisterPropertyModal = false;
   showConfigServicesModal = false;
   peopleLoading = false;
+  propertiesLoading = false;
   services: Service[] = []
   subServicesLoading = false;
   subServices: SubService[] = [];
@@ -73,6 +76,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     })
 
     this.getPeople();
+    this.getProperties();
     this.getServices();
     if (!this.router.url.includes('crear')) {
       this.isEditing = true;
@@ -261,6 +265,17 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.peopleLoading = false;
     }, () => {
       this.peopleLoading = false;
+    })
+  }
+
+  getProperties() {
+    this.propertiesLoading = true;
+    this.cashFlowService.getProperties().subscribe(result => {
+      this.cashFlowProperties = result;
+    }, error => {
+      this.propertiesLoading = false;
+    }, () => {
+      this.propertiesLoading = false;
     })
   }
 
