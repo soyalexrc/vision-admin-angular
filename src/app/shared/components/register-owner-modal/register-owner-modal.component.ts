@@ -29,8 +29,9 @@ export class RegisterOwnerModalComponent implements OnInit {
     this.form = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
+      email: ['', [Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       phone: ['', Validators.required],
+      ci: [''],
       birthdate: [null],
       isInvestor: [false, Validators.required],
       id: [null]

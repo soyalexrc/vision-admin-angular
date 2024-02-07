@@ -20,7 +20,7 @@
   }} de propiedad
 </h2>
 
-<nz-steps nzSize="small" [nzCurrent]="index" (nzIndexChange)="isEditing ? index = $event : null">
+<nz-steps nzSize="small" [nzCurrent]="index" (nzIndexChange)="isEditing ? index = $event : index = $event">
   <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
   <nz-step nzTitle="Ubicacion" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
   <nz-step nzTitle="Fotografias" [nzStatus]="getStatusBasedOnIndex(index).third"></nz-step>
