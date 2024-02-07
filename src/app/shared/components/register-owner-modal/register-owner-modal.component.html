@@ -43,12 +43,11 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="email">Correo electronico</nz-form-label>
+            <nz-form-label nzFor="email">Correo electronico</nz-form-label>
             <nz-form-control [nzErrorTip]="emailErrTemp">
               <input type="text" style="width: 100%" nz-input formControlName="email"
                      placeholder="Correo electronico"/>
               <ng-template #emailErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar un email!</ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">Ingresa un email valido!</ng-container>
               </ng-template>
             </nz-form-control>
@@ -70,12 +69,18 @@
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="birthdate">Fecha de nacimiento</nz-form-label>
-            <nz-form-control [nzErrorTip]="birthdateErrTemp">
+            <nz-form-label nzRequired nzFor="ci">Cedula de identidad</nz-form-label>
+            <nz-form-control>
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="ci"
+                     placeholder="Numero de C.I."/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label  nzFor="birthdate">Fecha de nacimiento</nz-form-label>
+            <nz-form-control>
               <nz-date-picker style="width: 100%" formControlName="birthdate"></nz-date-picker>
-              <ng-template #birthdateErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar una fecha de nacimiento!</ng-container>
-              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>

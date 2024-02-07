@@ -8,53 +8,67 @@
     <div class="sidebar-logo">
       <a routerLink="/inicio">
         <img src="/assets/icons/vision-icon.png" alt="logo">
-        <h1 *ngIf="!isCollapsed">Vision inmobiliaria</h1>
+        <div *ngIf="!isCollapsed">
+          <h1>Vision inmobiliaria </h1>
+          <p>V {{ currentApplicationVersion }}</p>
+        </div>
       </a>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
 
-      <li nz-menu-item nzMatchRouter routerLink="/inicio" *ngIf="validateAccess('inicio')" [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
-        <span nz-icon nzType="appstore" nzTheme="outline"  style="margin-right: .5rem"> </span>
+      <li nz-menu-item nzMatchRouter routerLink="/inicio" *ngIf="validateAccess('inicio')"
+          [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+        <span nz-icon nzType="appstore" nzTheme="outline" style="margin-right: .5rem"> </span>
         <span style="width: 135px">Inicio</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/clientes" *ngIf="validateAccess('clientes')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/clientes" *ngIf="validateAccess('clientes')"
+          [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="user" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Clientes</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/propietarios" *ngIf="validateAccess('propietarios')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/propietarios" *ngIf="validateAccess('propietarios')"
+          [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="solution" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Propietarios</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/usuarios" *ngIf="validateAccess('usuarios')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/usuarios" *ngIf="validateAccess('usuarios')"
+          [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="idcard" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Usuarios</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/asesores-externos" *ngIf="validateAccess('asesores-externos')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/asesores-externos" *ngIf="validateAccess('asesores-externos')"
+          [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="team" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Asesores externos</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/aliados" *ngIf="validateAccess('aliados')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/aliados" *ngIf="validateAccess('aliados')"
+          [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="crown" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Aliados</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/propiedades" *ngIf="validateAccess('propiedades')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/propiedades" *ngIf="validateAccess('propiedades')"
+          [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="shop" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Propiedades</span>
       </li>
 
-      <li nz-menu-item nzMatchRouter routerLink="/administracion" *ngIf="validateAccess('administracion')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/administracion" *ngIf="validateAccess('administracion')"
+          [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="folder" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Administracion</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/flujo-de-caja" *ngIf="validateAccess('flujo-de-caja')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/flujo-de-caja" *ngIf="validateAccess('flujo-de-caja')"
+          [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="credit-card" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Flujo de caja</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/calculo-de-comisiones" *ngIf="validateAccess('calculo-de-comisiones')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/calculo-de-comisiones" *ngIf="validateAccess('calculo-de-comisiones')"
+          [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="table" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Calculo de comisiones</span>
       </li>
-      <li nz-menu-item nzMatchRouter routerLink="/gestion-de-archivos" *ngIf="validateAccess('gestion-de-archivos')"  [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
+      <li nz-menu-item nzMatchRouter routerLink="/gestion-de-archivos" *ngIf="validateAccess('gestion-de-archivos')"
+          [ngStyle]="{'left': isCollapsed ? '-45px' : 0}">
         <span nz-icon nzType="file-done" nzTheme="outline" style="margin-right: .5rem"></span>
         <span style="width: 135px">Gestion de archivos</span>
       </li>
@@ -75,7 +89,8 @@
   </nz-sider>
 
 
-  <div [ngClass]="{'right-side-full': !isCollapsed, 'right-side-collapsed': isCollapsed, 'small-right-side': isSmallScreen}">
+  <div
+    [ngClass]="{'right-side-full': !isCollapsed, 'right-side-collapsed': isCollapsed, 'small-right-side': isSmallScreen}">
     <div class="navbar">
          <span class="header-trigger hidden" (click)="isCollapsed = !isCollapsed">
             <span class="trigger"
@@ -83,15 +98,18 @@
                   [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
             ></span>
         </span>
-      <button class="visible" nz-button nzType="text" nzSize="large" (click)="open()"><span nz-icon nzType="menu"></span></button>
+      <button class="visible" nz-button nzType="text" nzSize="large" (click)="open()"><span nz-icon
+                                                                                            nzType="menu"></span>
+      </button>
       <div style="display: flex; align-items: center">
         <div style="margin-right: .5rem;">
-          <p class="user-name">{{user.username}}</p>
+          <p class="user-name">{{ user.username }}</p>
           <p class="user-role">
-            <span>{{user.userType}}</span>
+            <span>{{ user.userType }}</span>
           </p>
         </div>
-        <nz-avatar [nzText]="shortener(user.username ?? '')" nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomLeft" nzSize="large" style="color:#f56a00; background-color:#fde3cf;"></nz-avatar>
+        <nz-avatar [nzText]="shortener(user.username ?? '')" nz-dropdown [nzDropdownMenu]="menu"
+                   nzPlacement="bottomLeft" nzSize="large" style="color:#f56a00; background-color:#fde3cf;"></nz-avatar>
       </div>
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu>
@@ -114,50 +132,51 @@
     (nzOnClose)="close()"
   >
     <ng-container *nzDrawerContent>
-      <ul nz-menu nzTheme="dark" nzMode="inline" >
+      <ul nz-menu nzTheme="dark" nzMode="inline">
 
-        <li nz-menu-item nzMatchRouter routerLink="/inicio" *ngIf="validateAccess('inicio')"  >
-          <span nz-icon nzType="appstore" nzTheme="outline"  style="margin-right: .5rem"> </span>
+        <li nz-menu-item nzMatchRouter routerLink="/inicio" *ngIf="validateAccess('inicio')">
+          <span nz-icon nzType="appstore" nzTheme="outline" style="margin-right: .5rem"> </span>
           <span style="width: 135px">Inicio</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/clientes" *ngIf="validateAccess('clientes')" >
+        <li nz-menu-item nzMatchRouter routerLink="/clientes" *ngIf="validateAccess('clientes')">
           <span nz-icon nzType="user" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Clientes</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/propietarios" *ngIf="validateAccess('propietarios')" >
+        <li nz-menu-item nzMatchRouter routerLink="/propietarios" *ngIf="validateAccess('propietarios')">
           <span nz-icon nzType="solution" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Propietarios</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/usuarios" *ngIf="validateAccess('usuarios')" >
+        <li nz-menu-item nzMatchRouter routerLink="/usuarios" *ngIf="validateAccess('usuarios')">
           <span nz-icon nzType="idcard" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Usuarios</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/asesores-externos" *ngIf="validateAccess('asesores-externos')" >
+        <li nz-menu-item nzMatchRouter routerLink="/asesores-externos" *ngIf="validateAccess('asesores-externos')">
           <span nz-icon nzType="team" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Asesores externos</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/aliados" *ngIf="validateAccess('aliados')" >
+        <li nz-menu-item nzMatchRouter routerLink="/aliados" *ngIf="validateAccess('aliados')">
           <span nz-icon nzType="crown" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Aliados</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/propiedades" *ngIf="validateAccess('propiedades')" >
+        <li nz-menu-item nzMatchRouter routerLink="/propiedades" *ngIf="validateAccess('propiedades')">
           <span nz-icon nzType="shop" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Propiedades</span>
         </li>
 
-        <li nz-menu-item nzMatchRouter routerLink="/administracion" *ngIf="validateAccess('administracion')" >
+        <li nz-menu-item nzMatchRouter routerLink="/administracion" *ngIf="validateAccess('administracion')">
           <span nz-icon nzType="folder" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Administracion</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/flujo-de-caja" *ngIf="validateAccess('flujo-de-caja')" >
+        <li nz-menu-item nzMatchRouter routerLink="/flujo-de-caja" *ngIf="validateAccess('flujo-de-caja')">
           <span nz-icon nzType="credit-card" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Flujo de caja</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/calculo-de-comisiones" *ngIf="validateAccess('calculo-de-comisiones')" >
+        <li nz-menu-item nzMatchRouter routerLink="/calculo-de-comisiones"
+            *ngIf="validateAccess('calculo-de-comisiones')">
           <span nz-icon nzType="table" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Calculo de comisiones</span>
         </li>
-        <li nz-menu-item nzMatchRouter routerLink="/gestion-de-archivos" *ngIf="validateAccess('gestion-de-archivos')" >
+        <li nz-menu-item nzMatchRouter routerLink="/gestion-de-archivos" *ngIf="validateAccess('gestion-de-archivos')">
           <span nz-icon nzType="file-done" nzTheme="outline" style="margin-right: .5rem"></span>
           <span style="width: 135px">Gestion de archivos</span>
         </li>

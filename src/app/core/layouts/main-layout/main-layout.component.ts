@@ -9,6 +9,7 @@ import {User} from "../../interfaces/user";
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {CustomBreakpoints} from "../../constants/custom-breakpoints";
 import {tap} from "rxjs/operators";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-main-layout',
@@ -23,6 +24,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   isSmallScreen = window.innerWidth < 900;
   private userSubscription = new Subscription();
   canSeeDashboard!: boolean;
+  currentApplicationVersion = environment.appVersion;
+
 
   readonly breakpoint$ = this.breakpointObserver.observe(
     [

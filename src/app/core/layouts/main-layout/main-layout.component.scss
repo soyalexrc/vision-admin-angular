@@ -43,12 +43,27 @@ nz-sider {
 
 .sidebar-logo {
   position: relative;
-  height: 64px;
+  min-height: 64px;
   padding-left: 24px;
   overflow: hidden;
-  line-height: 64px;
+  //line-height: 64px;
   background: #001529;
   transition: all .3s;
+  display: flex;
+  align-items: center;
+
+  a {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  p, h1 {
+    margin: 0;
+  }
+
+  div {
+    margin: 0 0 0 20px;
+  }
 }
 
 .sidebar-logo img {
@@ -60,7 +75,6 @@ nz-sider {
 
 .sidebar-logo h1 {
   display: inline-block;
-  margin: 0 0 0 20px;
   color: #fff;
   font-weight: 600;
   font-size: 14px;
@@ -134,11 +148,6 @@ nz-content {
   font-weight: bold;
   color: gray
 }
-
-.ant-drawer-header {
-  background-color: red!important;
-}
-
 
 
 @media screen and (min-width: 1180px) {
