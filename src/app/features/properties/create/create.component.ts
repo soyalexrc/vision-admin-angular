@@ -49,7 +49,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   loadingDocument = false;
   isEditing = false;
   id: any;
-  index = 0;
+  index = 5;
   imagesSubscription = new Subscription();
   routerSubscription = new Subscription();
   documentsSubscription = new Subscription();
@@ -68,6 +68,7 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   showRegisterOwnersModal = false;
   showRegisterAlliesModal = false;
+  showRegisterExternalAdviserModal = false;
   ownersLoading = true;
   firstRender = false;
   creatingFromStoredData = false;

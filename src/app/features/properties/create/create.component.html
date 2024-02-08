@@ -696,16 +696,16 @@
 
       <nz-divider></nz-divider>
 
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem">
-        <h3>Datos de captacion externa</h3>
-        <button nz-button nzType="link" (click)="showRegisterAlliesModal = true">
-          <span nz-icon nzType="plus"></span>
-          Registrar nuevo aliado
-        </button>
-      </div>
-
+        <h3 style="text-align: center; margin-bottom: 1rem">Datos de captacion externa</h3>
       <div nz-row [nzGutter]="16" class="row">
         <div nz-col [nzSpan]="12">
+          <div style="display: flex; justify-content: flex-end">
+            <button nz-button nzType="link" (click)="showRegisterAlliesModal = true">
+              <span nz-icon nzType="plus"></span>
+              Registrar nuevo aliado
+            </button>
+          </div>
+
           <nz-form-item>
             <nz-form-label nzFor="ally">Aliado</nz-form-label>
             <nz-form-control>
@@ -718,6 +718,13 @@
         </div>
 
         <div nz-col [nzSpan]="12">
+          <div style="display: flex; justify-content: flex-end">
+            <button nz-button nzType="link" (click)="showRegisterExternalAdviserModal = true">
+              <span nz-icon nzType="plus"></span>
+              Registrar nuevo asesor externo
+            </button>
+          </div>
+
           <nz-form-item>
             <nz-form-label nzFor="externalAdviser">Captacion asesor externo</nz-form-label>
             <nz-form-control>
@@ -978,6 +985,10 @@
 <app-register-ally-modal (onClose)="showRegisterAlliesModal = false" (onFinished)="getAllies()"
                          (onCancel)="showRegisterAlliesModal = $event"
                          [showModal]="showRegisterAlliesModal"></app-register-ally-modal>
+
+<app-register-external-adviser-modal (onClose)="showRegisterExternalAdviserModal = false" (onFinished)="getExternalAdvisers()"
+                         (onCancel)="showRegisterExternalAdviserModal = $event"
+                         [showModal]="showRegisterExternalAdviserModal"></app-register-external-adviser-modal>
 
 <app-reorder-images-modal [showModal]="showOrderModal" (onCancel)="showOrderModal = false" [images]="images"
                           (onClose)="showOrderModal = false"
