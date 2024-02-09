@@ -29,6 +29,7 @@ export class CreateComponent implements OnInit {
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       phone: ['', Validators.required],
+      realStateName: ['', Validators.required],
       id: [null]
     })
 

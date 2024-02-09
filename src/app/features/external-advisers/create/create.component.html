@@ -66,6 +66,18 @@
           </nz-form-control>
         </nz-form-item>
       </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="realStateName">Nombre de inmobiliaria</nz-form-label>
+          <nz-form-control [nzErrorTip]="realStateNameErrTemp">
+            <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="realStateName"
+                   placeholder="Nombre de inmobiliaria"/>
+            <ng-template #realStateNameErrTemp let-control>
+              <ng-container *ngIf="control.hasError('required')">Debes ingresar un numero de telefono!</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
     </div>
     <div>
       <button nz-button nzType="primary" nzBlock type="submit" [disabled]="form.invalid" [nzLoading]="loading">Guardar cambios</button>

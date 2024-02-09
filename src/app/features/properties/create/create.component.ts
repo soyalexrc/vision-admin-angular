@@ -41,6 +41,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   locationForm!: FormGroup;
   attributesForm!: FormGroup;
   distributionForm!: FormGroup;
+  adjacenciesForm!: FormGroup;
+  servicesForm!: FormGroup;
   equipmentForm!: FormGroup;
   negotiationForm!: FormGroup;
   documentsForm!: FormGroup;
@@ -68,6 +70,7 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   showRegisterOwnersModal = false;
   showRegisterAlliesModal = false;
+  showRegisterExternalAdviserModal = false;
   ownersLoading = true;
   firstRender = false;
   creatingFromStoredData = false;
@@ -119,7 +122,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       //   .subscribe((event: NavigationStart) => {
       //     this.saveTemporalChanges()
       //   });
-      this.populateDistributionWhenCreate()
+      this.populateDistributionAdjacenciesAndServicesWhenCreate()
       this.getAutomaticPropertyCode();
       // if (localStorage.getItem('property_create_temporal')) {
       //   this.modal.confirm({
@@ -169,18 +172,10 @@ export class CreateComponent implements OnInit, OnDestroy {
       publicationTitle: ['', Validators.required],
       footageBuilding: [''],
       footageGround: [''],
-      nomenclature: [''],
       propertyCondition: [''],
       operationType: ['', Validators.required],
       status: ['Incompleto'],
       propertyType: ['', Validators.required],
-      conlallave: [false],
-      facebook: [false],
-      instagram: [false],
-      mercadolibre: [false],
-      whatsapp: [false],
-      tiktok: [false],
-      publicationOnBuilding: [false],
       handoverKeys: [false],
       propertyExclusivity: [''],
       termsAndConditionsAccepted: [false],
@@ -191,7 +186,9 @@ export class CreateComponent implements OnInit, OnDestroy {
       state: ['', Validators.required],
       city: ['', Validators.required],
       municipality: [''],
+      nomenclature: [''],
       avenue: [''],
+      tower: [''],
       street: [''],
       howToGet: [''],
       parkingLevel: [''],
@@ -212,26 +209,39 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.distributionForm = this.fb.group({
       distribution: this.fb.array([])
     })
+
+    this.adjacenciesForm = this.fb.group({
+      adjacencies: this.fb.array([])
+    })
+
+    this.servicesForm = this.fb.group({
+      services: this.fb.array([])
+    })
     this.equipmentForm = this.fb.group({
       equipment: this.fb.array([])
     })
 
     this.negotiationForm = this.fb.group({
       price: ['', [Validators.required, Validators.minLength(1)]],
-      owner: [{value: null, disabled: false}, Validators.required],
-      attorneyPhone: [''],
-      attorneyEmail: ['', Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)],
-      attorneyFirstName: [''],
-      attorneyLastName: [''],
       minimumNegotiation: ['', Validators.minLength(1)],
       reasonToSellOrRent: [''],
       externalAdviser: [null],
       ally: [null],
       partOfPayment: [''],
+      socialMedia: [false],
+      realStateWebPages: [false],
+      realStateGroups: [false],
+      mouthToMouth: [false],
+      publicationOnBuilding: [false],
       user: [this.userService.currentUser.value.id, Validators.required]
     })
 
     this.documentsForm = this.fb.group({
+      owner: [{value: null, disabled: false}, Validators.required],
+      attorneyPhone: [''],
+      attorneyEmail: ['', Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)],
+      attorneyFirstName: [''],
+      attorneyLastName: [''],
       propertyDoc: [false],
       CIorRIF: [false],
       ownerCIorRIF: [false],
@@ -264,9 +274,11 @@ export class CreateComponent implements OnInit, OnDestroy {
         attributes: this.attributes.value,
         equipment: this.equipment.value,
         distribution: this.distribution.value,
+        adjacencies: this.adjacencies.value,
+        services: this.services.value,
         user_id: this.negotiationForm.get('user')?.value,
         external_adviser_id: this.negotiationForm.get('externalAdviser')?.value,
-        owner_id: this.negotiationForm.get('owner')?.value,
+        owner_id: this.documentsForm.get('owner')?.value,
         ally_id: this.negotiationForm.get('ally')?.value === '' ? null : this.negotiationForm.get('ally')?.value,
       };
 
@@ -274,7 +286,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       data.negotiationInformation.minimumNegotiation = !data.negotiationInformation.minimumNegotiation ? '0' : data.negotiationInformation.minimumNegotiation.replace(/[^0-9.]+/g, '').trim();
 
       delete data.negotiationInformation.externalAdviser;
-      delete data.negotiationInformation.owner;
+      delete data.documentsInformation.owner;
       delete data.negotiationInformation.ally;
       delete data.negotiationInformation.user;
       delete data.generalInformation.publicationTitle;
@@ -311,7 +323,6 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.propertyService.getById(id).subscribe(result => {
       this.generalForm.get('code')?.patchValue(result.generalInformation.code);
       this.generalForm.get('user')?.patchValue(result.user_id);
-      this.generalForm.get('nomenclature')?.patchValue(result.generalInformation.nomenclature);
       this.generalForm.get('footageBuilding')?.patchValue(result.generalInformation.footageBuilding);
       this.generalForm.get('footageGround')?.patchValue(result.generalInformation.footageGround);
       this.generalForm.get('description')?.patchValue(result.generalInformation.description);
@@ -320,17 +331,15 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.generalForm.get('operationType')?.patchValue(result.generalInformation.operationType);
       this.generalForm.get('publicationTitle')?.patchValue(result.publicationTitle);
       this.generalForm.get('propertyCondition')?.patchValue(result.generalInformation.propertyCondition);
-      this.generalForm.get('conlallave')?.patchValue(result.generalInformation.conlallave)
-      this.generalForm.get('facebook')?.patchValue(result.generalInformation.facebook)
-      this.generalForm.get('instagram')?.patchValue(result.generalInformation.instagram)
-      this.generalForm.get('tiktok')?.patchValue(result.generalInformation.tiktok)
+
       this.generalForm.get('propertyExclusivity')?.patchValue(result.generalInformation.propertyExclusivity)
-      this.generalForm.get('mercadolibre')?.patchValue(result.generalInformation.mercadolibre)
-      this.generalForm.get('whatsapp')?.patchValue(result.generalInformation.whatsapp)
-      this.generalForm.get('publicationOnBuilding')?.patchValue(result.generalInformation.publicationOnBuilding)
       this.generalForm.get('termsAndConditionsAccepted')?.patchValue(result.generalInformation.termsAndConditionsAccepted)
       this.generalForm.get('handoverKeys')?.patchValue(result.generalInformation.handoverKeys)
 
+      this.documentsForm.get('attorneyPhone')?.patchValue(result.documentsInformation.attorneyPhone)
+      this.documentsForm.get('attorneyEmail')?.patchValue(result.documentsInformation.attorneyEmail)
+      this.documentsForm.get('attorneyFirstName')?.patchValue(result.documentsInformation.attorneyFirstName)
+      this.documentsForm.get('attorneyLastName')?.patchValue(result.documentsInformation.attorneyLastName)
       this.documentsForm.get('propertyDoc')?.patchValue(result.documentsInformation.propertyDoc)
       this.documentsForm.get('CIorRIF')?.patchValue(result.documentsInformation.CIorRIF)
       this.documentsForm.get('ownerCIorRIF')?.patchValue(result.documentsInformation.ownerCIorRIF)
@@ -345,9 +354,12 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.documentsForm.get('condominiumSolvency')?.patchValue(result.documentsInformation.condominiumSolvency)
       this.documentsForm.get('condominiumSolvencyDetails')?.patchValue(result.documentsInformation.condominiumSolvencyDetails)
       this.documentsForm.get('mainProperty')?.patchValue(result.documentsInformation.mainProperty)
+      this.documentsForm.get('owner')?.patchValue(result.owner_id);
 
       this.locationForm.get('city')?.patchValue(result.locationInformation.city);
       this.locationForm.get('state')?.patchValue(result.locationInformation.state);
+      this.locationForm.get('nomenclature')?.patchValue(result.locationInformation.nomenclature);
+      this.locationForm.get('tower')?.patchValue(result.locationInformation.tower);
       this.locationForm.get('amountOfFloors')?.patchValue(result.locationInformation.amountOfFloors);
       this.locationForm.get('country')?.patchValue(result.locationInformation.country);
       this.locationForm.get('municipality')?.patchValue(result.locationInformation.municipality);
@@ -388,6 +400,25 @@ export class CreateComponent implements OnInit, OnDestroy {
         }))
       })
 
+      result.adjacencies.forEach(dist => {
+        this.adjacencies.push(this.fb.group({
+          type: [dist.type],
+          label: [dist.label],
+          placeholder: [dist.placeholder],
+          options: [dist.options],
+          value: [dist.value],
+        }))
+      })
+      result.services.forEach(dist => {
+        this.services.push(this.fb.group({
+          type: [dist.type],
+          label: [dist.label],
+          placeholder: [dist.placeholder],
+          options: [dist.options],
+          value: [dist.value],
+        }))
+      })
+
 
       result.distribution.forEach(dist => {
         this.distribution.push(this.fb.group({
@@ -419,11 +450,15 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.negotiationForm.get('ally')?.disable();
       this.negotiationForm.get('externalAdviser')?.patchValue(result.external_adviser_id);
       this.negotiationForm.get('externalAdviser')?.disable();
-      this.negotiationForm.get('owner')?.patchValue(result.owner_id);
       this.negotiationForm.get('contactEmail')?.patchValue(result.negotiationInformation.contactEmail);
       this.negotiationForm.get('contactFirstName')?.patchValue(result.negotiationInformation.contactFirstName);
       this.negotiationForm.get('contactLastName')?.patchValue(result.negotiationInformation.contactLastName);
       this.negotiationForm.get('contactPhone')?.patchValue(result.negotiationInformation.contactPhone);
+      this.negotiationForm.get('socialMedia')?.patchValue(result.negotiationInformation.socialMedia)
+      this.negotiationForm.get('realStateWebPages')?.patchValue(result.negotiationInformation.realStateWebPages)
+      this.negotiationForm.get('realStateGroups')?.patchValue(result.negotiationInformation.realStateGroups)
+      this.negotiationForm.get('mouthToMouth')?.patchValue(result.negotiationInformation.mouthToMouth)
+      this.negotiationForm.get('publicationOnBuilding')?.patchValue(result.negotiationInformation.publicationOnBuilding)
 
       result.files.forEach(file => {
         this.fileService.storeDocument(file);
@@ -440,22 +475,17 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     this.generalForm.get('code')?.patchValue(data.generalInformation.code);
     this.generalForm.get('user')?.patchValue(data.user_id);
-    this.generalForm.get('nomenclature')?.patchValue(data.generalInformation.nomenclature);
     this.generalForm.get('footageBuilding')?.patchValue(data.generalInformation.footageBuilding);
     this.generalForm.get('footageGround')?.patchValue(data.generalInformation.footageGround);
     this.generalForm.get('description')?.patchValue(data.generalInformation.description);
     this.generalForm.get('propertyType')?.patchValue(data.generalInformation.propertyType);
     this.generalForm.get('operationType')?.patchValue(data.generalInformation.operationType);
     this.generalForm.get('propertyCondition')?.patchValue(data.generalInformation.propertyCondition);
-    this.generalForm.get('conlallave')?.patchValue(data.generalInformation.conlallave)
-    this.generalForm.get('facebook')?.patchValue(data.generalInformation.facebook)
-    this.generalForm.get('instagram')?.patchValue(data.generalInformation.instagram)
-    this.generalForm.get('tiktok')?.patchValue(data.generalInformation.tiktok)
-    this.generalForm.get('mercadolibre')?.patchValue(data.generalInformation.mercadolibre)
-    this.generalForm.get('whatsapp')?.patchValue(data.generalInformation.whatsapp)
-
 
     this.locationForm.get('city')?.patchValue(data.locationInformation.city);
+    this.locationForm.get('nomenclature')?.patchValue(data.locationInformation.nomenclature);
+    this.locationForm.get('tower')?.patchValue(data.locationInformation.tower);
+
     this.locationForm.get('state')?.patchValue(data.locationInformation.state);
     this.locationForm.get('amountOfFloors')?.patchValue(data.locationInformation.amountOfFloors);
     this.locationForm.get('country')?.patchValue(data.locationInformation.country);
@@ -475,11 +505,18 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.negotiationForm.get('minimunNegotiation')?.patchValue(data.negotiationInformation.minimumNegotiation);
     this.negotiationForm.get('reasonToSellOrRent')?.patchValue(data.negotiationInformation.reasonToSellOrRent);
     this.negotiationForm.get('externalAdviser')?.patchValue(data.external_adviser_id);
-    this.negotiationForm.get('owner')?.patchValue(data.negotiationInformation.owner);
     this.negotiationForm.get('contactEmail')?.patchValue(data.negotiationInformation.contactEmail);
     this.negotiationForm.get('contactFirstName')?.patchValue(data.negotiationInformation.contactFirstName);
     this.negotiationForm.get('contactLastName')?.patchValue(data.negotiationInformation.contactLastName);
     this.negotiationForm.get('contactPhone')?.patchValue(data.negotiationInformation.contactPhone);
+    this.negotiationForm.get('socialMedia')?.patchValue(data.negotiationInformation.socialMedia)
+    this.negotiationForm.get('realStateWebPages')?.patchValue(data.negotiationInformation.realStateWebPages)
+    this.negotiationForm.get('realStateGroups')?.patchValue(data.negotiationInformation.realStateGroups)
+    this.negotiationForm.get('mouthToMouth')?.patchValue(data.negotiationInformation.mouthToMouth)
+    this.negotiationForm.get('publicationOnBuilding')?.patchValue(data.negotiationInformation.publicationOnBuilding);
+
+    this.documentsForm.get('owner')?.patchValue(data.documentsInformation.owner);
+
 
 
     data.files.forEach((file: string) => {
@@ -629,6 +666,12 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   get distribution() {
     return this.distributionForm.controls['distribution'] as FormArray;
+  }
+  get adjacencies() {
+    return this.adjacenciesForm.controls['adjacencies'] as FormArray;
+  }
+  get services() {
+    return this.servicesForm.controls['services'] as FormArray;
   }
   get equipment() {
     return this.equipmentForm.controls['equipment'] as FormArray;
@@ -858,14 +901,19 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  populateDistributionWhenCreate() {
-    const data = [
+  populateDistributionAdjacenciesAndServicesWhenCreate() {
+    const distributionData = [
       {label: 'Habitaciones', value: null, type: 'check', options: '', placeholder: ''},
       {label: 'Bano completo', value: null, type: 'check', options: '', placeholder: ''},
       {label: 'Medio bano', value: null, type: 'check', options: '', placeholder: ''},
-      {label: 'Puestos de estacionamiento', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Puestos de estacionamiento techados', value: null, type: 'text', options: '', placeholder: ''},
+      {label: 'Puestos de estacionamiento sin techar', value: null, type: 'text', options: '', placeholder: ''},
       {label: 'Sala / comedor', value: null, type: 'check', options: '', placeholder: ''},
-      {label: 'Cocina empotrada', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Salón principal', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Comedor aparte', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Salón secundario', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Sala de estar', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Área de cocina', value: null, type: 'check', options: '', placeholder: ''},
       {label: 'Porche', value: null, type: 'check', options: '', placeholder: ''},
       {label: 'Patio', value: null, type: 'check', options: '', placeholder: ''},
       {label: 'Lavadero', value: null, type: 'check', options: '', placeholder: ''},
@@ -878,7 +926,62 @@ export class CreateComponent implements OnInit, OnDestroy {
       {label: 'Otras areas', value: null, type: 'text', options: '', placeholder: 'Especificar'},
     ];
 
-    data.forEach(item => {
+    const adjacenciesData = [
+      {label: 'Autopista', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Avenidas principales', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Estación de servicio', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Supermercados', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Transporte público', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Centros Comerciales', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Comercios varios', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Centros educativos', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Centros de salud', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Farmacias', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Panadería', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Bancos', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Restaurantes', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'Hoteles', value: null, type: 'check', options: '', placeholder: ''},
+    ]
+
+    const servicesData = [
+      {label: 'GAS DIRECTO', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'GAS DE BOMBONA', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'AGUA DE POZO ', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'AGUA DE TANQUE (GRAN CAPACIDAD)', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'AGUA DE TANQUE RACIONADA ', value: null, type: 'text', options: '', placeholder: 'HORARIO'},
+      {label: 'AGUAS BLANCAS ', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'AGUAS SERVIDAS', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'INTERNET', value: null, type: 'text', options: '', placeholder: 'EMPRESA'},
+      {label: 'LINEA CANTV', value: null, type: 'check', options: '', placeholder: ''},
+      {label: 'SERVICIO DE TELEVISIÓN', value: null, type: 'check', options: '', placeholder: 'EMPRESA'},
+    ]
+
+
+    adjacenciesData.forEach(item => {
+      this.adjacencies.push(
+        this.fb.group({
+          label: item.label,
+          placeholder: item.placeholder,
+          value: item.value,
+          type: item.type,
+          options: item.options
+        })
+      )
+    })
+
+    servicesData.forEach(item => {
+      this.services.push(
+        this.fb.group({
+          label: item.label,
+          placeholder: item.placeholder,
+          value: item.value,
+          type: item.type,
+          options: item.options
+        })
+      )
+    })
+
+    distributionData.forEach(item => {
       this.distribution.push(
         this.fb.group({
           label: item.label,

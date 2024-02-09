@@ -27,6 +27,7 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
 import {DraggableGridComponent} from "./components/draggable-grid/draggable-grid.component";
 import { DocumentInputDirective } from './directives/document-input.directive';
 import {NzTagModule} from "ng-zorro-antd/tag";
+import { RegisterExternalAdviserModalComponent } from './components/register-external-adviser-modal/register-external-adviser-modal.component';
 
 
 
@@ -44,21 +45,23 @@ import {NzTagModule} from "ng-zorro-antd/tag";
     ConfigServicesModalComponent,
     DraggableGridComponent,
     DocumentInputDirective,
+    RegisterExternalAdviserModalComponent,
   ],
-  exports: [
-    SectionTitleComponent,
-    GenericTableComponent,
-    RegisterOwnerModalComponent,
-    OnlyNumbersDirective,
-    TextShortenerPipe,
-    CurrencyInputDirective,
-    SlugTransformDirective,
-    SlugTransformDirective,
-    RegisterAllyModalComponent,
-    ConfigServicesModalComponent,
-    DraggableGridComponent,
-    DocumentInputDirective,
-  ],
+    exports: [
+        SectionTitleComponent,
+        GenericTableComponent,
+        RegisterOwnerModalComponent,
+        OnlyNumbersDirective,
+        TextShortenerPipe,
+        CurrencyInputDirective,
+        SlugTransformDirective,
+        SlugTransformDirective,
+        RegisterAllyModalComponent,
+        ConfigServicesModalComponent,
+        DraggableGridComponent,
+        DocumentInputDirective,
+        RegisterExternalAdviserModalComponent,
+    ],
   imports: [
     CommonModule,
     NzTableModule,

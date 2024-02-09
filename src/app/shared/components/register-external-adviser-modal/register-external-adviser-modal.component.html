@@ -1,0 +1,84 @@
+
+<nz-modal
+  [nzStyle]="{width: '500px'}"
+  [(nzVisible)]="showModal"
+  nzTitle="Registrar nuevo asesor externo"
+  (nzOnCancel)="onCancel.emit(false)"
+  (nzOnOk)="handleOkModal()"
+  nzOkText="Registrar"
+  [nzOkLoading]="loading"
+  nzCancelText="Cancelar"
+  [nzOkDisabled]="form.invalid"
+>
+  <ng-container *nzModalContent>
+    <form [formGroup]="form">
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="firstName">Nombre</nz-form-label>
+            <nz-form-control [nzErrorTip]="firsNameErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="firstName"
+                     placeholder="Nombre"/>
+              <ng-template #firsNameErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un nombre!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="lastName">Apellido</nz-form-label>
+            <nz-form-control [nzErrorTip]="lastNameErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="lastName"
+                     placeholder="Apellido"/>
+              <ng-template #lastNameErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un apellido!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+
+      </div>
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="email">Correo electronico</nz-form-label>
+            <nz-form-control [nzErrorTip]="emailErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="email"
+                     placeholder="Correo electronico"/>
+              <ng-template #emailErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un email!</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">Ingresa un email valido!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="phone">Numero de telefono</nz-form-label>
+            <nz-form-control [nzErrorTip]="phoneErrTemp">
+              <input type="text" appOnlyNumbers style="width: 100%" nz-input formControlName="phone"
+                     placeholder="Numero de telefono"/>
+              <ng-template #phoneErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un numero de telefono!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="realStateName">Nombre de inmobiliaria</nz-form-label>
+            <nz-form-control [nzErrorTip]="realStateNameErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="realStateName"
+                     placeholder="Nombre de inmobiliaria"/>
+              <ng-template #realStateNameErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un Nombre de inmobiliaria!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</nz-modal>
