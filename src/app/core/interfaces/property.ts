@@ -55,6 +55,8 @@ export interface PropertyFull {
   locationInformation: LocationInformation;
   negotiationInformation: NegotiationInformation;
   distribution: Distribution[];
+  adjacencies: Adjacencies[];
+  services: Adjacencies[];
   equipment: Equipment[]
   client?: null | Client;
 }
@@ -75,6 +77,15 @@ export interface Attribute {
   value: null;
 }
 export interface Distribution {
+  type: FormType;
+  label: string;
+  placeholder: null | string;
+  options: null | string;
+  value: null | string | boolean;
+}
+
+
+export interface Adjacencies {
   type: FormType;
   label: string;
   placeholder: null | string;
@@ -109,7 +120,6 @@ export interface GeneralInformation {
   status: string;
   code: string;
   publicationTitle: string;
-  nomenclature: string;
   footageGround: string;
   footageBuilding: string;
   description: string;
@@ -117,20 +127,17 @@ export interface GeneralInformation {
   propertyType: string;
   propertyExclusivity: string;
   propertyCondition: string;
-  instagram: boolean;
-  facebook: boolean;
-  tiktok: boolean;
-  mercadolibre: boolean;
-  whatsapp: boolean;
-  publicationOnBuilding: boolean;
   termsAndConditionsAccepted: boolean;
-  conlallave: boolean;
   handoverKeys: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface DocumentsInformation {
+  attorneyEmail: string;
+  attorneyPhone: string;
+  attorneyFirstName: string;
+  attorneyLastName: string;
   propertyDoc: boolean;
   CIorRIF: boolean;
   ownerCIorRIF: boolean;
@@ -152,6 +159,8 @@ export interface DocumentsInformation {
 export interface LocationInformation {
   id: number;
   property_id: number;
+  tower: string;
+  nomenclature: string;
   location: string;
   amountOfFloors: string;
   isClosedStreet: string;
@@ -187,11 +196,12 @@ export interface NegotiationInformation {
   contactLastName: string;
   contactPhone: string;
   contactEmail: string;
-  attorneyEmail: string;
-  attorneyPhone: string;
-  attorneyFirstName: string;
-  attorneyLastName: string;
   partOfPayment: string;
+  mouthToMouth: boolean;
+  socialMedia: boolean;
+  realStateWebPages: boolean;
+  realStateGroups: boolean;
+  publicationOnBuilding: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -22,19 +22,36 @@
 
 <nz-steps nzSize="small" [nzCurrent]="index" (nzIndexChange)="isEditing ? index = $event : null">
   <nz-step nzTitle="General" [nzStatus]="getStatusBasedOnIndex(index).first"></nz-step>
-  <nz-step nzTitle="Ubicacion" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
+  <nz-step [nzTitle]="locationTitle" [nzStatus]="getStatusBasedOnIndex(index).second"></nz-step>
   <nz-step nzTitle="Fotografias" [nzStatus]="getStatusBasedOnIndex(index).third"></nz-step>
-  <nz-step nzTitle="Dist. y equipos" [nzStatus]="getStatusBasedOnIndex(index).fourth"></nz-step>
-  <nz-step nzTitle="Atributos" [nzStatus]="getStatusBasedOnIndex(index).fifth"></nz-step>
-  <nz-step nzTitle="Negociacion" [nzStatus]="getStatusBasedOnIndex(index).sixth"></nz-step>
+  <nz-step [nzTitle]="distributionTitle" [nzStatus]="getStatusBasedOnIndex(index).fourth"></nz-step>
+  <nz-step [nzTitle]="attributesTitle" [nzStatus]="getStatusBasedOnIndex(index).fifth"></nz-step>
+  <nz-step [nzTitle]="negotiationTitle" [nzStatus]="getStatusBasedOnIndex(index).sixth"></nz-step>
   <nz-step nzTitle="Documentos" [nzStatus]="getStatusBasedOnIndex(index).last"></nz-step>
 </nz-steps>
+
+<ng-template #negotiationTitle>
+  <p>Neg. y Autorización  <br> de Publicidad</p>
+</ng-template>
+
+<ng-template #attributesTitle>
+  <p>Atributos  <br> y servicios</p>
+</ng-template>
+
+<ng-template #distributionTitle>
+  <p>Distribucion  <br> y equipos</p>
+</ng-template>
+
+<ng-template #locationTitle>
+  <p>Ubicacion  <br> y adyacencias</p>
+</ng-template>
+
 
 <ng-container *ngIf="index === 0">
   <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="generalForm">
     <div class="content">
       <div nz-row class="row" [nzGutter]="16">
-        <div nz-col [nzSpan]="7">
+        <div nz-col [nzSpan]="8">
           <nz-form-item>
             <nz-form-label nzFor="code">codigo</nz-form-label>
             <nz-form-control>
@@ -44,19 +61,53 @@
           </nz-form-item>
         </div>
 
-        <div nz-col [nzSpan]="7">
+        <div nz-col [nzSpan]="8">
           <nz-form-item>
-            <nz-form-label nzRequired nzFor="nomenclature">Nomenclatura</nz-form-label>
-            <nz-form-control [nzErrorTip]="nomenclatureErrTemp">
-              <input type="text" style="width: 100%" nz-input formControlName="nomenclature"
-                     placeholder="Nomenclatura"/>
-              <ng-template #nomenclatureErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar una nomenclatura!</ng-container>
+            <nz-form-label nzRequired nzFor="propertyType">Tipo de propiedad</nz-form-label>
+            <nz-form-control [nzErrorTip]="propertyTypeErrTemp">
+              <nz-select formControlName="propertyType" (ngModelChange)="handleSelectPropertyType($event)">
+                <nz-option *ngFor="let type of propertyTypes" [nzValue]="type" [nzLabel]="type"></nz-option>
+              </nz-select>
+              <ng-template #propertyTypeErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de propiedad!</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
 
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="propertyCondition">Tipo de mercado</nz-form-label>
+            <nz-form-control [nzErrorTip]="propertyConditionErrTemp">
+              <nz-select formControlName="propertyCondition">
+                <nz-option nzValue="Mercado Primario" nzLabel="Mercado Primario"></nz-option>
+                <nz-option nzValue="Mercado Secundario" nzLabel="Mercado Secundario"></nz-option>
+              </nz-select>
+              <ng-template #propertyConditionErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de mercado!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+      </div>
+
+      <div nz-row class="row" [nzGutter]="16">
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="operationType">Tipo de operacion</nz-form-label>
+            <nz-form-control [nzErrorTip]="operationTypeErrTemp">
+              <nz-select formControlName="operationType">
+                <nz-option nzValue="Venta" nzLabel="Venta"></nz-option>
+                <nz-option nzValue="Alquiler" nzLabel="Alquiler"></nz-option>
+                <nz-option nzValue="Traspaso" nzLabel="Traspaso"></nz-option>
+              </nz-select>
+              <ng-template #operationTypeErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de operacion!</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
         <div nz-col [nzSpan]="5">
           <nz-form-item>
             <nz-form-label nzRequired nzFor="footageGround">Metraje de terreno</nz-form-label>
@@ -82,52 +133,7 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-      </div>
-
-      <div nz-row class="row" [nzGutter]="16">
-        <div nz-col [nzSpan]="8">
-          <nz-form-item>
-            <nz-form-label nzRequired nzFor="operationType">Tipo de operacion</nz-form-label>
-            <nz-form-control [nzErrorTip]="operationTypeErrTemp">
-              <nz-select formControlName="operationType">
-                <nz-option nzValue="Venta" nzLabel="Venta"></nz-option>
-                <nz-option nzValue="Alquiler" nzLabel="Alquiler"></nz-option>
-                <nz-option nzValue="Traspaso" nzLabel="Traspaso"></nz-option>
-              </nz-select>
-              <ng-template #operationTypeErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de operacion!</ng-container>
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="8">
-          <nz-form-item>
-            <nz-form-label nzRequired nzFor="propertyType">Tipo de propiedad</nz-form-label>
-            <nz-form-control [nzErrorTip]="propertyTypeErrTemp">
-              <nz-select formControlName="propertyType" (ngModelChange)="handleSelectPropertyType($event)">
-                <nz-option *ngFor="let type of propertyTypes" [nzValue]="type" [nzLabel]="type"></nz-option>
-              </nz-select>
-              <ng-template #propertyTypeErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de propiedad!</ng-container>
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="8">
-          <nz-form-item>
-            <nz-form-label nzRequired nzFor="propertyCondition">Tipo de mercado</nz-form-label>
-            <nz-form-control [nzErrorTip]="propertyConditionErrTemp">
-              <nz-select formControlName="propertyCondition">
-                <nz-option nzValue="Mercado Primario" nzLabel="Mercado Primario"></nz-option>
-                <nz-option nzValue="Mercado Secundario" nzLabel="Mercado Secundario"></nz-option>
-              </nz-select>
-              <ng-template #propertyConditionErrTemp let-control>
-                <ng-container *ngIf="control.hasError('required')">Debes ingresar un tipo de mercado!</ng-container>
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="8">
+        <div nz-col [nzSpan]="6">
           <nz-form-item>
             <nz-form-label nzFor="propertyExclusivity">Exclusividad de inmueble</nz-form-label>
             <nz-form-control>
@@ -150,7 +156,6 @@
       </div>
 
       <nz-divider></nz-divider>
-
       <div nz-row class="row" [nzGutter]="16">
         <div nz-col [nzSpan]="24">
           <nz-form-item>
@@ -181,19 +186,6 @@
 
 
       </div>
-
-
-      <nz-divider></nz-divider>
-
-      <h3 style="font-weight: bold; margin-bottom: 1rem;">Este inmueble esta publicado en</h3>
-      <label nz-checkbox formControlName="facebook">Facebook</label> <br>
-      <label style="margin: 1rem 0" nz-checkbox formControlName="conlallave">Conlallave</label> <br>
-      <label nz-checkbox formControlName="instagram">Instagram</label> <br>
-      <label style="margin: 1rem 0" nz-checkbox formControlName="mercadolibre">Mercadolibre</label> <br>
-      <label nz-checkbox formControlName="whatsapp">Whatsapp</label> <br>
-      <label style="margin: 1rem 0" nz-checkbox formControlName="tiktok">TikTok</label> <br>
-      <label nz-checkbox formControlName="publicationOnBuilding">Publicacion en fachada</label>
-
     </div>
   </form>
 </ng-container>
@@ -302,6 +294,15 @@
             </nz-form-control>
           </nz-form-item>
         </div>
+        <div nz-col [nzSpan]="4">
+          <nz-form-item>
+            <nz-form-label nzFor="location">Torre</nz-form-label>
+            <nz-form-control>
+              <input type="text" style="width: 100%" nz-input formControlName="tower"
+                     placeholder="Calle"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
 
         <div nz-col [nzSpan]="6">
           <nz-form-item>
@@ -333,6 +334,18 @@
             <nz-form-control>
               <textarea rows="4" type="text" style="width: 100%" nz-input formControlName="referencePoint"
                         placeholder="Punto de referencia"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="nomenclature">Nomenclatura propiedad</nz-form-label>
+            <nz-form-control [nzErrorTip]="nomenclatureErrTemp">
+              <input type="text" style="width: 100%" nz-input formControlName="nomenclature"
+                     placeholder="Nomenclatura"/>
+              <ng-template #nomenclatureErrTemp let-control>
+                <ng-container *ngIf="control.hasError('required')">Debes ingresar una nomenclatura!</ng-container>
+              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -388,6 +401,47 @@
 
       </div>
 
+    </div>
+  </form>
+
+  <nz-divider></nz-divider>
+
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="adjacenciesForm">
+    <div class="content">
+      <h3 style="text-align: center; margin-bottom: 2rem;">Adyacencias</h3>
+      <ng-container formArrayName="distribution">
+
+        <div nz-row class="row" [nzGutter]="16">
+          <div nz-col [nzSpan]="8" *ngFor="let adjacenciesForm of adjacencies.controls, index as i">
+            <nz-form-item [formGroup]="getFormGroup(adjacenciesForm)">
+              <p *ngIf="adjacenciesForm.value.type !== 'check'"
+                 style="font-size: 12px !important; font-weight: bold">{{adjacenciesForm.value.label}}: </p>
+              <nz-form-control>
+                <ng-container *ngIf="adjacenciesForm.value.type === 'check'">
+                  <label nz-checkbox formControlName="value">
+                    <span style="font-size: 12px !important; font-weight: bold">{{adjacenciesForm.value.label}} </span>
+                  </label>
+                </ng-container>
+                <ng-container *ngIf="adjacenciesForm.value.type === 'text'">
+                  <input
+                    type="text"
+                    style="width: 200px"
+                    nz-input
+                    formControlName="value"
+                    [placeholder]="adjacenciesForm.value.placeholder"/>
+                </ng-container>
+                <ng-container
+                  *ngIf="adjacenciesForm.value.type === 'select'">
+                  <nz-radio-group formControlName="value">
+                    <label *ngFor="let option of adjacenciesForm.value.options.split('#')" nz-radio
+                           [nzValue]="option">{{option}}</label>
+                  </nz-radio-group>
+                </ng-container>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </ng-container>
     </div>
   </form>
 </ng-container>
@@ -554,6 +608,8 @@
 <ng-container *ngIf="index === 4">
   <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="attributesForm">
     <div class="content">
+      <h3 style="text-align: center; margin-bottom: 2rem;">Atributos</h3>
+
       <div *ngIf="generalForm.value['propertyType'] === '' " style="margin-top: 5rem">
         <nz-empty
           nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
@@ -583,7 +639,7 @@
       </div>
       <ng-container formArrayName="attributes">
         <div nz-row class="row" [nzGutter]="16">
-          <div nz-col [nzSpan]="24" *ngFor="let attributeForm of attributes.controls, index as i">
+          <div nz-col [nzSpan]="8" *ngFor="let attributeForm of attributes.controls, index as i">
             <nz-form-item [formGroup]="getFormGroup(attributeForm)">
               <p *ngIf="attributeForm.value.formType !== 'check'"
                  style="font-size: 12px !important; font-weight: bold">{{attributeForm.value.label}}: </p>
@@ -622,6 +678,48 @@
       </ng-container>
     </div>
   </form>
+
+  <nz-divider></nz-divider>
+
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="servicesForm">
+    <div class="content">
+      <h3 style="text-align: center; margin-bottom: 2rem;">Servicios</h3>
+      <ng-container formArrayName="distribution">
+
+        <div nz-row class="row" [nzGutter]="16">
+          <div nz-col [nzSpan]="8" *ngFor="let servicesForm of services.controls, index as i">
+            <nz-form-item [formGroup]="getFormGroup(servicesForm)">
+              <p *ngIf="servicesForm.value.type !== 'check'"
+                 style="font-size: 12px !important; font-weight: bold">{{servicesForm.value.label}}: </p>
+              <nz-form-control>
+                <ng-container *ngIf="servicesForm.value.type === 'check'">
+                  <label nz-checkbox formControlName="value">
+                    <span style="font-size: 12px !important; font-weight: bold">{{servicesForm.value.label}} </span>
+                  </label>
+                </ng-container>
+                <ng-container *ngIf="servicesForm.value.type === 'text'">
+                  <input
+                    type="text"
+                    style="width: 200px"
+                    nz-input
+                    formControlName="value"
+                    [placeholder]="servicesForm.value.placeholder"/>
+                </ng-container>
+                <ng-container
+                  *ngIf="servicesForm.value.type === 'select'">
+                  <nz-radio-group formControlName="value">
+                    <label *ngFor="let option of servicesForm.value.options.split('#')" nz-radio
+                           [nzValue]="option">{{option}}</label>
+                  </nz-radio-group>
+                </ng-container>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </form>
+
 </ng-container>
 
 <ng-container *ngIf="index === 5">
@@ -739,6 +837,22 @@
 
       <nz-divider></nz-divider>
 
+      <h3 style="font-weight: bold; margin-bottom: 1rem;">El propietario autoriza publicar en :</h3>
+      <label nz-checkbox formControlName="socialMedia">Redes sociales</label> <br>
+      <label style="margin: 1rem 0" nz-checkbox formControlName="realStateWebPages">Páginas de Inmuebles</label> <br>
+      <label nz-checkbox formControlName="realStateGroups">Grupos Inmobiliarios</label> <br>
+      <label style="margin: 1rem 0" nz-checkbox formControlName="mouthToMouth">Boca a boca</label> <br>
+      <label nz-checkbox formControlName="publicationOnBuilding">Aviso en fachada</label> <br>
+
+    </div>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="index === 6">
+  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="documentsForm">
+    <div class="content">
+
+
       <div style="display: flex; align-items: center; justify-content: space-between">
         <h3>Datos de propietario</h3>
         <button nz-button nzType="link" (click)="showRegisterOwnersModal = true">
@@ -808,13 +922,7 @@
         </div>
       </div>
 
-    </div>
-  </form>
-</ng-container>
-
-<ng-container *ngIf="index === 6">
-  <form class="form mt-3" nz-form nzLayout="vertical" [formGroup]="documentsForm">
-    <div class="content">
+      <nz-divider></nz-divider>
 
 
       <div nz-row class="row" [nzGutter]="16">
@@ -971,7 +1079,7 @@
       *ngIf="index === 6"
       nzType="primary"
       (click)="submitForm()"
-      [disabled]="generalForm.invalid || locationForm.invalid || negotiationForm.invalid"
+      [disabled]="generalForm.invalid || locationForm.invalid || negotiationForm.invalid || documentsForm.invalid"
       [nzLoading]="loading">Guardar cambios
     </button>
   </div>
