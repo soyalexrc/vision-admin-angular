@@ -44,6 +44,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   adjacenciesForm!: FormGroup;
   servicesForm!: FormGroup;
   equipmentForm!: FormGroup;
+  furnishedAreasForm!: FormGroup;
   negotiationForm!: FormGroup;
   documentsForm!: FormGroup;
   loading = false;
@@ -153,7 +154,11 @@ export class CreateComponent implements OnInit, OnDestroy {
       } else {
         this.negotiationForm.get('owner')?.enable()
       }
-    })
+    });
+
+    this.generalForm.get('isFurnished')?.valueChanges.subscribe(value => {
+      this.furnishedAreas.clear();
+    });
   }
 
   ngOnDestroy() {
@@ -173,11 +178,16 @@ export class CreateComponent implements OnInit, OnDestroy {
       footageBuilding: [''],
       footageGround: [''],
       propertyCondition: [''],
-      operationType: ['', Validators.required],
       status: ['Incompleto'],
       propertyType: ['', Validators.required],
       handoverKeys: [false],
-      propertyExclusivity: [''],
+      zoning: ['', Validators.required],
+      antiquity: ['', Validators.required],
+      amountOfFloors: ['', Validators.required],
+      propertiesPerFloor: ['', Validators.required],
+      typeOfWork: ['', Validators.required],
+      isFurnished: [false],
+      isOccupiedByPeople: [false],
       termsAndConditionsAccepted: [false],
     })
 
@@ -217,21 +227,31 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.servicesForm = this.fb.group({
       services: this.fb.array([])
     })
+
     this.equipmentForm = this.fb.group({
       equipment: this.fb.array([])
+    })
+
+    this.furnishedAreasForm = this.fb.group({
+      furnishedAreas: this.fb.array([])
     })
 
     this.negotiationForm = this.fb.group({
       price: ['', [Validators.required, Validators.minLength(1)]],
       minimumNegotiation: ['', Validators.minLength(1)],
+      rentCommission: ['', Validators.minLength(1)],
+      sellCommission: ['', Validators.minLength(1)],
       reasonToSellOrRent: [''],
       externalAdviser: [null],
+      operationType: ['', Validators.required],
       ally: [null],
       partOfPayment: [''],
       socialMedia: [false],
       realStateWebPages: [false],
+      ownerPaysCommission: [false],
       realStateGroups: [false],
       mouthToMouth: [false],
+      propertyExclusivity: [''],
       publicationOnBuilding: [false],
       user: [this.userService.currentUser.value.id, Validators.required]
     })
@@ -273,6 +293,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         documentsInformation: this.documentsForm.value,
         attributes: this.attributes.value,
         equipment: this.equipment.value,
+        furnishedAreas: this.furnishedAreas.value,
         distribution: this.distribution.value,
         adjacencies: this.adjacencies.value,
         services: this.services.value,
@@ -284,6 +305,8 @@ export class CreateComponent implements OnInit, OnDestroy {
 
       data.negotiationInformation.price = data.negotiationInformation.price.replace(/[^0-9.]+/g, '').trim();
       data.negotiationInformation.minimumNegotiation = !data.negotiationInformation.minimumNegotiation ? '0' : data.negotiationInformation.minimumNegotiation.replace(/[^0-9.]+/g, '').trim();
+      data.negotiationInformation.sellCommission = !data.negotiationInformation.sellCommission ? '0' : data.negotiationInformation.sellCommission.replace(/[^0-9.]+/g, '').trim();
+      data.negotiationInformation.rentCommission = !data.negotiationInformation.rentCommission ? '0' : data.negotiationInformation.rentCommission.replace(/[^0-9.]+/g, '').trim();
 
       delete data.negotiationInformation.externalAdviser;
       delete data.documentsInformation.owner;
@@ -326,13 +349,24 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.generalForm.get('footageBuilding')?.patchValue(result.generalInformation.footageBuilding);
       this.generalForm.get('footageGround')?.patchValue(result.generalInformation.footageGround);
       this.generalForm.get('description')?.patchValue(result.generalInformation.description);
+
+      this.generalForm.get('propertyType')?.patchValue(result.generalInformation.propertyType);
+
+      this.generalForm.get('zoning')?.patchValue(result.generalInformation.zoning);
+      this.generalForm.get('antiquity')?.patchValue(result.generalInformation.antiquity);
+      this.generalForm.get('amountOfFloors')?.patchValue(result.generalInformation.amountOfFloors);
+      this.generalForm.get('propertiesPerFloor')?.patchValue(result.generalInformation.propertiesPerFloor);
+      this.generalForm.get('typeOfWork')?.patchValue(result.generalInformation.typeOfWork);
+      this.generalForm.get('isFurnished')?.patchValue(result.generalInformation.isFurnished);
+      this.generalForm.get('isOccupiedByPeople')?.patchValue(result.generalInformation.isOccupiedByPeople);
+
+
+
       this.generalForm.get('propertyType')?.patchValue(result.generalInformation.propertyType);
       this.generalForm.get('propertyType')?.disable();
-      this.generalForm.get('operationType')?.patchValue(result.generalInformation.operationType);
       this.generalForm.get('publicationTitle')?.patchValue(result.publicationTitle);
       this.generalForm.get('propertyCondition')?.patchValue(result.generalInformation.propertyCondition);
 
-      this.generalForm.get('propertyExclusivity')?.patchValue(result.generalInformation.propertyExclusivity)
       this.generalForm.get('termsAndConditionsAccepted')?.patchValue(result.generalInformation.termsAndConditionsAccepted)
       this.generalForm.get('handoverKeys')?.patchValue(result.generalInformation.handoverKeys)
 
@@ -430,6 +464,11 @@ export class CreateComponent implements OnInit, OnDestroy {
         }))
       })
 
+      result.furnishedAreas.forEach(fa => {
+        this.furnishedAreas.push(this.fb.group({
+          name: [fa.name]
+        }))
+      })
 
       result.equipment.forEach(eq => {
         this.equipment.push(this.fb.group({
@@ -445,9 +484,15 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.negotiationForm.get('price')?.patchValue(result.negotiationInformation.price);
       this.negotiationForm.get('partOfPayment')?.patchValue(result.negotiationInformation.partOfPayment);
       this.negotiationForm.get('minimumNegotiation')?.patchValue(result.negotiationInformation.minimumNegotiation);
+      this.negotiationForm.get('sellCommission')?.patchValue(result.negotiationInformation.sellCommission);
+      this.negotiationForm.get('rentCommission')?.patchValue(result.negotiationInformation.rentCommission);
+      this.negotiationForm.get('ownerPaysCommission')?.patchValue(result.negotiationInformation.ownerPaysCommission);
       this.negotiationForm.get('reasonToSellOrRent')?.patchValue(result.negotiationInformation.reasonToSellOrRent);
       this.negotiationForm.get('ally')?.patchValue(result.ally_id);
       this.negotiationForm.get('ally')?.disable();
+      this.negotiationForm.get('propertyExclusivity')?.patchValue(result.negotiationInformation.propertyExclusivity)
+      this.negotiationForm.get('operationType')?.patchValue(result.negotiationInformation.operationType);
+
       this.negotiationForm.get('externalAdviser')?.patchValue(result.external_adviser_id);
       this.negotiationForm.get('externalAdviser')?.disable();
       this.negotiationForm.get('contactEmail')?.patchValue(result.negotiationInformation.contactEmail);
@@ -502,7 +547,10 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     this.negotiationForm.get('price')?.patchValue(data.negotiationInformation.price);
     this.negotiationForm.get('partOfPayment')?.patchValue(data.negotiationInformation.partOfPayment);
-    this.negotiationForm.get('minimunNegotiation')?.patchValue(data.negotiationInformation.minimumNegotiation);
+    this.negotiationForm.get('minimumNegotiation')?.patchValue(data.negotiationInformation.minimumNegotiation);
+    this.negotiationForm.get('sellCommission')?.patchValue(data.negotiationInformation.sellCommission);
+    this.negotiationForm.get('rentCommission')?.patchValue(data.negotiationInformation.rentCommission);
+    this.negotiationForm.get('ownerPaysCommission')?.patchValue(data.negotiationInformation.ownerPaysCommission);
     this.negotiationForm.get('reasonToSellOrRent')?.patchValue(data.negotiationInformation.reasonToSellOrRent);
     this.negotiationForm.get('externalAdviser')?.patchValue(data.external_adviser_id);
     this.negotiationForm.get('contactEmail')?.patchValue(data.negotiationInformation.contactEmail);
@@ -676,9 +724,16 @@ export class CreateComponent implements OnInit, OnDestroy {
   get equipment() {
     return this.equipmentForm.controls['equipment'] as FormArray;
   }
+  get furnishedAreas() {
+    return this.furnishedAreasForm.controls['furnishedAreas'] as FormArray;
+  }
 
   get operationType() {
     return this.generalForm.get('operationType')?.value;
+  }
+
+  get isFurnished() {
+    return this.generalForm.get('isFurnished')?.value;
   }
 
   async handleUploadFile(event: any, type: TypeOptions) {
@@ -844,11 +899,11 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
 
     if (this.index === 4) {
-      bool = false
+      bool = this.negotiationForm.invalid;
     }
 
     if (this.index === 5) {
-      bool = this.negotiationForm.invalid;
+      bool = false
     }
 
     if (this.index === 6) {
@@ -993,6 +1048,18 @@ export class CreateComponent implements OnInit, OnDestroy {
       )
     })
 
+  }
+
+  addFurnishedArea() {
+    this.furnishedAreas.push(
+      this.fb.group({
+        name: [''],
+      })
+    )
+  }
+
+  deleteFurnishedArea(i: number) {
+    this.furnishedAreas.removeAt(i);
   }
 
   addEquipment() {

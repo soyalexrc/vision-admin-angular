@@ -56,6 +56,7 @@ export interface PropertyFull {
   negotiationInformation: NegotiationInformation;
   distribution: Distribution[];
   adjacencies: Adjacencies[];
+  furnishedAreas: furnishedArea[];
   services: Adjacencies[];
   equipment: Equipment[]
   client?: null | Client;
@@ -93,6 +94,10 @@ export interface Adjacencies {
   value: null | string | boolean;
 }
 
+export interface furnishedArea {
+  name: string;
+}
+
 export interface Equipment {
   name: string;
   brand: string;
@@ -123,14 +128,19 @@ export interface GeneralInformation {
   footageGround: string;
   footageBuilding: string;
   description: string;
-  operationType: string;
   propertyType: string;
-  propertyExclusivity: string;
   propertyCondition: string;
   termsAndConditionsAccepted: boolean;
   handoverKeys: boolean;
   createdAt: Date;
   updatedAt: Date;
+  zoning: string;
+  antiquity: string;
+  amountOfFloors: string;
+  propertiesPerFloor: string;
+  typeOfWork: string;
+  isFurnished: boolean;
+  isOccupiedByPeople: boolean;
 }
 
 export interface DocumentsInformation {
@@ -187,8 +197,13 @@ export interface LocationInformation {
 export interface NegotiationInformation {
   id: number;
   property_id: number;
+  propertyExclusivity: string;
+  operationType: string;
   price: string;
   minimumNegotiation: string;
+  sellCommission: string;
+  rentCommission: string;
+  ownerPaysCommission: boolean;
   client: string;
   externalAdviser: string;
   reasonToSellOrRent: string;

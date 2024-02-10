@@ -169,7 +169,7 @@ export class MainComponent implements OnInit, AfterViewInit {
             },
             id: element.id,
             date: moment(element.date).calendar(),
-            customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.generalInformation?.operationType ?? ''}`,
+            customProperty: `${element.property?.generalInformation?.code ?? ''} - ${element.property?.generalInformation?.propertyType ?? ''} - ${element.property?.negotiationInformation?.operationType ?? ''}`,
             person: element.person ? element.person?.split('-')[1] + ' - ' + element.person?.split('-')[2] : '- - ',
             amount: `${formatCurrency(Number(element.amount), 'en', `${element.currency} `)}`,
             entity: element.entity,
