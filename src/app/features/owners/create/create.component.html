@@ -27,13 +27,10 @@
       </div>
       <div nz-col [nzSpan]="12">
         <nz-form-item>
-          <nz-form-label nzRequired nzFor="lastName">Apellido</nz-form-label>
-          <nz-form-control [nzErrorTip]="lastNameErrTemp">
+          <nz-form-label nzFor="lastName">Apellido</nz-form-label>
+          <nz-form-control>
             <input type="text" style="width: 100%" nz-input formControlName="lastName"
                    placeholder="Apellido"/>
-            <ng-template #lastNameErrTemp let-control>
-              <ng-container *ngIf="control.hasError('required')">Debes ingresar un apellido!</ng-container>
-            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -52,7 +49,7 @@
     <div nz-row class="row" [nzGutter]="16">
       <div nz-col [nzSpan]="12">
         <nz-form-item>
-          <nz-form-label nzRequired nzFor="email">Correo electronico</nz-form-label>
+          <nz-form-label nzFor="email">Correo electronico</nz-form-label>
           <nz-form-control [nzErrorTip]="emailErrTemp">
             <input type="text" style="width: 100%" nz-input formControlName="email"
                    placeholder="Correo electronico"/>

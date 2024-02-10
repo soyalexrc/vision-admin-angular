@@ -28,7 +28,7 @@ export class RegisterOwnerModalComponent implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      lastName: [''],
       email: ['', [Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
       phone: ['', Validators.required],
       ci: [''],

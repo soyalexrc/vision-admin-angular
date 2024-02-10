@@ -26,12 +26,12 @@ export class CreateComponent implements OnInit{
   ngOnInit() {
     this.form = this.fb.group({
       firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)]],
+      lastName: [''],
+      email: ['', Validators.pattern(/[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/)],
       phone: ['', Validators.required],
       birthdate: [null],
       ci: [''],
-      isInvestor: [false, Validators.required],
+      isInvestor: [false],
       id: [null]
     })
 
