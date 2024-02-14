@@ -242,7 +242,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         entity: result.entity,
         pendingToCollect: result.pendingToCollect,
         observations: result.observations,
-      })
+      }, true)
       this.handleChangeService(Number(result.service));
     })
   }
@@ -335,12 +335,14 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   // Function to add controls to the FormArray
-  addPayment(params?: Partial<CashFlowRegister>) {
+  addPayment(params?: Partial<CashFlowRegister>, isGettingById = false) {
     const newPayment = this.createPayment(params);
     this.payments.push(newPayment);
     if (this.form.get('person')?.value?.includes('Administracion interna')) {
       this.form.get('internalProperty')?.patchValue('')
-      this.form.get('property_id')?.patchValue(null)
+      if (!isGettingById) {
+        this.form.get('property_id')?.patchValue(null)
+      }
 
       this.payments.controls.forEach(control => {
         control.get('service')?.reset()
