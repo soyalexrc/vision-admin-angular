@@ -94,7 +94,7 @@
               <nz-option
                 *ngFor="let property of cashFlowProperties"
                 [nzValue]="property.id"
-                [nzLabel]="property.name">
+                [nzLabel]="property.name + ' ' + property.location">
               </nz-option>
             </nz-select>
           </nz-form-control>
