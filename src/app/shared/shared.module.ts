@@ -28,6 +28,7 @@ import {DraggableGridComponent} from "./components/draggable-grid/draggable-grid
 import { DocumentInputDirective } from './directives/document-input.directive';
 import {NzTagModule} from "ng-zorro-antd/tag";
 import { RegisterExternalAdviserModalComponent } from './components/register-external-adviser-modal/register-external-adviser-modal.component';
+import { FilterDateSelectorComponent } from './components/filter-date-selector/filter-date-selector.component';
 
 
 
@@ -46,6 +47,7 @@ import { RegisterExternalAdviserModalComponent } from './components/register-ext
     DraggableGridComponent,
     DocumentInputDirective,
     RegisterExternalAdviserModalComponent,
+    FilterDateSelectorComponent,
   ],
     exports: [
         SectionTitleComponent,
@@ -61,6 +63,7 @@ import { RegisterExternalAdviserModalComponent } from './components/register-ext
         DraggableGridComponent,
         DocumentInputDirective,
         RegisterExternalAdviserModalComponent,
+        FilterDateSelectorComponent,
     ],
   imports: [
     CommonModule,

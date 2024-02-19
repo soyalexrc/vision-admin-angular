@@ -28,7 +28,7 @@
 ></app-generic-table>
 
 <nz-drawer
-  [nzClosable]="false"
+ [nzWidth]="350"
   [nzVisible]="showFiltersDrawer"
   nzPlacement="right"
   nzTitle="Filtros"
@@ -39,7 +39,7 @@
       <div>
         <div style="margin-bottom: 1rem">
           <p>Fecha de registro</p>
-          <nz-range-picker class="filter-select" [(ngModel)]="date" (ngModelChange)="onChangeDate($event)"></nz-range-picker>
+          <app-filter-date-selector [date]="date" (onChangeDate)="onChangeDate($event)" (onChangeSingleDate)="onChangeSingleDate($event)"></app-filter-date-selector>
         </div>
         <div style="margin-bottom: 1rem">
           <p>Es inversor?</p>

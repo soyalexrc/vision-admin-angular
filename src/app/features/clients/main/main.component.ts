@@ -8,7 +8,7 @@ import {Client} from "../../../core/interfaces/client";
 import {ClientService} from "../../../core/services/client.service";
 import * as moment from 'moment';
 import {PropertyReview, PropertyStatus} from "../../../core/interfaces/property";
-import formatDatesFilter from "../../../shared/utils/formatDatesFilter";
+import {formatDatesFilter, formatSingleDateFilter} from "../../../shared/utils/formatDatesFilter";
 import {Service, SubService} from "../../../core/interfaces/service";
 import {ServicesService} from "../../../core/services/services.service";
 
@@ -242,6 +242,14 @@ export class MainComponent implements OnInit, AfterViewInit {
       this.date = '';
     } else {
       this.date = formatDatesFilter(date);
+    }
+  }
+
+  onChangeSingleDate(data: {date: any, at: 0 | 1}) {
+    if (data.at === 0) {
+      this.date[0] = formatSingleDateFilter(data.date, 0);
+    } else {
+      this.date[1] = formatSingleDateFilter(data.date, 1);
     }
   }
 

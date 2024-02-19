@@ -3,7 +3,7 @@ import {CashFlowTotal, CashFlowTotalsByEntities} from "../../../core/interfaces/
 import {CashFlowService} from "../../../core/services/cash-flow.service";
 import * as Highcharts from 'highcharts'
 import {CurrencyPipe} from "@angular/common";
-import formatDatesFilter from "../../../shared/utils/formatDatesFilter";
+import {formatDatesFilter} from "../../../shared/utils/formatDatesFilter";
 
 @Component({
   selector: 'app-total-available',

@@ -8,7 +8,7 @@ import {UserService} from "../../../core/services/user.service";
 import * as moment from "moment";
 import {setHeaders} from "../../../shared/utils/generic-table";
 import {GenericTableComponent} from "../../../shared/components/generic-table/generic-table.component";
-import formatDatesFilter from "../../../shared/utils/formatDatesFilter";
+import {formatDatesFilter} from "../../../shared/utils/formatDatesFilter";
 
 type ViewType = 'list' | 'grid';
 

@@ -20,4 +20,16 @@ function formatDatesFilter(dates: Date[]) {
   ]
 }
 
-export default formatDatesFilter;
+function formatSingleDateFilter(d: Date, at: 0 | 1) {
+  let date = new Date(d);
+
+  if (at === 0) {
+    date.setHours(0, 0, 0, 0);
+  } else {
+    date.setHours(22, 59, 0, 0)
+  }
+
+  return date.toISOString()
+}
+
+export {formatDatesFilter, formatSingleDateFilter};

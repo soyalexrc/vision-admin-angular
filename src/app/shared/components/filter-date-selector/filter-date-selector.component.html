@@ -1,0 +1,9 @@
+<nz-range-picker class="w-full mb-3 hidden md:flex" [(ngModel)]="date"
+                 (ngModelChange)="changeDate($event)"></nz-range-picker>
+
+<div class="flex gap-2.5">
+  <nz-date-picker class="w-full mb-3 md:hidden" [(ngModel)]="date[0]"
+                  (ngModelChange)="changeSingleDate($event, 0)"></nz-date-picker>
+  <nz-date-picker class="w-full mb-3 md:hidden" [(ngModel)]="date[1]"
+                  (ngModelChange)="changeSingleDate($event, 1)"></nz-date-picker>
+</div>
