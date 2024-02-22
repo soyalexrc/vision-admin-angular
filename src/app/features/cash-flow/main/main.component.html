@@ -444,6 +444,14 @@
       </div>
     </div>
 
+    <nz-divider></nz-divider>
+
+    <div nz-row [nzGutter]=16>
+      <div nz-col [nzSpan]="6" *ngFor="let attachment of detailModalData.attachments">
+        <img [src]="attachment" alt="comprobante de pago">
+      </div>
+    </div>
+
 
   </ng-container>
 
