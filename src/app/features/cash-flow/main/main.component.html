@@ -16,26 +16,30 @@
 
 <nz-divider *ngIf="uiService.isPhoneScreen()"></nz-divider>
 
-  <div class="filter-row">
-    <div *ngIf="!uiService.isPhoneScreen()">
-      <p style="font-size: 12px; margin-bottom: 0.2rem; font-weight: bold">Fecha</p>
-      <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChangeDate($event, true)"></nz-range-picker>
-    </div>
-    <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="default" (click)="showFiltersDrawer = true">
-      <span nz-icon nzType="filter" nzTheme="outline"></span>
-      Ver mas filtros</button>
-    <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="default"  routerLink="resumen-de-operaciones">Ver resumen de operaciones
-    </button>
-    <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="default"  routerLink="cierre-de-caja">Ver cierre de caja
-    </button>
+<div class="filter-row">
+  <div *ngIf="!uiService.isPhoneScreen()">
+    <p style="font-size: 12px; margin-bottom: 0.2rem; font-weight: bold">Fecha</p>
+    <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChangeDate($event, true)"></nz-range-picker>
   </div>
+  <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="default" (click)="showFiltersDrawer = true">
+    <span nz-icon nzType="filter" nzTheme="outline"></span>
+    Ver mas filtros
+  </button>
+  <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="default" routerLink="resumen-de-operaciones">Ver
+    resumen de operaciones
+  </button>
+  <button [nzBlock]="uiService.isPhoneScreen()" nz-button nzType="default" routerLink="cierre-de-caja">Ver cierre de
+    caja
+  </button>
+</div>
 
 <nz-divider></nz-divider>
 <div nz-row [nzGutter]="16">
   <div nz-col [nzXs]="24" [nzMd]="12" [nzLg]="6">
     <div class="stat">
-      <button *ngIf="!loadingTotalAvailable" routerLink="/flujo-de-caja/total-disponible" nz-tooltip="Ver detalle" nz-button nzType="default" nzShape="circle">
-        <span nz-icon nzType="eye"  nzTheme="outline"></span>
+      <button *ngIf="!loadingTotalAvailable" routerLink="/flujo-de-caja/total-disponible" nz-tooltip="Ver detalle"
+              nz-button nzType="default" nzShape="circle">
+        <span nz-icon nzType="eye" nzTheme="outline"></span>
       </button>
       <div class="icon">
         <img src="/assets/icons/to-collect.svg" width="25px" height="25px" alt="">
@@ -43,9 +47,9 @@
       <nz-skeleton *ngIf="loadingTotalAvailable" [nzActive]="true"></nz-skeleton>
       <div class="stat-content" *ngIf="!loadingTotalAvailable">
         <h3>Total disponible</h3>
-        <h2> {{totalAvailable.usd ?? 0 | currency}}</h2>
-        <h4> {{totalAvailable.bs ?? 0  | currency: 'Bs. '}}</h4>
-        <h4> {{totalAvailable.eur ?? 0  | currency: '€ '}}</h4>
+        <h2> {{ totalAvailable.usd ?? 0 | currency }}</h2>
+        <h4> {{ totalAvailable.bs ?? 0  | currency: 'Bs. ' }}</h4>
+        <h4> {{ totalAvailable.eur ?? 0  | currency: '€ ' }}</h4>
       </div>
     </div>
   </div>
@@ -57,9 +61,9 @@
       <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
       <div class="stat-content" *ngIf="!loadingStats">
         <h3>Utilidad estimada</h3>
-        <h2> {{statsData.utilidad.usd ?? 0 | currency}}</h2>
-        <h4> {{statsData.utilidad.bs ?? 0 | currency: 'Bs. '}}</h4>
-        <h4> {{statsData.utilidad.eur ?? 0 | currency: '€ '}}</h4>
+        <h2> {{ statsData.utilidad.usd ?? 0 | currency }}</h2>
+        <h4> {{ statsData.utilidad.bs ?? 0 | currency: 'Bs. ' }}</h4>
+        <h4> {{ statsData.utilidad.eur ?? 0 | currency: '€ ' }}</h4>
       </div>
     </div>
   </div>
@@ -71,9 +75,9 @@
       <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
       <div class="stat-content" *ngIf="!loadingStats">
         <h3>Total de ingresos</h3>
-        <h2> {{statsData.ingreso.usd ?? 0 | currency}}</h2>
-        <h4> {{statsData.ingreso.bs ?? 0  | currency: 'Bs. '}}</h4>
-        <h4> {{statsData.ingreso.eur ?? 0  | currency: '€ '}}</h4>
+        <h2> {{ statsData.ingreso.usd ?? 0 | currency }}</h2>
+        <h4> {{ statsData.ingreso.bs ?? 0  | currency: 'Bs. ' }}</h4>
+        <h4> {{ statsData.ingreso.eur ?? 0  | currency: '€ ' }}</h4>
       </div>
     </div>
   </div>
@@ -85,9 +89,9 @@
       <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
       <div class="stat-content" *ngIf="!loadingStats">
         <h3>Total de egresos</h3>
-        <h2> {{statsData.egreso.usd ?? 0  | currency}}</h2>
-        <h4> {{statsData.egreso.bs ?? 0 | currency: 'Bs. '}}</h4>
-        <h4> {{statsData.egreso.eur ?? 0 | currency: '€ '}}</h4>
+        <h2> {{ statsData.egreso.usd ?? 0  | currency }}</h2>
+        <h4> {{ statsData.egreso.bs ?? 0 | currency: 'Bs. ' }}</h4>
+        <h4> {{ statsData.egreso.eur ?? 0 | currency: '€ ' }}</h4>
       </div>
     </div>
   </div>
@@ -99,9 +103,9 @@
       <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
       <div class="stat-content" *ngIf="!loadingStats">
         <h3>Total por pagar</h3>
-        <h2> {{statsData.cuentasPorPagar.usd ?? 0 | currency}}</h2>
-        <h4> {{statsData.cuentasPorPagar.bs ?? 0 | currency: 'Bs. '}}</h4>
-        <h4> {{statsData.cuentasPorPagar.eur ?? 0 | currency: '€ '}}</h4>
+        <h2> {{ statsData.cuentasPorPagar.usd ?? 0 | currency }}</h2>
+        <h4> {{ statsData.cuentasPorPagar.bs ?? 0 | currency: 'Bs. ' }}</h4>
+        <h4> {{ statsData.cuentasPorPagar.eur ?? 0 | currency: '€ ' }}</h4>
       </div>
     </div>
   </div>
@@ -113,9 +117,9 @@
       <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
       <div class="stat-content" *ngIf="!loadingStats">
         <h3>Total por cobrar</h3>
-        <h2> {{statsData.cuentasPorCobrar.usd ?? 0 | currency}}</h2>
-        <h4> {{statsData.cuentasPorCobrar.bs ?? 0  | currency: 'Bs. '}}</h4>
-        <h4> {{statsData.cuentasPorCobrar.eur ?? 0  | currency: '€ '}}</h4>
+        <h2> {{ statsData.cuentasPorCobrar.usd ?? 0 | currency }}</h2>
+        <h4> {{ statsData.cuentasPorCobrar.bs ?? 0  | currency: 'Bs. ' }}</h4>
+        <h4> {{ statsData.cuentasPorCobrar.eur ?? 0  | currency: '€ ' }}</h4>
       </div>
     </div>
   </div>
@@ -127,9 +131,9 @@
       <nz-skeleton *ngIf="loadingStats" [nzActive]="true"></nz-skeleton>
       <div class="stat-content" *ngIf="!loadingStats">
         <h3>Total ingreso cuenta de terceros</h3>
-        <h2> {{statsData.ingresoCuentaTerceros.usd ?? 0 | currency}}</h2>
-        <h4> {{statsData.ingresoCuentaTerceros.bs ?? 0  | currency: 'Bs. '}}</h4>
-        <h4> {{statsData.ingresoCuentaTerceros.eur ?? 0  | currency: '€ '}}</h4>
+        <h2> {{ statsData.ingresoCuentaTerceros.usd ?? 0 | currency }}</h2>
+        <h4> {{ statsData.ingresoCuentaTerceros.bs ?? 0  | currency: 'Bs. ' }}</h4>
+        <h4> {{ statsData.ingresoCuentaTerceros.eur ?? 0  | currency: '€ ' }}</h4>
       </div>
     </div>
   </div>
@@ -165,7 +169,7 @@
     <div class="button-group">
       <div>
         <p>Fecha</p>
-        <nz-range-picker class="filter-select" [(ngModel)]="date" (ngModelChange)="onChangeDate($event, false)"></nz-range-picker>
+       <app-filter-date-selector [date]="date" (onChangeDate)="onChangeDate($event)" (onChangeSingleDate)="onChangeSingleDate($event)"></app-filter-date-selector>
       </div>
       <div>
         <p>Tipo de transaccion</p>
@@ -180,7 +184,7 @@
       </div>
       <div>
         <p>Moneda</p>
-        <nz-select nzShowSearch [(ngModel)]="currency"  class="filter-select">
+        <nz-select nzShowSearch [(ngModel)]="currency" class="filter-select">
           <nz-option nzLabel="Todas" nzValue=""></nz-option>
           <nz-option nzLabel="$ Dolar" nzValue="$"></nz-option>
           <nz-option nzLabel="Bs. Bolivar " nzValue="Bs"></nz-option>
@@ -199,7 +203,7 @@
       </div>
       <div>
         <p>Entidad</p>
-        <nz-select nzShowSearch [(ngModel)]="entity"  class="filter-select">
+        <nz-select nzShowSearch [(ngModel)]="entity" class="filter-select">
           <nz-option nzLabel="Todas" nzValue=""></nz-option>
           <nz-option nzValue="Banco Nacional de Crédito (BNC)" nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>
           <nz-option nzValue="Banesco Panamá" nzLabel="Banesco Panamá"></nz-option>
@@ -214,31 +218,35 @@
       <nz-divider></nz-divider>
       <div>
         <p>Servicio</p>
-        <nz-select nzShowSearch [(ngModel)]="service"  class="filter-select" [nzLoading]="servicesLoading">
+        <nz-select nzShowSearch [(ngModel)]="service" class="filter-select" [nzLoading]="servicesLoading">
           <nz-option nzLabel="Todos" nzValue=""></nz-option>
           <nz-option *ngFor="let service of services" [nzLabel]="service.title" [nzValue]="service.id"></nz-option>
         </nz-select>
       </div>
       <div>
         <p>Tipo de servicio</p>
-        <nz-select nzShowSearch [(ngModel)]="serviceType"  class="filter-select"[nzLoading]="servicesLoading">
+        <nz-select nzShowSearch [(ngModel)]="serviceType" class="filter-select" [nzLoading]="servicesLoading">
           <nz-option nzLabel="Todos" nzValue=""></nz-option>
-          <nz-option *ngFor="let subService of serviceTypes" [nzLabel]="subService.title" [nzValue]="subService.id"></nz-option>
+          <nz-option *ngFor="let subService of serviceTypes" [nzLabel]="subService.title"
+                     [nzValue]="subService.id"></nz-option>
         </nz-select>
       </div>
       <div>
         <p>Propiedad</p>
-        <nz-select nzShowSearch [(ngModel)]="property"  class="filter-select"[nzLoading]="propertiesLoading">
+        <nz-select nzShowSearch [(ngModel)]="property" class="filter-select" [nzLoading]="propertiesLoading">
           <nz-option nzLabel="Todas" nzValue=""></nz-option>
-          <nz-option *ngFor="let property of properties" [nzLabel]="getPropertyLabel(property)" [nzValue]="property.id"></nz-option>
+          <nz-option *ngFor="let property of properties" [nzLabel]="getPropertyLabel(property)"
+                     [nzValue]="property.id"></nz-option>
         </nz-select>
       </div>
       <nz-divider></nz-divider>
       <div>
         <p>Persona</p>
-        <nz-select nzShowSearch [(ngModel)]="person"  class="filter-select"[nzLoading]="cashFlowPeopleLoading" (ngModelChange)="handleSelectPerson($event)">
+        <nz-select nzShowSearch [(ngModel)]="person" class="filter-select" [nzLoading]="cashFlowPeopleLoading"
+                   (ngModelChange)="handleSelectPerson($event)">
           <nz-option nzLabel="Todos" nzValue=""></nz-option>
-          <nz-option *ngFor="let person of cashFlowPeople" [nzLabel]="getValueFromPeople(person, true)" [nzValue]="getValueFromPeople(person)"></nz-option>
+          <nz-option *ngFor="let person of cashFlowPeople" [nzLabel]="getValueFromPeople(person, true)"
+                     [nzValue]="getValueFromPeople(person)"></nz-option>
         </nz-select>
       </div>
 
@@ -246,7 +254,6 @@
     </div>
   </ng-container>
 </nz-drawer>
-
 
 
 <nz-modal
@@ -276,7 +283,8 @@
                 <nz-option nzValue="Oficina Paseo La Granja" nzLabel="Oficina Paseo La Granja"></nz-option>
                 <nz-option nzValue="Tesorería" nzLabel="Tesorería"></nz-option>
                 <nz-option nzValue="Oficina San Carlos" nzLabel="Oficina San Carlos"></nz-option>
-                <nz-option nzValue="Banco internacional de terceros" nzLabel="Banco internacional de terceros"></nz-option>
+                <nz-option nzValue="Banco internacional de terceros"
+                           nzLabel="Banco internacional de terceros"></nz-option>
               </nz-select>
               <ng-template #entityFromErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar una entidad de origen!</ng-container>
@@ -291,7 +299,7 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="entityTo">Hasta</nz-form-label>
             <nz-form-control [nzErrorTip]="entityToErrTemp">
-              <nz-select formControlName="entityTo" >
+              <nz-select formControlName="entityTo">
                 <nz-option nzValue="Banco Nacional de Crédito (BNC)"
                            nzLabel="Banco Nacional de Crédito (BNC)"></nz-option>
                 <nz-option nzValue="Banesco Panamá" nzLabel="Banesco Panamá"></nz-option>
@@ -300,7 +308,8 @@
                 <nz-option nzValue="Oficina Paseo La Granja" nzLabel="Oficina Paseo La Granja"></nz-option>
                 <nz-option nzValue="Tesorería" nzLabel="Tesorería"></nz-option>
                 <nz-option nzValue="Oficina San Carlos" nzLabel="Oficina San Carlos"></nz-option>
-                <nz-option nzValue="Banco internacional de terceros" nzLabel="Banco internacional de terceros"></nz-option>
+                <nz-option nzValue="Banco internacional de terceros"
+                           nzLabel="Banco internacional de terceros"></nz-option>
               </nz-select>
               <ng-template #entityToErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar una entidad de destino!</ng-container>
@@ -345,7 +354,8 @@
           <nz-form-item>
             <nz-form-label nzRequired nzFor="amount">Monto</nz-form-label>
             <nz-form-control [nzErrorTip]="amountErrTemp">
-              <input type="text" appCurrencyInput [currencySymbol]="transactionCurrency" style="width: 100%" nz-input formControlName="amount"/>
+              <input type="text" appCurrencyInput [currencySymbol]="transactionCurrency" style="width: 100%" nz-input
+                     formControlName="amount"/>
               <ng-template #amountErrTemp let-control>
                 <ng-container *ngIf="control.hasError('required')">Debes ingresar un monto!</ng-container>
               </ng-template>
@@ -380,44 +390,45 @@
   [nzCancelText]="null"
 >
   <ng-container *nzModalContent>
-    <h2 style="text-align: center; font-size: 36px;">{{ detailModalData.amount | currency: detailModalData.currency + ' '  }}</h2>
+    <h2
+      style="text-align: center; font-size: 36px;">{{ detailModalData.amount | currency: detailModalData.currency + ' ' }}</h2>
     <div nz-row [nzGutter]="16">
       <div nz-col [nzSpan]="12">
-        <p><b>Por pagar:</b> {{detailModalData.totalDue | currency: detailModalData.currency + ' '}}</p>
+        <p><b>Por pagar:</b> {{ detailModalData.totalDue | currency: detailModalData.currency + ' ' }}</p>
       </div>
       <div nz-col [nzSpan]="12">
-        <p><b>Por cobrar:</b> {{detailModalData.pendingToCollect | currency: detailModalData.currency + ' '}}</p>
+        <p><b>Por cobrar:</b> {{ detailModalData.pendingToCollect | currency: detailModalData.currency + ' ' }}</p>
       </div>
     </div>
     <nz-divider></nz-divider>
 
-    <p><b>Servicio:</b>  {{getServiceById(detailModalData.service)}}</p>
-    <p><b>Tipo de servicio:</b>  {{getSubServiceById(detailModalData.serviceType)}}</p>
+    <p><b>Servicio:</b>  {{ getServiceById(detailModalData.service) }}</p>
+    <p><b>Tipo de servicio:</b>  {{ getSubServiceById(detailModalData.serviceType) }}</p>
 
     <nz-divider></nz-divider>
 
     <div nz-row [nzGutter]="16">
       <div nz-col [nzSpan]="12">
-        <h2>{{ detailModalData.client ? 'Cliente' : detailModalData.owner ? 'Propietario': 'Personal interno' }}</h2>
+        <h2>{{ detailModalData.client ? 'Cliente' : detailModalData.owner ? 'Propietario' : 'Personal interno' }}</h2>
         <ng-container *ngIf="detailModalData.client">
-          <p><b>Nombre:</b> {{detailModalData.client.name}}</p>
-          <p><b>Desde:</b> {{detailModalData.client.contactFrom}}</p>
-          <p><b>En:</b> {{detailModalData.client.operationType}} - {{detailModalData.client.typeOfCapture}}</p>
+          <p><b>Nombre:</b> {{ detailModalData.client.name }}</p>
+          <p><b>Desde:</b> {{ detailModalData.client.contactFrom }}</p>
+          <p><b>En:</b> {{ detailModalData.client.operationType }} - {{ detailModalData.client.typeOfCapture }}</p>
         </ng-container>
         <ng-container *ngIf="detailModalData.owner">
-          <p><b>Nombre:</b> {{detailModalData.owner.firstName}} - {{detailModalData.owner.lastName}}</p>
-          <p><b>Correo:</b> {{detailModalData.owner.email}}</p>
-          <p><b>Telefono:</b> {{detailModalData.owner.phone}}</p>
+          <p><b>Nombre:</b> {{ detailModalData.owner.firstName }} - {{ detailModalData.owner.lastName }}</p>
+          <p><b>Correo:</b> {{ detailModalData.owner.email }}</p>
+          <p><b>Telefono:</b> {{ detailModalData.owner.phone }}</p>
         </ng-container>
         <ng-container *ngIf="!detailModalData.client && !detailModalData.owner">
-          <p><b>Nombre:</b> {{detailModalData.person}}</p>
+          <p><b>Nombre:</b> {{ detailModalData.person }}</p>
         </ng-container>
       </div>
       <div nz-col [nzSpan]="12">
         <h2>Inmueble</h2>
-          <p><b>Nombre:</b> {{detailModalData.property.name}}</p>
-          <p><b>Ubicacion:</b> {{detailModalData.property.location}}</p>
-       </div>
+        <p><b>Nombre:</b> {{ detailModalData.property.name }}</p>
+        <p><b>Ubicacion:</b> {{ detailModalData.property.location }}</p>
+      </div>
     </div>
 
     <nz-divider></nz-divider>
@@ -425,11 +436,19 @@
     <div nz-row [nzGutter]=16>
       <div nz-col [nzSpan]="12">
         <h4>Observaciones</h4>
-        <p>{{detailModalData.observation}}</p>
+        <p>{{ detailModalData.observation }}</p>
       </div>
       <div nz-col [nzSpan]="12">
         <h4>Concepto</h4>
-        <p>{{detailModalData.reason }}</p>
+        <p>{{ detailModalData.reason }}</p>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <div nz-row [nzGutter]=16>
+      <div nz-col [nzSpan]="6" *ngFor="let attachment of detailModalData.attachments">
+        <img [src]="attachment" alt="comprobante de pago">
       </div>
     </div>
 

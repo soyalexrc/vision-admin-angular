@@ -16,7 +16,7 @@ import {PropertyService} from "../../../core/services/property.service";
 import * as moment from 'moment';
 import {FileService} from "../../../core/services/file.service";
 import {CurrencyPipe} from "@angular/common";
-import formatDatesFilter from "../../../shared/utils/formatDatesFilter";
+import {formatDatesFilter, formatSingleDateFilter} from "../../../shared/utils/formatDatesFilter";
 import {PROPERTY_TYPES} from "../../../shared/utils/property-types";
 
 @Component({
@@ -346,6 +346,14 @@ export class MainComponent implements OnInit, AfterViewInit {
       this.date = '';
     } else {
       this.date = formatDatesFilter(date);
+    }
+  }
+
+  onChangeSingleDate(data: {date: any, at: 0 | 1}) {
+    if (data.at === 0) {
+      this.date[0] = formatSingleDateFilter(data.date, 0);
+    } else {
+      this.date[1] = formatSingleDateFilter(data.date, 1);
     }
   }
 }

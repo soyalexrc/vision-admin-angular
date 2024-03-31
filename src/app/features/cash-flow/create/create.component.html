@@ -335,7 +335,7 @@
           </div>
 
           <div nz-col [nzSpan]="24">
-            <app-draggable-grid [canDelete]="!isEditing" [elements]="images[i]" (onDeleteElement)="handleDeleteImage($event, i)"></app-draggable-grid>
+            <app-draggable-grid [elements]="images[i]" (onDeleteElement)="handleDeleteImage($event, i)"></app-draggable-grid>
           </div>
 
 
