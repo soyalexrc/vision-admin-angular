@@ -10,11 +10,11 @@
 
         <nz-breadcrumb>
           <nz-breadcrumb-item>
-            <a (click)="goTo('root')">Vision Inmobiliaria</a>
+            <a (click)="goToV2(true)">Vision Inmobiliaria</a>
           </nz-breadcrumb-item>
-          <ng-container *ngFor="let pathFragment of path.split('+')">
-            <nz-breadcrumb-item *ngIf="pathFragment">
-              <a (click)="goTo(pathFragment)">{{pathFragment}}</a>
+          <ng-container *ngFor="let pathFragment of breadcrumb">
+            <nz-breadcrumb-item *ngIf="pathFragment.id">
+              <a (click)="goToV2(false, pathFragment)">{{pathFragment.name}}</a>
             </nz-breadcrumb-item>
           </ng-container>
         </nz-breadcrumb>
@@ -26,15 +26,15 @@
             <nz-list-item-meta (click)="handleClickElement(element)">
               <nz-list-item-meta-avatar>
                 <span (click)="handleClickElement(element)" *ngIf="element.type === 'dir' " nz-icon nzType="folder" nzTheme="outline"></span>
-                <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isOtherFileType(element.file)" nz-tooltip="Tipo de archivo poco comun" nz-icon nzType="file-unknown"
+                <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isOtherFileType(element.name)" nz-tooltip="Tipo de archivo poco comun" nz-icon nzType="file-unknown"
                       nzTheme="outline"></span>
-                <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isDocument(element.file)" nz-tooltip="Tipo de archivo de texto" nz-icon nzType="file-word"
+                <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isDocument(element.name)" nz-tooltip="Tipo de archivo de texto" nz-icon nzType="file-word"
                       nzTheme="outline"></span>
-                <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isSpreadSheet(element.file)" nz-tooltip="Tipo de archivo de hoja de calculo" nz-icon nzType="file-excel"
+                <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isSpreadSheet(element.name)" nz-tooltip="Tipo de archivo de hoja de calculo" nz-icon nzType="file-excel"
                       nzTheme="outline"></span>
-                <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isImage(element.file)" nz-tooltip="Tipo de archivo de imagen" nz-icon nzType="file-image"
+                <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isImage(element.name)" nz-tooltip="Tipo de archivo de imagen" nz-icon nzType="file-image"
                       nzTheme="outline"></span>
-                <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && element.file.includes('pdf')" nz-tooltip="Tipo de archivo PDF" nz-icon nzType="file-pdf"
+                <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && element.name.includes('pdf')" nz-tooltip="Tipo de archivo PDF" nz-icon nzType="file-pdf"
                       nzTheme="outline"></span>
               </nz-list-item-meta-avatar>
               <nz-list-item-meta-title>
@@ -42,7 +42,7 @@
               </nz-list-item-meta-title>
             </nz-list-item-meta>
             <ul nz-list-item-actions>
-              <nz-list-item-action  *ngIf="path && safeLevelForDelete() && element.type === 'file' && (isDocument(element.file)  || element.file.includes('pdf'))">
+              <nz-list-item-action  *ngIf="path && safeLevelForDelete() && element.type === 'file' && (isDocument(element.name)  || element.name.includes('pdf'))">
                 <span (click)="requestDigitalSignature(element)" class="edit-icon" nz-tooltip="Solicitar firma digital" nz-icon nzType="edit" nzTheme="fill"></span>
               </nz-list-item-action>
               <nz-list-item-action  *ngIf="path && safeLevelForDelete()">
@@ -68,18 +68,18 @@
               <span *ngIf="path && safeLevelForDelete()" (click)="deleteFolderOrFile(element)" class="delete-icon" nz-tooltip="Eliminar" nz-icon nzType="delete" nzTheme="fill"></span>
               <span *ngIf="path && safeLevelForDelete()" (click)="handleCreateOrEditName(element)" class="edit-icon" nz-tooltip="Cambiar nombre" nz-icon nzType="swap" nzTheme="outline"></span>
               <span *ngIf="path && safeLevelForDelete()" (click)="handleMoveElement(element)" class="move-icon" nz-tooltip="Mover" nz-icon nzType="send" nzTheme="outline"></span>
-              <span *ngIf="path && safeLevelForDelete() && element.type === 'file' && (isDocument(element.file) || element.file.includes('pdf'))" (click)="requestDigitalSignature(element)" class="signature-icon" nz-tooltip="Solicitar firma digital" nz-icon nzType="edit" nzTheme="fill"></span>
+              <span *ngIf="path && safeLevelForDelete() && element.type === 'file' && (isDocument(element.name) || element.name.includes('pdf'))" (click)="requestDigitalSignature(element)" class="signature-icon" nz-tooltip="Solicitar firma digital" nz-icon nzType="edit" nzTheme="fill"></span>
 
               <span (click)="handleClickElement(element)" *ngIf="element.type === 'dir' " nz-icon nzType="folder" nzTheme="outline"></span>
-              <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isOtherFileType(element.file)" nz-tooltip="Tipo de archivo poco comun" nz-icon nzType="file-unknown"
+              <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isOtherFileType(element.name)" nz-tooltip="Tipo de archivo poco comun" nz-icon nzType="file-unknown"
                     nzTheme="outline"></span>
-              <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isDocument(element.file)" nz-tooltip="Tipo de archivo de texto" nz-icon nzType="file-word"
+              <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isDocument(element.name)" nz-tooltip="Tipo de archivo de texto" nz-icon nzType="file-word"
                     nzTheme="outline"></span>
-              <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isSpreadSheet(element.file)" nz-tooltip="Tipo de archivo de hoja de calculo" nz-icon nzType="file-excel"
+              <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isSpreadSheet(element.name)" nz-tooltip="Tipo de archivo de hoja de calculo" nz-icon nzType="file-excel"
                     nzTheme="outline"></span>
-              <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isImage(element.file)" nz-tooltip="Tipo de archivo de imagen" nz-icon nzType="file-image"
+              <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && isImage(element.name)" nz-tooltip="Tipo de archivo de imagen" nz-icon nzType="file-image"
                     nzTheme="outline"></span>
-              <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && element.file.includes('pdf')" nz-tooltip="Tipo de archivo PDF" nz-icon nzType="file-pdf"
+              <span (click)="handleClickElement(element)" *ngIf="element.type === 'file' && element.name.includes('pdf')" nz-tooltip="Tipo de archivo PDF" nz-icon nzType="file-pdf"
                     nzTheme="outline"></span>
               <p (click)="handleClickElement(element)">{{formatFileName(element)}}</p>
             </div>
@@ -173,7 +173,14 @@
   </ng-container>
 </nz-modal>
 
-<app-move-modal [moveFromPath]="moveFromPath" [show]="showMoveModal"  (onCancel)="showMoveModal = false" (onSuccess)="handleMovedElement()"></app-move-modal>
+<app-move-modal
+  [moveFromPath]="moveFromPath"
+  [show]="showMoveModal"
+  [idElementToMove]="idElementToMove!"
+  (onCancel)="handleCancelMoveElement()"
+  (onSuccess)="handleMovedElement()"
+  [folders]="folders"
+></app-move-modal>
 
 <app-require-signature-modal
   (onCancel)="showRequireSignatureModal = false"

@@ -10,8 +10,19 @@ interface UploadFileResult {
 }
 
 export interface FilesResult {
-  file: string;
-  type: FileType | null;
+  id:        number;
+  type:      FileType;
+  name:      string;
+  extension: null | string;
+  size:      null | number;
+  path:      string;
+  parent_id: null | number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface FoldersResult extends FilesResult{
+  children: FoldersResult[] | []
 }
 
 export interface FolderResult {
@@ -202,6 +213,14 @@ export class FileService {
     return this.http.get<FilesResult[]>(`files/getElementsByPath/${actualPath}`);
   }
 
+  getElementsByParentId(parentId: number | null): Observable<FilesResult[]> {
+    return this.http.get<FilesResult[]>(`files/getElementsByPath/${parentId}`);
+  }
+
+  getFolders():Observable<FoldersResult[]> {
+    return this.http.get<FoldersResult[]>('files/getFolders');
+  }
+
   getGenericStaticFile(path: string): Observable<UploadFileResult> {
     return this.http.post<UploadFileResult>(`files/genericStaticFile`, {path});
   }
@@ -213,12 +232,22 @@ export class FileService {
     return this.http.post<UploadFileResult>(`files/uploadGenericStaticFile/${path}`, data);
   }
 
-  createFolder(path: string): Observable<FolderResult> {
-    return this.http.post<FolderResult>(`files/uploadFolder/${path}`, {});
+  uploadGenericStaticFileV2(file: File, dto: { path: string, parent_id: number, isPropertyFile: boolean }): Observable<UploadFileResult> {
+    const data = new FormData();
+
+    data.append('file', file);
+    data.append('path', dto.path);
+    data.append('parent_id', dto.parent_id.toString());
+    data.append('isPropertyFile', JSON.stringify(dto.isPropertyFile));
+    return this.http.post<UploadFileResult>(`files/uploadGenericStaticFileV2`, data);
   }
 
-  changeName(path: string, newName: string, isFile: boolean): Observable<FolderResult> {
-    return this.http.post<FolderResult>(`files/changeName/${path}`, {newName, isFile});
+  createFolder(folderName: string, id: number): Observable<FolderResult> {
+    return this.http.post<FolderResult>(`files/uploadFolder`, {folderName, id});
+  }
+
+  changeName(newName: string, isFile: boolean, id: number): Observable<FolderResult> {
+    return this.http.post<FolderResult>(`files/changeName`, {newName, isFile, id});
   }
 
   deleteFolderOrFile(path: string): Observable<DeleteResult> {
@@ -243,6 +272,10 @@ export class FileService {
 
   moveFileOrFolder(pathFrom: string, pathTo: string): Observable<DeleteResult> {
     return this.http.post<DeleteResult>(`files/moveFileOrFolder`, {pathFrom, pathTo} )
+  }
+
+  moveFileOrFolderV2(idFrom: number, idTo: number): Observable<DeleteResult> {
+    return this.http.post<DeleteResult>(`files/moveFileOrFolder`, {idFrom, idTo})
   }
 
   sendDigitalSignatureRequest(sendToData: any, filePath: string, requestedBy: string): Observable<CreateDigitalSignatureRequestResponse> {
