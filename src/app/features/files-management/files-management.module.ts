@@ -25,6 +25,8 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
 import {NzTabsModule} from "ng-zorro-antd/tabs";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
+import {NzCollapseModule} from "ng-zorro-antd/collapse";
+import {NzTreeModule} from "ng-zorro-antd/tree";
 
 
 
@@ -33,32 +35,34 @@ import {NzDrawerModule} from "ng-zorro-antd/drawer";
     MainComponent,
     DeleteRequestsComponent,
     MoveModalComponent,
-    RequireSignatureModalComponent
+    RequireSignatureModalComponent,
   ],
-    imports: [
-        CommonModule,
-        FilesManagementRoutingModule,
-        NzGridModule,
-        NzIconModule,
-        NzBreadCrumbModule,
-        NzSpaceModule,
-        NzButtonModule,
-        NzToolTipModule,
-        NzDropDownModule,
-        NzModalModule,
-        NzInputModule,
-        FormsModule,
-        NzSpinModule,
-        NzBadgeModule,
-        SharedModule,
-        NzListModule,
-        NzFormModule,
-        NzSelectModule,
-        ReactiveFormsModule,
-        NzDividerModule,
-        NzTabsModule,
-        NzDatePickerModule,
-        NzDrawerModule
-    ]
+  imports: [
+    CommonModule,
+    FilesManagementRoutingModule,
+    NzGridModule,
+    NzIconModule,
+    NzBreadCrumbModule,
+    NzSpaceModule,
+    NzButtonModule,
+    NzToolTipModule,
+    NzDropDownModule,
+    NzModalModule,
+    NzInputModule,
+    FormsModule,
+    NzSpinModule,
+    NzBadgeModule,
+    SharedModule,
+    NzListModule,
+    NzFormModule,
+    NzSelectModule,
+    ReactiveFormsModule,
+    NzDividerModule,
+    NzTabsModule,
+    NzDatePickerModule,
+    NzDrawerModule,
+    NzCollapseModule,
+    NzTreeModule
+  ]
 })
 export class FilesManagementModule { }

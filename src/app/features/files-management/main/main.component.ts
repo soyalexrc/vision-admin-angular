@@ -1,5 +1,11 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {DeleteRequest, DigitalSignatureRequest, FileService, FilesResult} from "../../../core/services/file.service";
+import {
+  DeleteRequest,
+  DigitalSignatureRequest,
+  FileService,
+  FilesResult,
+  FoldersResult
+} from "../../../core/services/file.service";
 import {isDocument, isImage, isOtherFileType, isSpreadSheet} from "../../../shared/utils/validateFileType";
 import {NzImageService} from "ng-zorro-antd/image";
 import {UiService} from "../../../core/services/ui.service";
@@ -9,6 +15,9 @@ import * as moment from "moment";
 import {setHeaders} from "../../../shared/utils/generic-table";
 import {GenericTableComponent} from "../../../shared/components/generic-table/generic-table.component";
 import {formatDatesFilter} from "../../../shared/utils/formatDatesFilter";
+import {NzTreeNodeOptions} from "ng-zorro-antd/tree";
+
+const PATH = '/gestion-de-archivos';
 
 type ViewType = 'list' | 'grid';
 
@@ -19,6 +28,8 @@ type ViewType = 'list' | 'grid';
 })
 export class MainComponent implements OnInit, OnDestroy {
   path: string = '';
+  parentId: number | null = null;
+  breadcrumb: {id: number | null, name: string}[] = [];
   elements: FilesResult[] = [];
   @ViewChild('dataTable') dataTable!: GenericTableComponent;
   data: Partial<DigitalSignatureRequest>[]  = [];
@@ -46,13 +57,16 @@ export class MainComponent implements OnInit, OnDestroy {
   folderName = '';
   folderNameModalTitle = '';
   loadingFiles = false;
-  currentElementToEdit: FilesResult = {file: '', type: null};
+  currentElementToEdit: FilesResult | {} = {};
   deleteRequests: DeleteRequest[] = [];
   deleteRequestsAmount = 0;
   showMoveModal = false;
   moveFromPath = '';
   filePath = '';
   showRequireSignatureModal = false;
+  idElementToMove: number | null = null;
+  idElementToChangeName: number | null = null;
+  folders: NzTreeNodeOptions[] = [];
 
   constructor(
     private fileService: FileService,
@@ -64,7 +78,8 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getElementsByPath();
+    this.getElementsByParentId();
+    this.getFolders();
     if (this.checkIfCanDelete()) {
       this.getDeleteRequests();
     }
@@ -134,19 +149,36 @@ export class MainComponent implements OnInit, OnDestroy {
     })
   }
 
+  getElementsByParentId() {
+    this.loadingFiles = true;
+    this.fileService.getElementsByParentId(this.parentId).subscribe(result => {
+      console.log(result);
+      this.elements = result;
+
+    }, (error) => {
+      this.loadingFiles = false;
+      this.uiService.createMessage('error', error.error.message)
+    }, () => {
+      this.loadingFiles = false;
+    })
+  }
+
   handleClickElement(element: FilesResult) {
+    console.log(element);
     if (element.type === 'dir') {
-      this.path += `+${element.file}`;
+      this.path += `+${element.name}`;
+      this.breadcrumb.push({name: element.name, id: element.id});
+      this.parentId = element.id;
 
       if (this.path.charAt(0) === '+') {
         this.path = this.path.substring(1);
       }
-      this.getElementsByPath();
+      this.getElementsByParentId();
     } else {
-      const path = `${this.path}+${element.file}`
+      const path = `${this.path}+${element.name}`
 
       this.fileService.getGenericStaticFile(path).subscribe(result => {
-        if (isImage(element.file)) {
+        if (isImage(element.extension!)) {
           this.showPreview(result.secureUrl);
         } else {
           window.open(result.secureUrl, '_blank')
@@ -158,17 +190,29 @@ export class MainComponent implements OnInit, OnDestroy {
   goTo(pathFragment: string) {
     if (pathFragment === 'root') {
       this.path = '';
-      this.getElementsByPath();
+      // this.getElementsByPath();
     } else {
       const newPath = this.path.split(pathFragment)[0];
       this.path = `${newPath}+${pathFragment}`;
       if (this.path.charAt(0) === '+') {
         this.path = this.path.substring(1);
       }
-      this.getElementsByPath();
+      // this.getElementsByPath();
     }
+  }
 
-
+  goToV2(isRoot: boolean, element?: {id: number | null, name: string} ) {
+    if (isRoot) {
+      this.breadcrumb = [];
+      this.parentId = null;
+      this.getElementsByParentId();
+    } else {
+      const index = this.breadcrumb.findIndex((b) => b.id === element!.id);
+      console.log(index);
+      this.breadcrumb = this.breadcrumb.slice(0, index + 1)
+      this.parentId = this.breadcrumb[this.breadcrumb.length - 1].id
+      this.getElementsByParentId();
+    }
   }
 
   showPreview(image: string) {
@@ -184,8 +228,8 @@ export class MainComponent implements OnInit, OnDestroy {
 
   formatFileName(filename: FilesResult) {
     // const filenameFormatted = filename.file.replaceAll('-', ' ');
-    if (filename.type === 'dir') return filename.file;
-    return filename.file;
+    if (filename.type === 'dir') return filename.name;
+    return filename.name;
     // return filename.file.substring(0, 30).concat('...').concat(filename.file.split('.')[1])
   }
 
@@ -200,12 +244,10 @@ export class MainComponent implements OnInit, OnDestroy {
   async handleUploadImage(event: any) {
     this.loading = true;
 
-
     const {files} = event.target;
 
-    console.log(files);
-
-
+    const path = '/' + this.breadcrumb.map(crumb => crumb.name).join('/');
+    console.log(path)
 
     const forLoop = async () => {
       for (let i = 0; i < files.length; i++) {
@@ -213,9 +255,9 @@ export class MainComponent implements OnInit, OnDestroy {
           const reader = new FileReader();
           reader.readAsDataURL(files[i]);
           reader.onload = async () => {
-            this.fileService.uploadGenericStaticFile(files[i], this.path).subscribe(result => {
+            this.fileService.uploadGenericStaticFileV2(files[i], {path: path, isPropertyFile: false, parent_id: this.parentId!}).subscribe(result => {
               this.uiService.createMessage('success', 'Se subio el archivo con exito!');
-              this.getElementsByPath();
+              // this.getElementsByPath();
               },
               () => {
                 this.loading = false;
@@ -224,6 +266,8 @@ export class MainComponent implements OnInit, OnDestroy {
               () => {
                 if (i === files.length - 1) {
                   this.loading = false;
+                  this.getElementsByParentId();
+
                 }
               }
             )
@@ -242,42 +286,30 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   handleOkCreateFolder() {
-    if (this.currentElementToEdit.type !== null) {
-      let path = `${this.path}+${this.currentElementToEdit.file}`
-      const fileExtension = this.currentElementToEdit.file.split('_VINM')[1];
-      const newNameFile = `${this.path}+${this.folderName.concat('_VINM').concat(fileExtension)}`;
-      const newNameDir = `${this.path}+${this.folderName}`;
-      if (this.currentElementToEdit.type === 'dir') {
-        this.fileService.changeName(path, newNameDir, false).subscribe(result => {
+    if (this.idElementToChangeName) {
+        this.fileService.changeName(this.folderName, this.currentElementToEdit !== 'dir', this.idElementToChangeName).subscribe(result => {
           this.folderName = '';
           this.currentElementToEdit = {file: '', type: null};
           this.showCreateNewFolderModal = false;
+          this.idElementToChangeName = null;
           this.uiService.createMessage('success', result.message);
-          this.getElementsByPath();
+          this.getElementsByParentId();
+          this.getFolders()
         })
-      } else {
-        this.fileService.changeName(path, newNameFile, true).subscribe(result => {
-          this.folderName = '';
-          this.currentElementToEdit = {file: '', type: null};
-          this.showCreateNewFolderModal = false;
-          this.uiService.createMessage('success', result.message);
-          this.getElementsByPath();
-        })
-      }
     } else {
-      const newNameDir = `${this.path}+${this.folderName}`;
-      this.fileService.createFolder(newNameDir).subscribe(result => {
+      this.fileService.createFolder(this.folderName, this.parentId!).subscribe(result => {
         this.folderName = '';
         this.showCreateNewFolderModal = false;
         this.uiService.createMessage('success', result.message);
-        this.getElementsByPath();
+        this.getElementsByParentId();
+        this.getFolders()
       })
     }
   }
 
   deleteFolderOrFile(element: FilesResult) {
     const message = element.type === 'dir' ? 'la carpeta, y todos los documentos dentro de ella' : 'el documento'
-    const path = `${this.path}+${element.file}`
+    const path = `${this.path}+${element.name}`
     this.modal.confirm({
       nzTitle: 'Atencion',
       nzAutofocus: 'ok',
@@ -288,7 +320,7 @@ export class MainComponent implements OnInit, OnDestroy {
         if (this.checkIfCanDelete()) {
           this.fileService.deleteFolderOrFile(path).subscribe(result => {
             this.uiService.createMessage('success', result.message)
-            this.getElementsByPath()
+            // this.getElementsByPath()
             setTimeout(() => resolve(), 500);
           }, (error) => {
             this.uiService.createMessage('error', error.error.message);
@@ -296,7 +328,7 @@ export class MainComponent implements OnInit, OnDestroy {
         } else {
           this.fileService.requestDelete(path, this.userService.currentUser.value.id!).subscribe(result => {
             this.uiService.createMessage('success', result.message)
-            this.getElementsByPath()
+            // this.getElementsByPath()
             setTimeout(() => resolve(), 500);
           }, (error) => {
             this.uiService.createMessage('error', error.error.message);
@@ -312,14 +344,15 @@ export class MainComponent implements OnInit, OnDestroy {
 
   safeLevelForDelete() {
     const isAdmin = this.checkIfCanDelete();
-    return this.path.split('+').length > (isAdmin ? 0 : 1);
+    return isAdmin && this.parentId;
   }
 
   handleCreateOrEditName(file?: FilesResult) {
     this.showCreateNewFolderModal = true;
     if (file) {
-      this.folderName = file.file.split('-VINM')[0];
+      this.folderName = file.name.split('-VINM')[0];
       this.currentElementToEdit = file;
+      this.idElementToChangeName = file.id;
       if (file.type === 'dir') {
         this.folderNameModalTitle = 'Cambiar nombre de carpeta'
       } else {
@@ -348,17 +381,20 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   handleMoveElement(element: FilesResult) {
-    this.moveFromPath = `${this.path}+${element.file}`;
+    this.moveFromPath = `${this.path}+${element.name}`;
+    this.idElementToMove = element.id;
     this.showMoveModal = true;
   }
 
   handleMovedElement() {
     this.showMoveModal = false;
-    this.getElementsByPath();
+    this.idElementToMove = null;
+    this.getElementsByParentId();
+    // this.getElementsByPath();
   }
 
   requestDigitalSignature(element: FilesResult) {
-    this.filePath = `${this.path}+${element.file}`
+    this.filePath = `${this.path}+${element.name}`
     this.showRequireSignatureModal = true;
 
   }
@@ -396,5 +432,31 @@ export class MainComponent implements OnInit, OnDestroy {
   handleOnComplete() {
     this.showRequireSignatureModal = false;
     this.getDigitalSignatureRequests();
+  }
+
+  handleCancelMoveElement() {
+    this.showMoveModal = false;
+    this.idElementToMove = null;
+  }
+
+  getFolders() {
+    this.loadingFiles = true;
+    this.fileService.getFolders().subscribe(res => {
+      this.folders = res.map((folder) => this.convertFolderToTreeOption(folder));
+    }, () => {
+      this.loadingFiles = false;
+    }, () => {
+      this.loadingFiles = false;
+    })
+  }
+
+  convertFolderToTreeOption(folder: FoldersResult): NzTreeNodeOptions {
+    return {
+      key: folder.id.toString(),
+      title: folder.name,
+      isLeaf: false,
+      expanded: true,
+      children: folder.children.length > 0 ? folder.children.map(f => this.convertFolderToTreeOption(f)) : [],
+    }
   }
 }
