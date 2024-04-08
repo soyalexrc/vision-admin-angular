@@ -166,7 +166,7 @@ export class MainComponent implements OnInit, OnDestroy {
   handleClickElement(element: FilesResult) {
     console.log(element);
     if (element.type === 'dir') {
-      this.path += `+${element.name}`;
+      this.path = this.path.includes(element.name) ? this.path : `${this.path}+${element.name}`;
       this.breadcrumb.push({name: element.name, id: element.id});
       this.parentId = element.id;
 
@@ -205,10 +205,11 @@ export class MainComponent implements OnInit, OnDestroy {
     if (isRoot) {
       this.breadcrumb = [];
       this.parentId = null;
+      this.path = '';
       this.getElementsByParentId();
     } else {
       const index = this.breadcrumb.findIndex((b) => b.id === element!.id);
-      console.log(index);
+      this.path = this.path.split('+').slice(0, index + 1).join('+');
       this.breadcrumb = this.breadcrumb.slice(0, index + 1)
       this.parentId = this.breadcrumb[this.breadcrumb.length - 1].id
       this.getElementsByParentId();
