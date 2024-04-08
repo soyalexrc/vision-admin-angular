@@ -7,7 +7,7 @@
   (nzOnOk)="handleOk()">
   <ng-container *nzModalContent>
     <nz-spin nzTip="Cargando..." [nzSpinning]="loadingFiles">
-      <p *ngIf="activatedNode">El documento o carpeta se movera a: <br>s <b>{{ formatPathToMove() }}</b></p>
+      <p *ngIf="activatedNode">El documento o carpeta se movera a: <br><b>{{ formatPathToMove() }}</b></p>
       <nz-space></nz-space>
       <nz-tree
         nzBlockNode
