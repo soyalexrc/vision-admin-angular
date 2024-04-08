@@ -152,8 +152,7 @@ export class MainComponent implements OnInit, OnDestroy {
   getElementsByParentId() {
     this.loadingFiles = true;
     this.fileService.getElementsByParentId(this.parentId).subscribe(result => {
-      console.log(result);
-      this.elements = result;
+      this.elements = this.sortByDir(result);
 
     }, (error) => {
       this.loadingFiles = false;
@@ -459,5 +458,20 @@ export class MainComponent implements OnInit, OnDestroy {
       expanded: true,
       children: folder.children.length > 0 ? folder.children.map(f => this.convertFolderToTreeOption(f)) : [],
     }
+  }
+
+  sortByDir(elements: FilesResult[]) {
+    return elements.sort((a, b) => {
+      // Sort directories first (type === 'dir')
+      if (a.type === 'dir' && b.type !== 'dir') {
+        return -1;
+      } else if (a.type !== 'dir' && b.type === 'dir') {
+        return 1;
+      } else {
+        // If both are the same type, sort alphabetically by any other property
+        // (assuming you have a property for names or any other comparison criteria)
+        return a.name.localeCompare(b.name); // Replace 'name' with your sorting property
+      }
+    });
   }
 }
